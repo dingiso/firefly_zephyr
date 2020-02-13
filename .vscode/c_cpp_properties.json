@@ -1,0 +1,11 @@
+{
+  "configurations": [
+    {
+      "name": "Mac",
+      "intelliSenseMode": "${default}",
+      "compilerPath": "arm-none-eabi-g++",
+      "compileCommands": "${workspaceRoot}/build/compile_commands.json"
+    }
+  ],
+  "version": 4
+}

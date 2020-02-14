@@ -7,6 +7,15 @@
 #include "cc1101_constants.h"
 #include "cc1101_rf_settings.h"
 
+// Uses SPI_1 instance. So devicetree should contain something like
+// &spi1 {
+//   status = "okay";
+//   sck-pin = <6>;
+//   mosi-pin = <8>;
+//   miso-pin = <7>;
+//   cs-gpios = <&gpio0 5 0>;
+// };
+
 class Cc1101 {
  private:
   static device* spi_;

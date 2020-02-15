@@ -35,6 +35,7 @@ class Cc1101 {
     Recalibrate();
     EnterTX();
     WriteTX(packet);
+    k_sem_take(&gd_ready_, K_FOREVER);
   }
 
   template<typename RadioPacketT>

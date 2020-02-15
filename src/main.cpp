@@ -14,6 +14,12 @@ struct MagicPathRadioPacket {
   uint8_t r, g, b;
 } __attribute__((__packed__));
 
+struct UsbHostPacket {
+  uint16_t From;  // 2
+  uint16_t To;    // 2
+  uint8_t stuff[7];
+} __attribute__ ((__packed__));
+
 void main(void) {
   LOG_WRN("Hello! Application started successfully.");
 
@@ -35,14 +41,11 @@ void main(void) {
       .g = 0,
       .b = 255};
 
-  const std::vector<int> led_states = {1, 0, 0, 0, 1, 0, 0, 0, 0, 0};
   while (true) {
-    for (const bool state : led_states) {
-      gpio_pin_set(device, DT_ALIAS_LED2_GPIOS_PIN, state);
-      k_sleep(100);
+    UsbHostPacket pkt_2;
+    if (cc1101.Receive(100, &pkt_2)) {
+      LOG_INF("Got packet from %d", pkt_2.From);
     }
-    cc1101.Transmit(pkt);
-
-    k_sleep(1000);
+    k_sleep(100);
   }
 }

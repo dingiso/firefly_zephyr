@@ -1,3 +1,11 @@
+/ {
+	buttons {
+		gd0 {
+			gpios = <&gpio0 4 (GPIO_PULL_DOWN)>;
+			label = "CC1101 GD0";
+		};
+	};
+};
 
 &spi1 {
 	status = "okay";

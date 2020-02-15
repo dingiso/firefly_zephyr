@@ -4,6 +4,12 @@ LOG_MODULE_DECLARE();
 
 device* Cc1101::spi_ = device_get_binding(DT_ALIAS_SPI_1_LABEL);
 
+device* gpio_device = device_get_binding(DT_GPIO_KEYS_GD0_GPIOS_CONTROLLER);
+gpio_pin_t gd_pin = DT_GPIO_KEYS_GD0_GPIOS_PIN;
+
+k_sem Cc1101::gd_ready_;
+gpio_callback Cc1101::gdo0_callback_data_;
+
 spi_cs_control Cc1101::spi_cs_cfg_ = {
     .gpio_dev = device_get_binding(DT_ALIAS_SPI_1_CS_GPIOS_CONTROLLER),
     .gpio_pin = DT_ALIAS_SPI_1_CS_GPIOS_PIN,
@@ -16,6 +22,8 @@ spi_config Cc1101::spi_config_ = {
     .cs = &Cc1101::spi_cs_cfg_};
 
 void Cc1101::Init() {
+  k_sem_init(&gd_ready_, 0, 1);
+
   Reset();
 
   // TODO(aeremin) This is a hack. Instead we should wait for
@@ -31,6 +39,22 @@ void Cc1101::Init() {
 
   SetTxPower(CC_PwrMinus30dBm);
   SetChannel(0);
+
+  const auto button_pin = DT_GPIO_KEYS_GD0_GPIOS_PIN;
+
+	auto ret = gpio_pin_configure(gpio_device, button_pin, DT_GPIO_KEYS_GD0_GPIOS_FLAGS | GPIO_INPUT);
+	if (ret != 0) LOG_ERR("Failed to configure button pin: %d", ret);
+
+	ret = gpio_pin_interrupt_configure(gpio_device, button_pin, GPIO_INT_EDGE_FALLING);
+	if (ret != 0) LOG_ERR("Failed to configure interrupt on pin: %d", ret);
+
+	gpio_init_callback(&gdo0_callback_data_, Gdo0Callback, BIT(button_pin));
+	gpio_add_callback(gpio_device, &gdo0_callback_data_);
+}
+
+void Cc1101::Gdo0Callback(struct device *dev, struct gpio_callback *cb, u32_t pins)
+{
+   k_sem_give(&Cc1101::gd_ready_);
 }
 
 void Cc1101::WriteStrobe(uint8_t instruction, uint8_t* status /* = nullptr*/) {

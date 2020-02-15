@@ -1,6 +1,7 @@
 #pragma once
 
 #include <device.h>
+#include <drivers/gpio.h>
 #include <drivers/spi.h>
 #include <logging/log.h>
 #include <zephyr.h>
@@ -21,6 +22,8 @@ class Cc1101 {
   static device* spi_;
   static spi_cs_control spi_cs_cfg_;
   static spi_config spi_config_;
+  static k_sem gd_ready_;
+  static gpio_callback gdo0_callback_data_;
 
  public:
   void Init();
@@ -32,6 +35,22 @@ class Cc1101 {
     Recalibrate();
     EnterTX();
     WriteTX(packet);
+  }
+
+  template<typename RadioPacketT>
+  bool Receive(uint32_t timeout_ms, RadioPacketT* result) {
+    LOG_MODULE_DECLARE();
+
+    SetPktSize(sizeof(RadioPacketT));
+    Recalibrate();
+    FlushRxFIFO();
+    EnterRX();
+    if (k_sem_take(&gd_ready_, timeout_ms) == 0) {
+      return ReadFifo(result);
+    } else {
+      EnterIdle();
+      return false;
+    }
   }
 
  private:
@@ -73,6 +92,46 @@ class Cc1101 {
       LOG_ERR("WriteTX fail: %d", r);
     }
   }
+
+  template<typename RadioPacketT>
+  bool ReadFifo(RadioPacketT* result) {
+    LOG_MODULE_DECLARE();
+    uint8_t status = 0;
+    uint8_t b = ReadRegister(CC_PKTSTATUS, &status);
+    if (!(b & 0x80)) {
+      LOG_WRN("Weird, no data, packet status = %d", status);
+      return false;
+    }
+    uint8_t tx = CC_FIFO | CC_READ_FLAG | CC_BURST_FLAG;
+    uint8_t rx[sizeof(RadioPacketT) + 3];
+
+    spi_buf tx_buf = {
+        .buf = &tx,
+        .len = 1};
+
+    spi_buf_set tx_bufs = {
+        .buffers = &tx_buf,
+        .count = 1};
+
+    spi_buf rx_buf = {
+        .buf = rx,
+        .len = sizeof(RadioPacketT) + 3};
+
+    spi_buf_set rx_bufs = {
+        .buffers = &rx_buf,
+        .count = 1};
+
+    auto r = spi_transceive(spi_, &spi_config_, &tx_bufs, &rx_bufs);
+    if (r != 0) {
+      LOG_MODULE_DECLARE();
+      LOG_ERR("ReadFifo fail: %d", r);
+    }
+
+    memcpy(result, rx + 1, sizeof(RadioPacketT));
+    return true;
+  }
+
+  static void Gdo0Callback(struct device *dev, struct gpio_callback *cb, u32_t pins);
 
   void RfConfig();
 

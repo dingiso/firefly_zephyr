@@ -10,7 +10,7 @@ spi_cs_control Cc1101::spi_cs_cfg_ = {
     .delay = 0};
 
 spi_config Cc1101::spi_config_ = {
-    .frequency = 0x40000000UL, // 4 MHz
+    .frequency = 0x400000UL, // 4 MHz
     .operation = SPI_OP_MODE_MASTER | SPI_TRANSFER_MSB | SPI_WORD_SET(8) | SPI_LINES_SINGLE,
     .slave = 0,
     .cs = &Cc1101::spi_cs_cfg_};

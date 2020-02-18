@@ -23,15 +23,6 @@ struct UsbHostPacket {
 void main(void) {
   LOG_WRN("Hello! Application started successfully.");
 
-  auto device = device_get_binding(DT_ALIAS_LED2_GPIOS_CONTROLLER);
-  if (device == nullptr) {
-    return;
-  }
-
-  auto ret = gpio_pin_configure(device, DT_ALIAS_LED2_GPIOS_PIN, GPIO_OUTPUT_ACTIVE | DT_ALIAS_LED2_GPIOS_FLAGS);
-  if (ret < 0) {
-    return;
-  }
 
   Cc1101 cc1101;
   cc1101.Init();

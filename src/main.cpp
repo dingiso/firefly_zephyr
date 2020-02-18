@@ -37,6 +37,11 @@ void main(void) {
     if (cc1101.Receive(100, &pkt_2)) {
       LOG_INF("Got packet from %d", pkt_2.From);
     }
+
+    UsbHostPacket pkt_3;
+    pkt_3.From = 17;
+    cc1101.Transmit(pkt_3);
+
     k_sleep(100);
   }
 }

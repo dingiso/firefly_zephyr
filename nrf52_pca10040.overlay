@@ -1,9 +1,14 @@
 / {
 	buttons {
-		gd0 {
+		gdo0: gdo0 {
 			gpios = <&gpio0 4 (GPIO_PULL_DOWN)>;
 			label = "CC1101 GD0";
 		};
+	};
+
+	aliases {
+		cc1101-spi = &spi1;
+		cc1101-gdo0 = &gdo0;
 	};
 };
 

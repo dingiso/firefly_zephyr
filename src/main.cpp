@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "cc1101.h"
+#include "rgb_led.h"
 
 LOG_MODULE_REGISTER();
 
@@ -32,11 +33,18 @@ void main(void) {
       .g = 0,
       .b = 255};
 
+  uint8_t r = 50;
+  uint8_t g = 0;
+  uint8_t b = 20;
+  RgbLed led;
   while (true) {
     UsbHostPacket pkt_2;
     if (cc1101.Receive(100, &pkt_2)) {
       LOG_INF("Got packet from %d", pkt_2.From);
     }
+
+    led.SetColor(r, g, b);
+    g += 10;
 
     UsbHostPacket pkt_3;
     pkt_3.From = 17;

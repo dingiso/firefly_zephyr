@@ -2,7 +2,7 @@
 #include <device.h>
 
 namespace {
-const uint8_t kFrequencyHertz = 50;
+const uint8_t kFrequencyHertz = 100;
 const uint32_t kUsecPerSecond = 1000 * 1000;
 const uint32_t kCyclePeriodUs = kUsecPerSecond / kFrequencyHertz;
 

@@ -44,7 +44,7 @@ void Color::Adjust(const Color& other, uint8_t step) {
 
 // Adjustment
 uint32_t Color::DelayToTheNextAdjustment(const Color& other, uint32_t total_adjustment_time) const {
-  return std::max({
+  return std::min({
     CalculateDelay(r - other.r, total_adjustment_time),
     CalculateDelay(g - other.g, total_adjustment_time),
     CalculateDelay(b - other.b, total_adjustment_time)

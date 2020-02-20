@@ -33,16 +33,21 @@ void main(void) {
       .g = 0,
       .b = 255};
 
-  Color c = {50, 0, 20};
   RgbLed led;
+
+  Color colors[] = {{255, 0, 0}, {0, 255, 0}, {0, 0, 255}};
+  for (int i = 0; i < 3; ++i) {
+    led.SetColorSmooth(colors[i], 1000);
+    k_sleep(1000);
+  }
+
+  led.SetColorSmooth({0, 0, 0}, 1000);
+
   while (true) {
     UsbHostPacket pkt_2;
     if (cc1101.Receive(100, &pkt_2)) {
       LOG_INF("Got packet from %d", pkt_2.From);
     }
-
-    led.SetColor(c);
-    c.g += 10;
 
     UsbHostPacket pkt_3;
     pkt_3.From = 17;

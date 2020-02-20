@@ -33,9 +33,7 @@ void main(void) {
       .g = 0,
       .b = 255};
 
-  uint8_t r = 50;
-  uint8_t g = 0;
-  uint8_t b = 20;
+  Color c = {50, 0, 20};
   RgbLed led;
   while (true) {
     UsbHostPacket pkt_2;
@@ -43,8 +41,8 @@ void main(void) {
       LOG_INF("Got packet from %d", pkt_2.From);
     }
 
-    led.SetColor(r, g, b);
-    g += 10;
+    led.SetColor(c);
+    c.g += 10;
 
     UsbHostPacket pkt_3;
     pkt_3.From = 17;

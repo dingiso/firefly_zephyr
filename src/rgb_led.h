@@ -4,9 +4,11 @@
 #include <string_view>
 #include <drivers/pwm.h>
 
+#include "color.h"
+
 class RgbLed {
 public:
-  void SetColor(uint8_t r, uint8_t g, uint8_t b);
+  void SetColor(const Color& color);
 private:
   device* device_ = device_get_binding(DT_PWM_LEDS_PWM_LED_R_PWMS_CONTROLLER);
 };

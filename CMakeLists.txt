@@ -7,5 +7,6 @@ target_sources(app PRIVATE
   src/cc1101.cpp
   src/main.cpp
   src/rgb_led.cpp
+  src/color.cpp
 )
 target_include_directories(app PRIVATE src)

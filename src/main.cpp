@@ -36,12 +36,11 @@ void main(void) {
   RgbLed led;
 
   Color colors[] = {{255, 0, 0}, {0, 255, 0}, {0, 0, 255}};
-  for (int i = 0; i < 3; ++i) {
-    led.SetColorSmooth(colors[i], 1000);
-    k_sleep(1000);
-  }
-
-  led.SetColorSmooth({0, 0, 0}, 1000);
+  uint8_t currentColor = 0;
+  auto t1 = RunEvery([&](){
+    led.SetColorSmooth(colors[currentColor], 1000);
+    currentColor = (currentColor + 1) % 3;
+  }, 2000);
 
   while (true) {
     UsbHostPacket pkt_2;

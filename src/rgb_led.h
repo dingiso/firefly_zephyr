@@ -24,7 +24,6 @@ private:
   uint32_t timer_period_ = 0;
   device* device_ = device_get_binding(DT_PWM_LEDS_PWM_LED_R_PWMS_CONTROLLER);
   Timer timer_;
-  const std::function<void()> timer_callback_;
 };
 
 // All tree LEDs (R, G, B) must be configured in the devictree to use same PMW controller.

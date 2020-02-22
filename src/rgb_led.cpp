@@ -13,7 +13,7 @@ uint32_t colorComponentToPulseWidth(uint8_t component) {
 
 }
 
-RgbLed::RgbLed(): timer_callback_([this](){ this->OnTimer(); }) {
+RgbLed::RgbLed(): timer_([this](){ this->OnTimer(); }) {
 }
 
 void RgbLed::SetColor(const Color& color) {
@@ -36,11 +36,11 @@ void RgbLed::ActuateColor() {
 void RgbLed::SetColorSmooth(const Color& color, uint32_t delay_ms) {
   target_color_ = color;
   timer_period_ = color_.DelayToTheNextAdjustment(target_color_, delay_ms);
-  timer_.RunDelayed(timer_callback_, timer_period_);
+  timer_.RunDelayed(timer_period_);
 }
 
 void RgbLed::OnTimer() {
   color_.Adjust(target_color_);
   ActuateColor();
-  if (color_ != target_color_) timer_.RunDelayed(timer_callback_, timer_period_);
+  if (color_ != target_color_) timer_.RunDelayed(timer_period_);
 }

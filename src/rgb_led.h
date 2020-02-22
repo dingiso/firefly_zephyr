@@ -6,11 +6,11 @@
 #include <drivers/pwm.h>
 
 #include "color.h"
+#include "timer.h"
 
 class RgbLed {
 public:
   RgbLed();
-  ~RgbLed();
 
   void SetColor(const Color& color);
   void SetColorSmooth(const Color& color, uint32_t delay_ms);
@@ -23,7 +23,7 @@ private:
   Color target_color_ = {0, 0, 0};
   uint32_t timer_period_ = 0;
   device* device_ = device_get_binding(DT_PWM_LEDS_PWM_LED_R_PWMS_CONTROLLER);
-  k_timer timer_;
+  Timer timer_;
   const std::function<void()> timer_callback_;
 };
 

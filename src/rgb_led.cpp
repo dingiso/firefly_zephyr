@@ -23,6 +23,9 @@ RgbLed::RgbLed(): timer_callback_([this](){ this->OnTimer(); }) {
   k_timer_user_data_set(&timer_, const_cast<void*>(static_cast<const void*>(&timer_callback_)));
 }
 
+RgbLed::~RgbLed() {
+  k_timer_stop(&timer_);
+}
 
 void RgbLed::SetColor(const Color& color) {
   color_ = color;

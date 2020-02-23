@@ -17,6 +17,8 @@
 //   cs-gpios = <&gpio0 5 0>;
 // };
 
+// Datasheet: http://www.ti.com/lit/ds/symlink/cc1101.pdf
+
 class Cc1101 {
  private:
   static device* spi_;
@@ -100,8 +102,10 @@ class Cc1101 {
     uint8_t status = 0;
     uint8_t b = ReadRegister(CC_PKTSTATUS, &status);
     if (!(b & 0x80)) {
-      LOG_WRN("Weird, no data, packet status = %d", status);
+      LOG_WRN("Weird, no data, packet status = %d, read register status =%d", b, status);
       return false;
+    } else {
+      LOG_DBG("CRC OK, packet status = %d, read register status =%d", b, status);
     }
     uint8_t tx = CC_FIFO | CC_READ_FLAG | CC_BURST_FLAG;
     uint8_t rx[sizeof(RadioPacketT) + 3];

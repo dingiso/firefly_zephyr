@@ -9,5 +9,6 @@ target_sources(app PRIVATE
   src/rgb_led.cpp
   src/color.cpp
   src/timer.cpp
+  src/battery.cpp
 )
 target_include_directories(app PRIVATE src)

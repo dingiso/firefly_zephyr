@@ -4,6 +4,7 @@
 #include <drivers/spi.h>
 #include <logging/log.h>
 #include <zephyr.h>
+#include "battery.h"
 #include "cc1101.h"
 #include "rgb_led.h"
 
@@ -72,6 +73,7 @@ void main(void) {
 
   RgbLed led;
   PacketsLog log;
+  Battery battery;
 
   auto t1 = RunEvery([&led, &log](){
     auto c = log.GetColor();
@@ -89,6 +91,7 @@ void main(void) {
       }
     }
 
+    LOG_INF("Adc result: %d", battery.GetVoltage());
     k_sleep(810);
   }
 }

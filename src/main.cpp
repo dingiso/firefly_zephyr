@@ -28,10 +28,6 @@ void main(void) {
   Cc1101 cc1101;
   cc1101.Init();
   cc1101.SetChannel(1);
-  MagicPathRadioPacket pkt = {
-      .r = 0,
-      .g = 0,
-      .b = 255};
 
   RgbLed led;
 

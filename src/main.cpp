@@ -73,13 +73,16 @@ void main(void) {
 
   RgbLed led;
   PacketsLog log;
-  Battery battery;
 
   auto t1 = RunEvery([&led, &log](){
     auto c = log.GetColor();
     LOG_DBG("New color is %d %d %d", c.r, c.g, c.b);
     led.SetColorSmooth(c, 1000);
   }, 1000);
+
+  auto t2 = RunEvery([&](){
+    LOG_INF("Adc result: %d", Battery::GetInstance().GetVoltage());
+  }, 5000);
 
   while (true) {
     MagicPathRadioPacket pkt;
@@ -90,8 +93,6 @@ void main(void) {
         log.ProcessRadioPacket(pkt);
       }
     }
-
-    LOG_INF("Adc result: %d", battery.GetVoltage());
     k_sleep(810);
   }
 }

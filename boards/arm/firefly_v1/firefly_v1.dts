@@ -18,6 +18,7 @@
 	};
 
 	pwmleds {
+		// Need power on 22 for being bright
 		compatible = "pwm-leds";
 		pwm_led_r: pwm_led_r {
 			pwms = <&pwm0 17>;
@@ -36,6 +37,16 @@
 		compatible = "gpio-keys";
 		gdo0: gdo0 {
 			gpios = <&gpio0 4 (GPIO_PULL_DOWN)>;
+			label = "CC1101 GD0";
+		};
+
+		button_1: button_1 {
+			gpios = <&gpio0 23 (GPIO_PULL_DOWN)>;
+			label = "CC1101 GD0";
+		};
+
+		button_2: button_2 {
+			gpios = <&gpio0 24 (GPIO_PULL_DOWN)>;
 			label = "CC1101 GD0";
 		};
 	};
@@ -66,27 +77,29 @@
 	status = "okay";
 	compatible = "nordic,nrf-uart";
 	current-speed = <115200>;
-	tx-pin = <6>;
-	rx-pin = <8>;
-	rts-pin = <5>;
-	cts-pin = <7>;
+	tx-pin = <2>;
+	rx-pin = <3>;
 };
 
+// EEPROM
 &i2c0 {
 	compatible = "nordic,nrf-twi";
 	status = "okay";
-	sda-pin = <26>;
-	scl-pin = <27>;
+	sda-pin = <15>;
+	scl-pin = <15>;
+	// Needs power on 16
 };
 
+// Pill
 &i2c1 {
 	compatible = "nordic,nrf-twi";
-	/* Cannot be used together with spi1. */
-	/* status = "okay"; */
-	sda-pin = <30>;
-	scl-pin = <31>;
+	status = "okay";
+	sda-pin = <12>;
+	scl-pin = <13>;
+	// Needs power on 11
 };
 
+// LEDs
 &pwm0 {
 	status = "okay";
 	ch0-pin = <17>;
@@ -97,15 +110,7 @@
 	ch2-inverted;
 };
 
-&spi0 {
-	compatible = "nordic,nrf-spi";
-	/* Cannot be used together with i2c0. */
-	/* status = "okay"; */
-	sck-pin = <27>;
-	mosi-pin = <26>;
-	miso-pin = <28>;
-};
-
+// CC1101
 &spi1 {
 	compatible = "nordic,nrf-spi";
 	status = "okay";
@@ -113,15 +118,6 @@
 	mosi-pin = <8>;
 	miso-pin = <7>;
 	cs-gpios = <&gpio0 5 0>;
-};
-
-&spi2 {
-	compatible = "nordic,nrf-spi";
-	status = "okay";
-	sck-pin = <25>;
-	mosi-pin = <23>;
-	miso-pin = <24>;
-	cs-gpios = <&gpio0 22 0>; /* D10 */
 };
 
 &flash0 {

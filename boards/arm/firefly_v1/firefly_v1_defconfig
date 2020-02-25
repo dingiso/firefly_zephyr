@@ -14,9 +14,17 @@ CONFIG_GPIO=y
 CONFIG_SERIAL=y
 CONFIG_UART_0_NRF_UART=y
 
-# enable console
+# enable console and logging via RTT and UART
+CONFIG_LOG=y
 CONFIG_CONSOLE=y
 CONFIG_UART_CONSOLE=y
+CONFIG_RTT_CONSOLE=y
 
-# additional board options
-CONFIG_GPIO_AS_PINRESET=y
+# Enable SPI to be able to communicate to the radio chip (cc1101).
+CONFIG_SPI=y
+
+# Required to have smooth LED control
+CONFIG_PWM=y
+
+# ADC to measure battery level
+CONFIG_ADC=y

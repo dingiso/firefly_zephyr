@@ -3,12 +3,9 @@ include($ENV{ZEPHYR_BASE}/cmake/app/boilerplate.cmake NO_POLICY_SCOPE)
 
 project(firefly)
 
+add_subdirectory(../common common)
+
 target_sources(app PRIVATE
-  src/cc1101.cpp
-  src/main.cpp
-  src/rgb_led.cpp
-  src/color.cpp
-  src/timer.cpp
-  src/battery.cpp
+  main.cpp
 )
-target_include_directories(app PRIVATE src)
+target_link_libraries(app PRIVATE common_libraries)

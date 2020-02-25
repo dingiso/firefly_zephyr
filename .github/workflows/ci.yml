@@ -19,7 +19,7 @@ jobs:
       - run: cd ./zephyrproject/zephyr && source zephyr-env.sh && cd ../..
       - run: west manifest --validate
       - run: west --help
-      - run: west build -b nrf52_pca10040
+      - run: west build -b nrf52_pca10040 firefly
       - uses: actions/upload-artifact@v1
         with:
           name: firefly.hex

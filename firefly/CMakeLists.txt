@@ -13,6 +13,7 @@ set(BOARD firefly_v1)
 include($ENV{ZEPHYR_BASE}/cmake/app/boilerplate.cmake NO_POLICY_SCOPE)
 
 project(firefly)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 add_subdirectory(../common common)
 

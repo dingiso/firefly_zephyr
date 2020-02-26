@@ -4,7 +4,7 @@
       "name": "Mac",
       "intelliSenseMode": "${default}",
       "compilerPath": "arm-none-eabi-g++",
-      "configurationProvider": "vector-of-bool.cmake-tools"
+      "compileCommands": "build/compile_commands.json"
     }
   ],
   "version": 4

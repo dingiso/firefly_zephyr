@@ -7,6 +7,7 @@
 #include "battery.h"
 #include "cc1101.h"
 #include "rgb_led.h"
+#include "bluetooth.h"
 
 LOG_MODULE_REGISTER();
 
@@ -66,6 +67,7 @@ private:
 
 void main(void) {
   LOG_WRN("Hello! Application started successfully.");
+  InitBleAdvertising();
 
   Cc1101 cc1101;
   cc1101.Init();
@@ -81,7 +83,9 @@ void main(void) {
   }, 1000);
 
   auto t2 = RunEvery([&](){
-    LOG_INF("Adc result: %d", Battery::GetInstance().GetVoltage());
+    auto v = Battery::GetInstance().GetVoltage();
+    LOG_INF("Adc result: %d", v);
+    SetBatteryLevel(v / 30);
   }, 5000);
 
   while (true) {

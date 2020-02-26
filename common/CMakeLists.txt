@@ -7,6 +7,7 @@ zephyr_library_sources(
   color.cpp
   timer.cpp
   battery.cpp
+  bluetooth.cpp
 )
 
 # Depend on the public Zephyr interface

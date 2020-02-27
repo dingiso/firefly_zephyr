@@ -33,6 +33,14 @@
 		};
 	};
 
+	leds {
+		compatible = "gpio-leds";
+		led_en: led_en {
+			gpios = <&gpio0 22 GPIO_ACTIVE_HIGH>;
+			label = "LED voltage stabilizer";
+		};
+	};
+
 	buttons {
 		compatible = "gpio-keys";
 		gdo0: gdo0 {
@@ -58,6 +66,7 @@
 		led-r = &pwm_led_r;
 		led-g = &pwm_led_g;
 		led-b = &pwm_led_b;
+		led-en = &led_en;
 	};
 };
 

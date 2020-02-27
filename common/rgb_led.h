@@ -12,6 +12,7 @@ class RgbLed {
 public:
   RgbLed();
 
+  void EnablePowerStabilizer();
   void SetColor(const Color& color);
   void SetColorSmooth(const Color& color, uint32_t delay_ms);
 private:
@@ -23,6 +24,7 @@ private:
   Color target_color_ = {0, 0, 0};
   uint32_t timer_period_ = 0;
   device* device_ = device_get_binding(DT_PWM_LEDS_PWM_LED_R_PWMS_CONTROLLER);
+  device* device_stabilizer_ = device_get_binding(DT_ALIAS_LED_EN_GPIOS_CONTROLLER);
   Timer timer_;
 };
 

@@ -1,6 +1,7 @@
 #include "rgb_led.h"
 
 #include <device.h>
+#include <drivers/gpio.h>
 
 namespace {
 const uint8_t kFrequencyHertz = 100;
@@ -14,6 +15,11 @@ uint32_t colorComponentToPulseWidth(uint8_t component) {
 }
 
 RgbLed::RgbLed(): timer_([this](){ this->OnTimer(); }) {
+}
+
+void RgbLed::EnablePowerStabilizer() {
+  gpio_pin_configure(device_stabilizer_,
+    DT_ALIAS_LED_EN_GPIOS_PIN, GPIO_OUTPUT_ACTIVE | DT_ALIAS_LED_EN_GPIOS_FLAGS);
 }
 
 void RgbLed::SetColor(const Color& color) {

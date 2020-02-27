@@ -74,6 +74,7 @@ void main(void) {
   cc1101.SetChannel(1);
 
   RgbLed led;
+  led.EnablePowerStabilizer();
   PacketsLog log;
 
   auto t1 = RunEvery([&led, &log](){

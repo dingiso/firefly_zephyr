@@ -13,6 +13,7 @@
 #include <bluetooth/hci.h>
 #include <bluetooth/uuid.h>
 
+#include "battery.h"
 #include "bluetooth.h"
 #include "timer.h"
 #include "magic_path_packet.h"
@@ -91,6 +92,11 @@ void main(void) {
 				packet.r_background, packet.g_background, packet.b_background,
 				packet.configure_mode);
   }, 1000);
+
+  auto t2 = RunEvery([&](){
+    auto v = Battery::GetInstance().GetVoltage();
+    SetBatteryLevel(v / 30);
+  }, 5000);
 
   while (true) {
     k_sleep(K_FOREVER);

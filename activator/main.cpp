@@ -64,19 +64,6 @@ ssize_t write_radio_packet(struct bt_conn *conn,
   return len;
 }
 
-// Zephyr's own definition of BT_GATT_ATTRIBUTE is not compatible with C++.
-// https://github.com/zephyrproject-rtos/zephyr/pull/23167 send to fix it.
-#undef BT_GATT_ATTRIBUTE
-#define BT_GATT_ATTRIBUTE(_uuid, _perm, _read, _write, _value) \
-  {                                                            \
-    .uuid = _uuid,                                             \
-    .read = _read,                                             \
-    .write = _write,                                           \
-    .user_data = _value,                                       \
-    .handle = 0,                                               \
-    .perm = _perm,                                             \
-  }
-
 BT_GATT_SERVICE_DEFINE(firefly_service,
                        BT_GATT_PRIMARY_SERVICE(&firefly_service_uuid),
                        BT_GATT_CHARACTERISTIC(&radio_packet_characteristic_uuid.uuid,

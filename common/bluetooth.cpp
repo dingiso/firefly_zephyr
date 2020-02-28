@@ -15,8 +15,6 @@ static const bt_data ad[] = {
                   0x0f, 0x18), /* Battery Service */
 };
 
-bt_conn *default_conn = nullptr;
-
 void InitBleAdvertising() {
   auto err = bt_enable(nullptr);
   if (err) {

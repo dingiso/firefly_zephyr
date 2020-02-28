@@ -15,6 +15,7 @@
 
 #include "battery.h"
 #include "bluetooth.h"
+#include "cc1101.h"
 #include "timer.h"
 #include "magic_path_packet.h"
 #include "scoped_mutex_lock.h"
@@ -88,13 +89,9 @@ BT_GATT_SERVICE_DEFINE(firefly_service,
 void main(void) {
   InitBleAdvertising(ConnectableFastAdvertisingParams());
 
-  auto t1 = RunEvery([](){
-    ScopedMutexLock l(packet_mutex);
-    LOG_INF("Current radio packet is id = %d, c = (%d %d %d), bc = (%d %d %d), cm = %d", packet.id,
-        packet.r, packet.g, packet.b,
-        packet.r_background, packet.g_background, packet.b_background,
-        packet.configure_mode);
-  }, 1000);
+  Cc1101 cc1101;
+  cc1101.Init();
+  cc1101.SetChannel(1);
 
   auto t2 = RunEvery([&](){
     auto v = Battery::GetInstance().GetVoltage();
@@ -102,6 +99,8 @@ void main(void) {
   }, 5000);
 
   while (true) {
-    k_sleep(K_FOREVER);
+    ScopedMutexLock l(packet_mutex);
+    cc1101.Transmit(packet);
+    k_sleep(36);
   }
 }

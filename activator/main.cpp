@@ -13,14 +13,15 @@
 #include <bluetooth/hci.h>
 #include <bluetooth/uuid.h>
 
+#include "bluetooth.h"
 #include "timer.h"
 #include "magic_path_packet.h"
 
 LOG_MODULE_REGISTER();
 
-MagicPathRadioPacket packet = {};
-
 namespace {
+
+MagicPathRadioPacket packet = {};
 
 const struct bt_data ad[] = {
     BT_DATA_BYTES(BT_DATA_FLAGS, (BT_LE_AD_GENERAL | BT_LE_AD_NO_BREDR)),
@@ -78,35 +79,10 @@ BT_GATT_SERVICE_DEFINE(firefly_service,
                                               BT_GATT_PERM_READ | BT_GATT_PERM_WRITE,
                                               read_radio_packet, write_radio_packet, nullptr), );
 
-void StartAdvertising() {
-  LOG_INF("Bluetooth initialized");
-
-  bt_le_adv_param advertising_params;
-  advertising_params.id = 0;
-  advertising_params.options = BT_LE_ADV_OPT_CONNECTABLE | BT_LE_ADV_OPT_USE_NAME;
-  advertising_params.interval_min = BT_GAP_ADV_FAST_INT_MIN_2;
-  advertising_params.interval_max = BT_GAP_ADV_FAST_INT_MAX_2;
-
-  const auto err = bt_le_adv_start(&advertising_params, ad, ARRAY_SIZE(ad), nullptr, 0);
-  if (err) {
-    LOG_ERR("Advertising failed to start (err %d)", err);
-    return;
-  }
-
-  LOG_INF("Advertising successfully started");
-}
-
 } // namespace
 
 void main(void) {
-  const int err = bt_enable(nullptr);
-
-  if (err) {
-    LOG_ERR("Bluetooth init failed (err %d)", err);
-    return;
-  }
-
-  StartAdvertising();
+  InitBleAdvertising(ConnectableFastAdvertisingParams());
 
   auto t1 = RunEvery([](){
     // TODO: Lock mutex

@@ -1,6 +1,5 @@
 #include "bluetooth.h"
 
-#include <bluetooth/bluetooth.h>
 #include <bluetooth/conn.h>
 #include <bluetooth/gatt.h>
 #include <bluetooth/hci.h>
@@ -15,7 +14,25 @@ static const bt_data ad[] = {
                   0x0f, 0x18), /* Battery Service */
 };
 
-void InitBleAdvertising() {
+bt_le_adv_param ConnectableSlowAdvertisingParams() {
+  return {
+    .id = 0,
+    .options = BT_LE_ADV_OPT_CONNECTABLE | BT_LE_ADV_OPT_USE_NAME,
+    .interval_min = BT_GAP_ADV_SLOW_INT_MIN,
+    .interval_max = BT_GAP_ADV_SLOW_INT_MAX,
+  };
+}
+
+bt_le_adv_param ConnectableFastAdvertisingParams() {
+  return {
+    .id = 0,
+    .options = BT_LE_ADV_OPT_CONNECTABLE | BT_LE_ADV_OPT_USE_NAME,
+    .interval_min = BT_GAP_ADV_FAST_INT_MIN_2,
+    .interval_max = BT_GAP_ADV_FAST_INT_MAX_2,
+  };
+}
+
+void InitBleAdvertising(const bt_le_adv_param& params) {
   auto err = bt_enable(nullptr);
   if (err) {
     LOG_ERR("Bluetooth init failed (err %d)", err);
@@ -24,13 +41,7 @@ void InitBleAdvertising() {
 
   LOG_INF("Bluetooth initialized");
 
-  bt_le_adv_param advertising_params;
-  advertising_params.id = 0;
-  advertising_params.options = BT_LE_ADV_OPT_CONNECTABLE | BT_LE_ADV_OPT_USE_NAME;
-  advertising_params.interval_min = BT_GAP_ADV_SLOW_INT_MIN;
-  advertising_params.interval_max = BT_GAP_ADV_SLOW_INT_MAX;
-
-  err = bt_le_adv_start(&advertising_params, ad, ARRAY_SIZE(ad), nullptr, 0);
+  err = bt_le_adv_start(&params, ad, ARRAY_SIZE(ad), nullptr, 0);
   if (err) {
     LOG_ERR("Advertising failed to start (err %d)", err);
     return;

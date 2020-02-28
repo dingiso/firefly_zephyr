@@ -62,7 +62,7 @@ private:
 
 void main(void) {
   LOG_WRN("Hello! Application started successfully.");
-  InitBleAdvertising();
+  InitBleAdvertising(ConnectableSlowAdvertisingParams());
 
   Cc1101 cc1101;
   cc1101.Init();

@@ -8,15 +8,10 @@
 #include "cc1101.h"
 #include "rgb_led.h"
 #include "bluetooth.h"
+#include "magic_path_packet.h"
 
 LOG_MODULE_REGISTER();
 
-struct MagicPathRadioPacket {
-  uint8_t id;
-  uint8_t r, g, b;
-  uint8_t r_background, g_background, b_background;
-  bool configure_mode;
-} __attribute__((__packed__));
 
 struct ColorAndTimestamp {
   ColorAndTimestamp(): timestamp(0), color(0, 0, 0) {}

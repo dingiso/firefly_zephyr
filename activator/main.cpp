@@ -14,15 +14,9 @@
 #include <bluetooth/uuid.h>
 
 #include "timer.h"
+#include "magic_path_packet.h"
 
 LOG_MODULE_REGISTER();
-
-struct MagicPathRadioPacket {
-  uint8_t id;
-  uint8_t r, g, b;
-  uint8_t r_background, g_background, b_background;
-  bool configure_mode;
-} __attribute__((__packed__));
 
 MagicPathRadioPacket packet = {};
 

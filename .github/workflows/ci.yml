@@ -19,8 +19,13 @@ jobs:
       - run: cd ./zephyrproject/zephyr && source zephyr-env.sh && cd ../..
       - run: west manifest --validate
       - run: west --help
-      - run: west build firefly
+      - run: west build firefly --prisine
       - uses: actions/upload-artifact@v1
         with:
           name: firefly.hex
+          path: ./build/zephyr/zephyr.hex
+      - run: west build activator --prisine
+      - uses: actions/upload-artifact@v1
+        with:
+          name: activator.hex
           path: ./build/zephyr/zephyr.hex

@@ -4,6 +4,12 @@
 #include <drivers/spi.h>
 #include <logging/log.h>
 #include <zephyr.h>
+#include <bluetooth/bluetooth.h>
+#include <bluetooth/conn.h>
+#include <bluetooth/gatt.h>
+#include <bluetooth/hci.h>
+#include <bluetooth/uuid.h>
+
 #include "battery.h"
 #include "cc1101.h"
 #include "rgb_led.h"
@@ -59,6 +65,52 @@ private:
   Color background_color_ = {0, 0, 0};
   std::array<ColorAndTimestamp, 20> colors_;
 };
+
+/* Service UUID 8ec87060-8865-4eca-82e0-2ea8e45e8221 */
+struct bt_uuid_128 firefly_service_uuid = BT_UUID_INIT_128(
+    0x21, 0x82, 0x5e, 0xe4, 0xa8, 0x2e, 0xe0, 0x82,
+    0xca, 0x4e, 0x65, 0x88, 0x60, 0x70, 0xc8, 0x8e);
+
+/* Beep Characteristic, UUID 8ec87061-8865-4eca-82e0-2ea8e45e8221 */
+struct bt_uuid_128 beep_characteristic_uuid = BT_UUID_INIT_128(
+    0x21, 0x82, 0x5e, 0xe4, 0xa8, 0x2e, 0xe0, 0x82,
+    0xca, 0x4e, 0x65, 0x88, 0x62, 0x70, 0xc8, 0x8e);
+
+/* Blink Characteristic, UUID 8ec87061-8865-4eca-82e0-2ea8e45e8221 */
+struct bt_uuid_128 blink_characteristic_uuid = BT_UUID_INIT_128(
+    0x21, 0x82, 0x5e, 0xe4, 0xa8, 0x2e, 0xe0, 0x82,
+    0xca, 0x4e, 0x65, 0x88, 0x63, 0x70, 0xc8, 0x8e);
+
+ssize_t write_beep(struct bt_conn *conn,
+                           const struct bt_gatt_attr *attr,
+                           const void *buf, u16_t len, u16_t offset,
+                           u8_t flags) {
+  LOG_INF("Beep!");
+  return len;
+}
+
+ssize_t write_blink(struct bt_conn *conn,
+                           const struct bt_gatt_attr *attr,
+                           const void *buf, u16_t len, u16_t offset,
+                           u8_t flags) {
+  LOG_INF("Blink!");
+  return len;
+}
+
+BT_GATT_SERVICE_DEFINE(firefly_service,
+                       BT_GATT_PRIMARY_SERVICE(&firefly_service_uuid),
+                       BT_GATT_CHARACTERISTIC(&beep_characteristic_uuid.uuid,
+                                              BT_GATT_CHRC_WRITE,
+                                              BT_GATT_PERM_WRITE,
+                                              nullptr, write_beep, nullptr),
+                       BT_GATT_CUD("Beep", BT_GATT_PERM_READ),
+                       BT_GATT_CHARACTERISTIC(&blink_characteristic_uuid.uuid,
+                                              BT_GATT_CHRC_WRITE,
+                                              BT_GATT_PERM_WRITE,
+                                              nullptr, write_blink, nullptr),
+                       BT_GATT_CUD("Blink", BT_GATT_PERM_READ),
+);
+
 
 void main(void) {
   LOG_WRN("Hello! Application started successfully.");

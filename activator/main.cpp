@@ -17,12 +17,15 @@
 #include "bluetooth.h"
 #include "timer.h"
 #include "magic_path_packet.h"
+#include "scoped_mutex_lock.h"
+
 
 LOG_MODULE_REGISTER();
 
 namespace {
 
-MagicPathRadioPacket packet = {};
+K_MUTEX_DEFINE(packet_mutex);
+MagicPathRadioPacket packet = {}; // Guarded by packet_mutex
 
 const struct bt_data ad[] = {
     BT_DATA_BYTES(BT_DATA_FLAGS, (BT_LE_AD_GENERAL | BT_LE_AD_NO_BREDR)),
@@ -43,7 +46,7 @@ struct bt_uuid_128 radio_packet_characteristic_uuid = BT_UUID_INIT_128(
 ssize_t read_radio_packet(struct bt_conn *conn,
                           const struct bt_gatt_attr *attr,
                           void *buf, u16_t len, u16_t offset) {
-  // TODO: Lock mutex
+  ScopedMutexLock l(packet_mutex);
   return bt_gatt_attr_read(conn, attr, buf, len, offset, &packet, sizeof(packet));
 }
 
@@ -54,7 +57,7 @@ ssize_t write_radio_packet(struct bt_conn *conn,
   if (offset + len > sizeof(packet)) {
     return BT_GATT_ERR(BT_ATT_ERR_INVALID_OFFSET);
   }
-  // TODO: Lock mutex
+  ScopedMutexLock l(packet_mutex);
   memcpy(&packet, buf, len);
 
   return len;
@@ -86,11 +89,11 @@ void main(void) {
   InitBleAdvertising(ConnectableFastAdvertisingParams());
 
   auto t1 = RunEvery([](){
-    // TODO: Lock mutex
-		LOG_INF("Current radio packet is id = %d, c = (%d %d %d), bc = (%d %d %d), cm = %d", packet.id,
-				packet.r, packet.g, packet.b,
-				packet.r_background, packet.g_background, packet.b_background,
-				packet.configure_mode);
+    ScopedMutexLock l(packet_mutex);
+    LOG_INF("Current radio packet is id = %d, c = (%d %d %d), bc = (%d %d %d), cm = %d", packet.id,
+        packet.r, packet.g, packet.b,
+        packet.r_background, packet.g_background, packet.b_background,
+        packet.configure_mode);
   }, 1000);
 
   auto t2 = RunEvery([&](){

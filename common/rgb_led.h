@@ -4,6 +4,7 @@
 #include <functional>
 #include <string_view>
 #include <drivers/pwm.h>
+#include <device.h>
 
 #include "color.h"
 #include "timer.h"

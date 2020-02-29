@@ -31,6 +31,10 @@
 		pwm_led_b: pwm_led_b {
 			pwms = <&pwm0 19>;
 		};
+
+		buzzer: buzzer {
+			pwms = <&pwm0 30>;
+		};
 	};
 
 	leds {
@@ -67,6 +71,8 @@
 		led-g = &pwm_led_g;
 		led-b = &pwm_led_b;
 		led-en = &led_en;
+
+		buzzer = &buzzer;
 	};
 };
 
@@ -108,15 +114,17 @@
 	// Needs power on 11
 };
 
-// LEDs
 &pwm0 {
 	status = "okay";
+	// LEDs
 	ch0-pin = <17>;
 	ch0-inverted;
 	ch1-pin = <20>;
 	ch1-inverted;
 	ch2-pin = <19>;
 	ch2-inverted;
+	// Buzzer
+	ch3-pin = <30>;
 };
 
 // CC1101

@@ -11,6 +11,7 @@
 #include <bluetooth/uuid.h>
 
 #include "battery.h"
+#include "buzzer.h"
 #include "cc1101.h"
 #include "rgb_led.h"
 #include "bluetooth.h"
@@ -18,6 +19,9 @@
 
 LOG_MODULE_REGISTER();
 
+namespace {
+Buzzer buzzer;
+}
 
 struct ColorAndTimestamp {
   ColorAndTimestamp(): timestamp(0), color(0, 0, 0) {}
@@ -86,6 +90,7 @@ ssize_t write_beep(struct bt_conn *conn,
                            const void *buf, u16_t len, u16_t offset,
                            u8_t flags) {
   LOG_INF("Beep!");
+  buzzer.Beep(3, 600, 300);
   return len;
 }
 

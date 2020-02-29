@@ -8,6 +8,7 @@ zephyr_library_sources(
   timer.cpp
   battery.cpp
   bluetooth.cpp
+  buzzer.cpp
 )
 
 # Depend on the public Zephyr interface

@@ -7,6 +7,7 @@ class Timer {
   explicit Timer(std::function<void()> action);
   Timer(const Timer& other) = delete;
   Timer(Timer&& other);
+  const Timer& operator=(Timer&& other);
   ~Timer();
 
   // Caller is responsible for keeping action alive until it's triggered.

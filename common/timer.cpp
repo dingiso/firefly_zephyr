@@ -17,6 +17,12 @@ Timer::Timer(Timer&& other) {
   std::swap(action_, other.action_);
 }
 
+const Timer& Timer::operator=(Timer&& other) {
+  std::swap(timer_, other.timer_);
+  std::swap(action_, other.action_);
+  return *this;
+}
+
 Timer::~Timer() {
   Cancel();
 }

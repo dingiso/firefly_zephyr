@@ -2,6 +2,7 @@
 #include <logging/log.h>
 #include <stddef.h>
 #include <string.h>
+#include <drivers/flash.h>
 #include <sys/byteorder.h>
 #include <sys/printk.h>
 #include <zephyr.h>
@@ -36,6 +37,8 @@ const struct bt_data ad[] = {
 };
 
 RgbLed led;
+
+device* flash_device = device_get_binding(DT_FLASH_DEV_NAME);
 
 /* Radio packet ID, UUID 8ec87064-8865-4eca-82e0-2ea8e45e8221 */
 struct bt_uuid_128 radio_packet_id_characteristic_uuid = BT_UUID_INIT_128(
@@ -75,6 +78,8 @@ template<size_t Offset, size_t Size> ssize_t write_radio_packet(
   }
   ScopedMutexLock l(packet_mutex);
   memcpy(reinterpret_cast<uint8_t*>(&packet) + Offset, buf, len);
+  flash_write_protection_set(flash_device, false);
+  flash_write(flash_device, DT_FLASH_AREA_STORAGE_OFFSET, &packet, sizeof(packet));
   led.SetColorSmooth(packet.color, 1000);
   return len;
 }
@@ -103,6 +108,9 @@ BT_GATT_SERVICE_DEFINE(firefly_service,
 
 void main(void) {
   InitBleAdvertising(ConnectableFastAdvertisingParams());
+
+  flash_read(flash_device, DT_FLASH_AREA_STORAGE_OFFSET, &packet, sizeof(packet));
+  led.SetColorSmooth(packet.color, 1000);
 
   Cc1101 cc1101;
   cc1101.Init();

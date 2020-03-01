@@ -89,8 +89,12 @@ ssize_t write_beep(struct bt_conn *conn,
                            const struct bt_gatt_attr *attr,
                            const void *buf, u16_t len, u16_t offset,
                            u8_t flags) {
+  if (len <= 0) {
+    return BT_GATT_ERR(BT_ATT_ERR_INVALID_OFFSET);
+  }
+  uint8_t volume = *reinterpret_cast<const uint8_t*>(buf);
   LOG_INF("Beep!");
-  buzzer.Beep(3, 600, 300);
+  buzzer.Beep(volume, 600, 300);
   return len;
 }
 

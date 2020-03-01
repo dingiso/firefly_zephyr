@@ -4,6 +4,7 @@
 
 struct Color {
   uint8_t r = 0, g = 0, b = 0;
+  Color() {}
   Color(uint8_t r_, uint8_t g_, uint8_t b_) : r(r_), g(g_), b(b_) {}
 
   bool operator==(const Color& other) { return r == other.r && g == other.g && b == other.b; } ;

@@ -38,11 +38,11 @@ public:
     }
 
     if (p.configure_mode) {
-      background_color_ = Color(p.r_background, p.g_background, p.b_background);
+      background_color_ = p.background_color;
     }
 
     colors_[p.id].timestamp = k_uptime_get();
-    colors_[p.id].color = Color(p.r, p.g, p.b);
+    colors_[p.id].color = p.color;
   }
 
   Color GetColor() const {
@@ -150,7 +150,7 @@ void main(void) {
     for (int ch = 0; ch < 4; ++ch) {
       cc1101.SetChannel(ch);
       if (cc1101.Receive(63, &pkt)) {
-        LOG_DBG("Got packet! ID=%d, R=%d, G=%d, B=%d", pkt.id, pkt.r, pkt.g, pkt.b);
+        LOG_DBG("Got packet! ID=%d, R=%d, G=%d, B=%d", pkt.id, pkt.color.r, pkt.color.g, pkt.color.b);
         log.ProcessRadioPacket(pkt);
       }
     }

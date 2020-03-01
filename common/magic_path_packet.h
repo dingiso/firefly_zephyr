@@ -4,7 +4,7 @@
 
 struct MagicPathRadioPacket {
   uint8_t id;
-  uint8_t r, g, b;
-  uint8_t r_background, g_background, b_background;
+  Color color;
+  Color background_color;
   bool configure_mode;
 } __attribute__((__packed__));

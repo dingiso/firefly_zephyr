@@ -86,19 +86,19 @@ ssize_t read_radio_packet_color(struct bt_conn *conn,
                              const struct bt_gatt_attr *attr,
                              void *buf, u16_t len, u16_t offset) {
   ScopedMutexLock l(packet_mutex);
-  return bt_gatt_attr_read(conn, attr, buf, len, offset, &packet.r, 3);
+  return bt_gatt_attr_read(conn, attr, buf, len, offset, &packet.color, sizeof(packet.color));
 }
 
 ssize_t write_radio_packet_color(struct bt_conn *conn,
                               const struct bt_gatt_attr *attr,
                               const void *buf, u16_t len, u16_t offset,
                               u8_t flags) {
-  if (offset + len > 3) {
+  if (offset + len > sizeof(packet.color)) {
     return BT_GATT_ERR(BT_ATT_ERR_INVALID_OFFSET);
   }
   ScopedMutexLock l(packet_mutex);
-  memcpy(&packet.r, buf, len);
-  led.SetColor({packet.r, packet.g, packet.b});
+  memcpy(&packet.color, buf, len);
+  led.SetColorSmooth(packet.color, 1000);
   return len;
 }
 
@@ -106,18 +106,18 @@ ssize_t read_radio_packet_background_color(struct bt_conn *conn,
                              const struct bt_gatt_attr *attr,
                              void *buf, u16_t len, u16_t offset) {
   ScopedMutexLock l(packet_mutex);
-  return bt_gatt_attr_read(conn, attr, buf, len, offset, &packet.r_background, 3);
+  return bt_gatt_attr_read(conn, attr, buf, len, offset, &packet.background_color, sizeof(packet.background_color));
 }
 
 ssize_t write_radio_packet_background_color(struct bt_conn *conn,
                               const struct bt_gatt_attr *attr,
                               const void *buf, u16_t len, u16_t offset,
                               u8_t flags) {
-  if (offset + len > 3) {
+  if (offset + len > sizeof(packet.background_color)) {
     return BT_GATT_ERR(BT_ATT_ERR_INVALID_OFFSET);
   }
   ScopedMutexLock l(packet_mutex);
-  memcpy(&packet.r_background, buf, len);
+  memcpy(&packet.background_color, buf, len);
 
   return len;
 }

@@ -14,6 +14,7 @@ public:
   RgbLed();
 
   void EnablePowerStabilizer();
+  void DisablePowerStabilizer();
   void SetColor(const Color& color);
   void SetColorSmooth(const Color& color, uint32_t delay_ms);
 private:

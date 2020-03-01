@@ -22,6 +22,10 @@ void RgbLed::EnablePowerStabilizer() {
     DT_ALIAS_LED_EN_GPIOS_PIN, GPIO_OUTPUT_ACTIVE | DT_ALIAS_LED_EN_GPIOS_FLAGS);
 }
 
+void RgbLed::DisablePowerStabilizer() {
+  gpio_pin_set(device_stabilizer_, DT_ALIAS_LED_EN_GPIOS_PIN, 0);
+}
+
 void RgbLed::SetColor(const Color& color) {
   color_ = color;
   target_color_ = color;

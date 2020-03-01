@@ -133,6 +133,8 @@ void main(void) {
   led.EnablePowerStabilizer();
   PacketsLog log;
 
+  atomic_t low_power_pode = 0;
+
   auto t1 = RunEvery([&led, &log](){
     auto c = log.GetColor();
     LOG_DBG("New color is %d %d %d", c.r, c.g, c.b);
@@ -141,12 +143,23 @@ void main(void) {
 
   auto t2 = RunEvery([&](){
     auto v = Battery::GetInstance().GetVoltage();
+    if (v == 0) return; // Workaround for the first measurement
     LOG_INF("Adc result: %d", v);
     SetBatteryLevel(v / 30);
+    if (v < 2650) {
+      LOG_WRN("Entering low power mode");
+      atomic_set(&low_power_pode, 1);
+      t1.Cancel();
+      led.SetColor({0, 0, 0});
+      led.DisablePowerStabilizer();
+      cc1101.EnterPwrDown();
+    }
   }, 5000);
 
   while (true) {
     MagicPathRadioPacket pkt;
+    if (atomic_get(&low_power_pode)) k_sleep(K_FOREVER);
+
     for (int ch = 0; ch < 4; ++ch) {
       cc1101.SetChannel(ch);
       if (cc1101.Receive(63, &pkt)) {

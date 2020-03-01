@@ -62,83 +62,25 @@ struct bt_uuid_128 radio_packet_config_mode_characteristic_uuid = BT_UUID_INIT_1
     0x21, 0x82, 0x5e, 0xe4, 0xa8, 0x2e, 0xe0, 0x82,
     0xca, 0x4e, 0x65, 0x88, 0x67, 0x70, 0xc8, 0x8e);
 
-ssize_t read_radio_packet_id(struct bt_conn *conn,
-                             const struct bt_gatt_attr *attr,
-                             void *buf, u16_t len, u16_t offset) {
+template<size_t Offset, size_t Size> ssize_t read_radio_packet(
+  struct bt_conn *conn,
+  const struct bt_gatt_attr *attr,
+  void *buf, u16_t len, u16_t offset) {
   ScopedMutexLock l(packet_mutex);
-  return bt_gatt_attr_read(conn, attr, buf, len, offset, &packet.id, sizeof(packet.id));
+  return bt_gatt_attr_read(conn, attr, buf, len, offset, reinterpret_cast<uint8_t*>(&packet) + Offset, Size);
 }
 
-ssize_t write_radio_packet_id(struct bt_conn *conn,
-                              const struct bt_gatt_attr *attr,
-                              const void *buf, u16_t len, u16_t offset,
-                              u8_t flags) {
-  if (offset + len > sizeof(packet.id)) {
+template<size_t Offset, size_t Size> ssize_t write_radio_packet(
+  struct bt_conn *conn,
+  const struct bt_gatt_attr *attr,
+  const void *buf, u16_t len, u16_t offset,
+  u8_t flags) {
+  if (offset + len > Size) {
     return BT_GATT_ERR(BT_ATT_ERR_INVALID_OFFSET);
   }
   ScopedMutexLock l(packet_mutex);
-  memcpy(&packet.id, buf, len);
-
-  return len;
-}
-
-ssize_t read_radio_packet_color(struct bt_conn *conn,
-                             const struct bt_gatt_attr *attr,
-                             void *buf, u16_t len, u16_t offset) {
-  ScopedMutexLock l(packet_mutex);
-  return bt_gatt_attr_read(conn, attr, buf, len, offset, &packet.color, sizeof(packet.color));
-}
-
-ssize_t write_radio_packet_color(struct bt_conn *conn,
-                              const struct bt_gatt_attr *attr,
-                              const void *buf, u16_t len, u16_t offset,
-                              u8_t flags) {
-  if (offset + len > sizeof(packet.color)) {
-    return BT_GATT_ERR(BT_ATT_ERR_INVALID_OFFSET);
-  }
-  ScopedMutexLock l(packet_mutex);
-  memcpy(&packet.color, buf, len);
+  memcpy(reinterpret_cast<uint8_t*>(&packet) + Offset, buf, len);
   led.SetColorSmooth(packet.color, 1000);
-  return len;
-}
-
-ssize_t read_radio_packet_background_color(struct bt_conn *conn,
-                             const struct bt_gatt_attr *attr,
-                             void *buf, u16_t len, u16_t offset) {
-  ScopedMutexLock l(packet_mutex);
-  return bt_gatt_attr_read(conn, attr, buf, len, offset, &packet.background_color, sizeof(packet.background_color));
-}
-
-ssize_t write_radio_packet_background_color(struct bt_conn *conn,
-                              const struct bt_gatt_attr *attr,
-                              const void *buf, u16_t len, u16_t offset,
-                              u8_t flags) {
-  if (offset + len > sizeof(packet.background_color)) {
-    return BT_GATT_ERR(BT_ATT_ERR_INVALID_OFFSET);
-  }
-  ScopedMutexLock l(packet_mutex);
-  memcpy(&packet.background_color, buf, len);
-
-  return len;
-}
-
-ssize_t read_radio_packet_config_mode(struct bt_conn *conn,
-                             const struct bt_gatt_attr *attr,
-                             void *buf, u16_t len, u16_t offset) {
-  ScopedMutexLock l(packet_mutex);
-  return bt_gatt_attr_read(conn, attr, buf, len, offset, &packet.configure_mode, 1);
-}
-
-ssize_t write_radio_packet_config_mode(struct bt_conn *conn,
-                              const struct bt_gatt_attr *attr,
-                              const void *buf, u16_t len, u16_t offset,
-                              u8_t flags) {
-  if (offset + len > sizeof(packet.configure_mode)) {
-    return BT_GATT_ERR(BT_ATT_ERR_INVALID_OFFSET);
-  }
-  ScopedMutexLock l(packet_mutex);
-  memcpy(&packet.configure_mode, buf, len);
-
   return len;
 }
 
@@ -147,19 +89,19 @@ BT_GATT_SERVICE_DEFINE(firefly_service,
                        BT_GATT_CHARACTERISTIC(&radio_packet_id_characteristic_uuid.uuid,
                                               BT_GATT_CHRC_READ | BT_GATT_CHRC_WRITE,
                                               BT_GATT_PERM_READ | BT_GATT_PERM_WRITE,
-                                              read_radio_packet_id, write_radio_packet_id, nullptr),
+                                              (read_radio_packet<0, 1>), (write_radio_packet<0, 1>), nullptr),
                        BT_GATT_CHARACTERISTIC(&radio_packet_color_characteristic_uuid.uuid,
                                               BT_GATT_CHRC_READ | BT_GATT_CHRC_WRITE,
                                               BT_GATT_PERM_READ | BT_GATT_PERM_WRITE,
-                                              read_radio_packet_color, write_radio_packet_color, nullptr),
+                                              (read_radio_packet<1, 3>), (write_radio_packet<1, 3>), nullptr),
                        BT_GATT_CHARACTERISTIC(&radio_packet_background_color_characteristic_uuid.uuid,
                                               BT_GATT_CHRC_READ | BT_GATT_CHRC_WRITE,
                                               BT_GATT_PERM_READ | BT_GATT_PERM_WRITE,
-                                              read_radio_packet_background_color, write_radio_packet_background_color, nullptr),
+                                              (read_radio_packet<4, 3>), (write_radio_packet<4, 3>), nullptr),
                        BT_GATT_CHARACTERISTIC(&radio_packet_config_mode_characteristic_uuid.uuid,
                                               BT_GATT_CHRC_READ | BT_GATT_CHRC_WRITE,
                                               BT_GATT_PERM_READ | BT_GATT_PERM_WRITE,
-                                              read_radio_packet_config_mode, write_radio_packet_config_mode, nullptr),
+                                              (read_radio_packet<7, 1>), (write_radio_packet<7, 1>), nullptr),
 );
 
 } // namespace

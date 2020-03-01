@@ -21,6 +21,7 @@ LOG_MODULE_REGISTER();
 
 namespace {
 Buzzer buzzer;
+RgbLed led;
 }
 
 struct ColorAndTimestamp {
@@ -98,6 +99,13 @@ ssize_t write_blink(struct bt_conn *conn,
                            const void *buf, u16_t len, u16_t offset,
                            u8_t flags) {
   LOG_INF("Blink!");
+  led.EnablePowerStabilizer();
+  for (int i = 0; i < 3; ++i) {
+    led.SetColor({255, 255, 255});
+    k_sleep(100);
+    led.SetColor({0, 0, 0});
+    k_sleep(100);
+  }
   return len;
 }
 
@@ -124,13 +132,12 @@ void main(void) {
   cc1101.Init();
   cc1101.SetChannel(1);
 
-  RgbLed led;
   led.EnablePowerStabilizer();
   PacketsLog log;
 
   atomic_t low_power_pode = 0;
 
-  auto t1 = RunEvery([&led, &log](){
+  auto t1 = RunEvery([&log](){
     auto c = log.GetColor();
     LOG_DBG("New color is %d %d %d", c.r, c.g, c.b);
     led.SetColorSmooth(c, 1000);

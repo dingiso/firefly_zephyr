@@ -1,11 +1,12 @@
 {
-  "configurations": [
-    {
-      "name": "Mac",
-      "intelliSenseMode": "${default}",
-      "compilerPath": "arm-none-eabi-g++",
-      "compileCommands": "build/compile_commands.json"
-    }
-  ],
-  "version": 4
+    "configurations": [
+        {
+            "name": "Mac",
+            "intelliSenseMode": "${default}",
+            "compilerPath": "arm-none-eabi-g++",
+            "compileCommands": "build/compile_commands.json",
+            "configurationProvider": "vector-of-bool.cmake-tools"
+        }
+    ],
+    "version": 4
 }

@@ -15,6 +15,10 @@ config PWM_0
 	default y
 	depends on PWM
 
+config PWM_1
+	default y
+	depends on PWM
+
 if SPI
 
 config SPI_1

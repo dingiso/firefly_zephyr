@@ -31,9 +31,12 @@
 		pwm_led_b: pwm_led_b {
 			pwms = <&pwm0 19>;
 		};
+	};
 
+	pwmbuzzer {
+		compatible = "pwm-leds";
 		buzzer: buzzer {
-			pwms = <&pwm0 30>;
+			pwms = <&pwm1 30>;
 		};
 	};
 
@@ -114,16 +117,20 @@
 	// Needs power on 11
 };
 
+// LEDs
 &pwm0 {
 	status = "okay";
-	// LEDs
 	ch0-pin = <17>;
 	ch0-inverted;
 	ch1-pin = <20>;
 	ch1-inverted;
 	ch2-pin = <19>;
 	ch2-inverted;
-	// Buzzer
+};
+
+// Buzzer
+&pwm1 {
+	status = "okay";
 	ch3-pin = <30>;
 };
 

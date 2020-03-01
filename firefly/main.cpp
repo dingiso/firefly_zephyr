@@ -146,7 +146,7 @@ void main(void) {
     if (v == 0) return; // Workaround for the first measurement
     LOG_INF("Adc result: %d", v);
     SetBatteryLevel(v / 30);
-    if (v < 2650) {
+    if (v < 30 * 80) {
       LOG_WRN("Entering low power mode");
       atomic_set(&low_power_pode, 1);
       t1.Cancel();

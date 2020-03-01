@@ -8,10 +8,13 @@
 #include <logging/log.h>
 LOG_MODULE_DECLARE();
 
+bt_uuid_128 firefly_service_uuid = BT_UUID_INIT_128(
+    0x21, 0x82, 0x5e, 0xe4, 0xa8, 0x2e, 0xe0, 0x82,
+    0xca, 0x4e, 0x65, 0x88, 0x60, 0x70, 0xc8, 0x8e);
+
 static const bt_data ad[] = {
     BT_DATA_BYTES(BT_DATA_FLAGS, (BT_LE_AD_GENERAL | BT_LE_AD_NO_BREDR)),
-    BT_DATA_BYTES(BT_DATA_UUID16_ALL,
-                  0x0f, 0x18), /* Battery Service */
+    BT_DATA(BT_DATA_UUID128_SOME, firefly_service_uuid.val, sizeof(firefly_service_uuid.val))
 };
 
 bt_le_adv_param ConnectableSlowAdvertisingParams() {

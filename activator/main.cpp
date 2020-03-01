@@ -37,11 +37,6 @@ const struct bt_data ad[] = {
 
 RgbLed led;
 
-/* Service UUID 8ec87060-8865-4eca-82e0-2ea8e45e8221 */
-struct bt_uuid_128 firefly_service_uuid = BT_UUID_INIT_128(
-    0x21, 0x82, 0x5e, 0xe4, 0xa8, 0x2e, 0xe0, 0x82,
-    0xca, 0x4e, 0x65, 0x88, 0x60, 0x70, 0xc8, 0x8e);
-
 /* Radio packet ID, UUID 8ec87064-8865-4eca-82e0-2ea8e45e8221 */
 struct bt_uuid_128 radio_packet_id_characteristic_uuid = BT_UUID_INIT_128(
     0x21, 0x82, 0x5e, 0xe4, 0xa8, 0x2e, 0xe0, 0x82,

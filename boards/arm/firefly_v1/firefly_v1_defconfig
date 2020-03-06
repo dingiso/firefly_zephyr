@@ -17,7 +17,7 @@ CONFIG_UART_0_NRF_UART=y
 # enable console and logging via RTT and UART
 CONFIG_LOG=y
 CONFIG_CONSOLE=y
-CONFIG_UART_CONSOLE=n
+CONFIG_UART_CONSOLE=y
 CONFIG_RTT_CONSOLE=y
 
 # Enable SPI to be able to communicate to the radio chip (cc1101).

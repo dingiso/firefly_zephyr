@@ -48,4 +48,7 @@ void test_main(void) {
 									 ztest_unit_test(Cc1101Test::CanTransmitSomething)
   );
   ztest_run_test_suite(smoke_test);
+	// Flash the console. For some reason it doesn't happen automatically.
+	printk("\n\n\n\n\n");
+	k_sleep(10);
 }

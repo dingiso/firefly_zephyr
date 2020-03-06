@@ -17,7 +17,13 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 add_subdirectory(../common common)
 
-target_sources(app PRIVATE
-  main.cpp
+target_sources(app PRIVATE main.cpp)
+target_link_libraries(app PRIVATE
+  cc1101
+  color
+  timer
+  battery
+  bluetooth
+  buzzer
+  rgb_led
 )
-target_link_libraries(app PRIVATE common_libraries)

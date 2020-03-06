@@ -13,6 +13,8 @@
 #include "battery.h"
 #include "buzzer.h"
 #include "cc1101.h"
+#include "timer.h"
+#include "color.h"
 #include "rgb_led.h"
 #include "bluetooth.h"
 #include "magic_path_packet.h"

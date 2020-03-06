@@ -33,7 +33,7 @@ class Cc1101 {
 
   template <typename RadioPacketT>
   void Transmit(RadioPacketT& packet) {
-    SetPktSize(sizeof(RadioPacketT));
+    SetPacketSize(sizeof(RadioPacketT));
     Recalibrate();
     EnterTX();
     WriteTX(packet);
@@ -44,7 +44,7 @@ class Cc1101 {
   bool Receive(uint32_t timeout_ms, RadioPacketT* result) {
     LOG_MODULE_DECLARE();
 
-    SetPktSize(sizeof(RadioPacketT));
+    SetPacketSize(sizeof(RadioPacketT));
     Recalibrate();
     FlushRxFIFO();
     EnterRX();
@@ -59,6 +59,8 @@ class Cc1101 {
   void EnterPwrDown() { WriteStrobe(CC_SPWD); }
 
  private:
+  friend void Cc1101Test();
+
   // Sends a single-byte instruction to the CC1101.
   // See documentation of instructions in datasheet, p.32,
   // 10.4 Command Strobes
@@ -148,6 +150,7 @@ class Cc1101 {
   void EnterIdle() { WriteStrobe(CC_SIDLE); }
   void FlushRxFIFO() { WriteStrobe(CC_SFRX); }
   void SetTxPower(uint8_t APwr) { WriteConfigurationRegister(CC_PATABLE, APwr); }
-  void SetPktSize(uint8_t ASize) { WriteConfigurationRegister(CC_PKTLEN, ASize); }
+  void SetPacketSize(uint8_t ASize) { WriteConfigurationRegister(CC_PKTLEN, ASize); }
+  uint8_t GetPacketSize() { return ReadRegister(CC_PKTLEN); }
   void Recalibrate();
 };

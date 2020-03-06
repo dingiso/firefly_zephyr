@@ -59,7 +59,7 @@ class Cc1101 {
   void EnterPwrDown() { WriteStrobe(CC_SPWD); }
 
  private:
-  friend void Cc1101Test();
+  friend class Cc1101Test;
 
   // Sends a single-byte instruction to the CC1101.
   // See documentation of instructions in datasheet, p.32,

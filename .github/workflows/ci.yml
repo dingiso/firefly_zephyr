@@ -29,3 +29,8 @@ jobs:
         with:
           name: activator.hex
           path: ./build/zephyr/zephyr.hex
+      - run: west build smoke_test --pristine
+      - uses: actions/upload-artifact@v1
+        with:
+          name: smoke_test.hex
+          path: ./build/zephyr/zephyr.hex

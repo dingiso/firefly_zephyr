@@ -21,6 +21,7 @@
 
 LOG_MODULE_REGISTER();
 
+
 namespace {
 Buzzer buzzer;
 RgbLed led;
@@ -145,7 +146,7 @@ void main(void) {
     led.SetColorSmooth(c, 1000);
   }, 1000);
 
-  auto t2 = RunEvery([&](){
+  auto t2 = RunEvery([&cc1101, &low_power_pode, &t1](){
     auto v = Battery::GetInstance().GetVoltage();
     if (v == 0) return; // Workaround for the first measurement
     LOG_INF("Adc result: %d", v);

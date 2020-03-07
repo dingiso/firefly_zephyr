@@ -118,7 +118,7 @@ void main(void) {
 
   led.EnablePowerStabilizer();
 
-  auto t2 = RunEvery([&](){
+  auto t2 = RunEvery([](){
     auto v = Battery::GetInstance().GetVoltage();
     SetBatteryLevel(v / 30);
   }, 5000);

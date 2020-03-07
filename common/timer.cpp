@@ -27,17 +27,15 @@ Timer::~Timer() {
   Cancel();
 }
 
-Timer& Timer::RunDelayed(uint32_t delay_ms) {
+void Timer::RunDelayed(uint32_t delay_ms) {
   Cancel();
   k_timer_start(&timer_, delay_ms, 0);
-  return *this;
 }
 
 
-Timer& Timer::RunEvery(uint32_t period_ms) {
+void Timer::RunEvery(uint32_t period_ms) {
   Cancel();
   k_timer_start(&timer_, period_ms, period_ms);
-  return *this;
 }
 
 void Timer::Cancel() {

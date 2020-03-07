@@ -149,8 +149,9 @@ void main(void) {
     auto v = Battery::GetInstance().GetVoltage();
     if (v == 0) return; // Workaround for the first measurement
     LOG_INF("Adc result: %d", v);
-    SetBatteryLevel(v / 30);
-    if (v < 30 * 80) {
+    const uint8_t level = std::clamp(v / 3 - 790, 0, 100);
+    SetBatteryLevel(level);
+    if (level < 10) {
       LOG_WRN("Entering low power mode");
       atomic_set(&low_power_pode, 1);
       t1.Cancel();

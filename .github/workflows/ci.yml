@@ -34,15 +34,20 @@ jobs:
         with:
           name: activator.hex
           path: activator.hex
-      - run: west build smoke_test --pristine && mv ./build/zephyr/zephyr.hex smoke_test.hex
+      - run: west build smoke_test --pristine --board firefly_v1 && mv ./build/zephyr/zephyr.hex smoke_test_firefly.hex
       - uses: actions/upload-artifact@v1
         with:
-          name: smoke_test.hex
-          path: smoke_test.hex
+          name: smoke_test_firefly.hex
+          path: smoke_test_firefly.hex
+      - run: west build smoke_test --pristine --board locket && mv ./build/zephyr/zephyr.hex smoke_test_locket.hex
+      - uses: actions/upload-artifact@v1
+        with:
+          name: smoke_test_locket.hex
+          path: smoke_test_locket.hex
       - uses: ncipollo/release-action@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          artifacts: firefly.hex,activator.hex,smoke_test.hex
+          artifacts: firefly.hex,activator.hex,smoke_test.hex,smoke_test_firefly.hex,smoke_test_locket.hex
           bodyFile: RELEASE.md
           token: ${{ secrets.GITHUB_TOKEN }}
   hardware_test:

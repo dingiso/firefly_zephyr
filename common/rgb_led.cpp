@@ -4,7 +4,7 @@
 #include <drivers/gpio.h>
 
 namespace {
-const uint8_t kFrequencyHertz = 100;
+const uint32_t kFrequencyHertz = 1000;
 const uint32_t kUsecPerSecond = 1000 * 1000;
 const uint32_t kCyclePeriodUs = kUsecPerSecond / kFrequencyHertz;
 
@@ -40,11 +40,11 @@ const Color& RgbLed::GetColor() const {
 
 void RgbLed::ActuateColor() {
   pwm_pin_set_usec(device_r_, DT_PWMS_CHANNEL(DT_ALIAS(led_r)),
-    kCyclePeriodUs, colorComponentToPulseWidth(color_.r), /*flags=*/0u);
+    kCyclePeriodUs, colorComponentToPulseWidth(color_.r), DT_PWMS_FLAGS(DT_ALIAS(led_r)));
   pwm_pin_set_usec(device_g_, DT_PWMS_CHANNEL(DT_ALIAS(led_g)),
-    kCyclePeriodUs, colorComponentToPulseWidth(color_.g), /*flags=*/0u);
+    kCyclePeriodUs, colorComponentToPulseWidth(color_.g), DT_PWMS_FLAGS(DT_ALIAS(led_g)));
   pwm_pin_set_usec(device_b_, DT_PWMS_CHANNEL(DT_ALIAS(led_b)),
-    kCyclePeriodUs, colorComponentToPulseWidth(color_.b), /*flags=*/0u);
+    kCyclePeriodUs, colorComponentToPulseWidth(color_.b), DT_PWMS_FLAGS(DT_ALIAS(led_b)));
 }
 
 void RgbLed::SetColorSmooth(const Color& color, uint32_t delay_ms) {

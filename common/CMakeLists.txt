@@ -14,7 +14,10 @@ custom_library(cc1101 cc1101.cpp)
 custom_library(color color.cpp)
 custom_library(timer timer.cpp)
 custom_library(battery battery.cpp)
-custom_library(bluetooth bluetooth.cpp)
+
+if(CONFIG_BT)
+  custom_library(bluetooth bluetooth.cpp)
+endif()
 
 custom_library(buzzer buzzer.cpp)
 target_link_libraries(buzzer PRIVATE timer)

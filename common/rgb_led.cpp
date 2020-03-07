@@ -34,6 +34,10 @@ void RgbLed::SetColor(const Color& color) {
   ActuateColor();
 }
 
+const Color& RgbLed::GetColor() const {
+  return color_;
+}
+
 void RgbLed::ActuateColor() {
   pwm_pin_set_usec(device_, DT_ALIAS_LED_R_PWMS_CHANNEL,
     kCyclePeriodUs, colorComponentToPulseWidth(color_.r), /*flags=*/0u);

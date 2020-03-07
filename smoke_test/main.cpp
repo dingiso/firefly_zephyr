@@ -8,6 +8,7 @@
 #include <ztest.h>
 
 #include "cc1101.h"
+#include "rgb_led.h"
 
 void test_two_plus_two_is_four(void) {
   zassert_equal(2 + 2, 4, "2 + 2 is not 4");
@@ -40,12 +41,36 @@ class Cc1101Test {
 
 Cc1101 Cc1101Test::cc1101;
 
+class RgbLedTest {
+	static RgbLed led;
+public:
+	static void InstantColorTransition() {
+		const Color c = {255, 0, 0};
+		led.SetColor(c);
+		zassert_equal(led.GetColor(), c, "");
+	}
+
+	static void SmoothColorTransition() {
+		led.SetColor({0, 0, 0});
+		led.SetColorSmooth({254, 0, 0}, 1000);
+		zassert_equal(led.GetColor(), Color(0, 0, 0), "");
+		k_sleep(550);
+		zassert_within(led.GetColor().r, 127, 10, "");
+		k_sleep(550);
+		zassert_equal(led.GetColor().r, 254, "");
+	}
+};
+
+RgbLed RgbLedTest::led;
+
 void test_main(void) {
   ztest_test_suite(smoke_test,
                    ztest_unit_test(test_two_plus_two_is_four),
 									 ztest_unit_test(Cc1101Test::CanInit),
 									 ztest_unit_test(Cc1101Test::CanSetPacketSize),
-									 ztest_unit_test(Cc1101Test::CanTransmitSomething)
+									 ztest_unit_test(Cc1101Test::CanTransmitSomething),
+									 ztest_unit_test(RgbLedTest::InstantColorTransition),
+									 ztest_unit_test(RgbLedTest::SmoothColorTransition)
   );
   ztest_run_test_suite(smoke_test);
 	// Flash the console. For some reason it doesn't happen automatically.

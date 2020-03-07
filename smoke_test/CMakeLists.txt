@@ -20,4 +20,5 @@ add_subdirectory(../common common)
 target_sources(app PRIVATE main.cpp)
 target_link_libraries(app PRIVATE
   cc1101
+  rgb_led
 )

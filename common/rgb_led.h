@@ -16,6 +16,7 @@ public:
   void EnablePowerStabilizer();
   void DisablePowerStabilizer();
   void SetColor(const Color& color);
+  const Color& GetColor() const;
   void SetColorSmooth(const Color& color, uint32_t delay_ms);
 private:
   // Changes color of the physical LED to the color_.

@@ -11,8 +11,8 @@ k_sem Cc1101::gd_ready_;
 gpio_callback Cc1101::gdo0_callback_data_;
 
 spi_cs_control Cc1101::spi_cs_cfg_ = {
-    .gpio_dev = device_get_binding(DT_ALIAS_CC1101_GDO0_GPIOS_CONTROLLER),
-    .gpio_pin = DT_ALIAS_CC1101_GDO0_GPIOS_PIN,
+    .gpio_dev = device_get_binding(DT_ALIAS_CC1101_SPI_CS_GPIOS_CONTROLLER),
+    .gpio_pin = DT_ALIAS_CC1101_SPI_CS_GPIOS_PIN,
     .delay = 0};
 
 spi_config Cc1101::spi_config_ = {

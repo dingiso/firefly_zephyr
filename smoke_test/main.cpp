@@ -9,6 +9,7 @@
 
 #include "cc1101.h"
 #include "rgb_led.h"
+#include "timer.h"
 
 void test_two_plus_two_is_four(void) {
   zassert_equal(2 + 2, 4, "2 + 2 is not 4");
@@ -63,6 +64,35 @@ public:
 
 RgbLed RgbLedTest::led;
 
+class TimerTest {
+ public:
+	static void RunsDelayed() {
+		uint8_t counter = 0;
+		const auto t = RunDelayed([&](){ ++counter; }, 30);
+		k_sleep(10);
+		zassert_equal(counter, 0, "");
+		k_sleep(10);
+		zassert_equal(counter, 0, "");
+		k_sleep(10);
+		zassert_equal(counter, 1, "");
+		k_sleep(10);
+		zassert_equal(counter, 1, "");
+	}
+
+	static void RunsEvery() {
+		uint8_t counter = 0;
+		const auto t = RunEvery([&](){ ++counter; }, 10);
+		k_sleep(10);
+		zassert_equal(counter, 1, "");
+		k_sleep(10);
+		zassert_equal(counter, 2, "");
+		k_sleep(10);
+		zassert_equal(counter, 3, "");
+		k_sleep(10);
+		zassert_equal(counter, 4, "");
+	}
+};
+
 Timer flusher([]{ printk("                \n"); });
 
 void test_main(void) {
@@ -72,7 +102,9 @@ void test_main(void) {
 									 ztest_unit_test(Cc1101Test::CanSetPacketSize),
 									 ztest_unit_test(Cc1101Test::CanTransmitSomething),
 									 ztest_unit_test(RgbLedTest::InstantColorTransition),
-									 ztest_unit_test(RgbLedTest::SmoothColorTransition)
+									 ztest_unit_test(RgbLedTest::SmoothColorTransition),
+									 ztest_unit_test(TimerTest::RunsDelayed),
+									 ztest_unit_test(TimerTest::RunsEvery)
   );
   ztest_run_test_suite(smoke_test);
 	// Flash the console. For some reason it doesn't happen automatically.

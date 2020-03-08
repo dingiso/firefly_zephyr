@@ -63,6 +63,8 @@ public:
 
 RgbLed RgbLedTest::led;
 
+Timer flusher([]{ printk("                \n"); });
+
 void test_main(void) {
   ztest_test_suite(smoke_test,
                    ztest_unit_test(test_two_plus_two_is_four),
@@ -74,6 +76,5 @@ void test_main(void) {
   );
   ztest_run_test_suite(smoke_test);
 	// Flash the console. For some reason it doesn't happen automatically.
-	printk("\n\n\n\n\n");
-	k_sleep(10);
+	flusher.RunDelayed(100);
 }

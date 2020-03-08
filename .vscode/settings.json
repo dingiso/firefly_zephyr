@@ -3,5 +3,6 @@
     "build/": true,
   },
   "cmake.configureOnOpen": true,
-  "cmake.sourceDirectory": "${workspaceFolder}/firefly"
+  "cmake.sourceDirectory": "${workspaceFolder}/firefly",
+  "terminal.integrated.shell.windows": "C:\\Program Files\\Git\\bin\\bash.exe",
 }

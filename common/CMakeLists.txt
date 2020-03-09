@@ -12,7 +12,10 @@ endfunction()
 
 custom_library(cc1101 cc1101.cpp)
 custom_library(color color.cpp)
+
 custom_library(timer timer.cpp)
+target_link_libraries(timer PRIVATE kernel)
+
 custom_library(battery battery.cpp)
 
 if(CONFIG_BT)

@@ -2,7 +2,6 @@
 #include <logging/log.h>
 #include <stddef.h>
 #include <string.h>
-#include <drivers/flash.h>
 #include <sys/byteorder.h>
 #include <sys/printk.h>
 #include <zephyr.h>
@@ -19,6 +18,7 @@
 #include "cc1101.h"
 #include "timer.h"
 #include "rgb_led.h"
+#include "eeprom.h"
 #include "magic_path_packet.h"
 #include "scoped_mutex_lock.h"
 
@@ -78,9 +78,8 @@ template<size_t Offset, size_t Size> ssize_t write_radio_packet(
   }
   ScopedMutexLock l(packet_mutex);
   memcpy(reinterpret_cast<uint8_t*>(&packet) + Offset, buf, len);
-  flash_write_protection_set(flash_device, false);
-  flash_write(flash_device, DT_FLASH_AREA_STORAGE_OFFSET, &packet, sizeof(packet));
   led.SetColorSmooth(packet.color, 1000);
+  eeprom::Write(packet, 0);
   return len;
 }
 
@@ -109,7 +108,9 @@ BT_GATT_SERVICE_DEFINE(firefly_service,
 void main(void) {
   InitBleAdvertising(ConnectableFastAdvertisingParams());
 
-  flash_read(flash_device, DT_FLASH_AREA_STORAGE_OFFSET, &packet, sizeof(packet));
+  eeprom::EnablePower();
+  packet = eeprom::Read<MagicPathRadioPacket>(0);
+
   led.SetColorSmooth(packet.color, 1000);
 
   Cc1101 cc1101;

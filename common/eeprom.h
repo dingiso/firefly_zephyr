@@ -1,3 +1,5 @@
+#pragma once
+
 #include <cstdint>
 #include <device.h>
 #include <drivers/eeprom.h>

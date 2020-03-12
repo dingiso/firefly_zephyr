@@ -18,17 +18,16 @@
 #include "cc1101.h"
 #include "timer.h"
 #include "rgb_led.h"
-#include "eeprom.h"
+#include "persistent.h"
 #include "magic_path_packet.h"
 #include "scoped_mutex_lock.h"
-
 
 LOG_MODULE_REGISTER();
 
 namespace {
 
 K_MUTEX_DEFINE(packet_mutex);
-MagicPathRadioPacket packet = {}; // Guarded by packet_mutex
+Persistent<MagicPathRadioPacket> packet(0x00000011); // Guarded by packet_mutex
 
 const struct bt_data ad[] = {
     BT_DATA_BYTES(BT_DATA_FLAGS, (BT_LE_AD_GENERAL | BT_LE_AD_NO_BREDR)),
@@ -65,7 +64,7 @@ template<size_t Offset, size_t Size> ssize_t read_radio_packet(
   const struct bt_gatt_attr *attr,
   void *buf, u16_t len, u16_t offset) {
   ScopedMutexLock l(packet_mutex);
-  return bt_gatt_attr_read(conn, attr, buf, len, offset, reinterpret_cast<uint8_t*>(&packet) + Offset, Size);
+  return bt_gatt_attr_read(conn, attr, buf, len, offset, reinterpret_cast<uint8_t*>(&(packet.value())) + Offset, Size);
 }
 
 template<size_t Offset, size_t Size> ssize_t write_radio_packet(
@@ -77,9 +76,9 @@ template<size_t Offset, size_t Size> ssize_t write_radio_packet(
     return BT_GATT_ERR(BT_ATT_ERR_INVALID_OFFSET);
   }
   ScopedMutexLock l(packet_mutex);
-  memcpy(reinterpret_cast<uint8_t*>(&packet) + Offset, buf, len);
-  led.SetColorSmooth(packet.color, 1000);
-  eeprom::Write(packet, 0);
+  memcpy(reinterpret_cast<uint8_t*>(&(packet.value())) + Offset, buf, len);
+  led.SetColorSmooth(packet.value().color, 1000);
+  packet.Save();
   return len;
 }
 
@@ -108,10 +107,14 @@ BT_GATT_SERVICE_DEFINE(firefly_service,
 void main(void) {
   InitBleAdvertising(ConnectableFastAdvertisingParams());
 
-  eeprom::EnablePower();
-  packet = eeprom::Read<MagicPathRadioPacket>(0);
+  packet.LoadOrInit({
+    .id = 1,
+    .color = {0, 255, 0},
+    .background_color = {0, 255, 0},
+    .configure_mode = false
+  });
 
-  led.SetColorSmooth(packet.color, 1000);
+  led.SetColorSmooth(packet.value().color, 1000);
 
   Cc1101 cc1101;
   cc1101.Init();

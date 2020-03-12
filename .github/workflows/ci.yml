@@ -19,18 +19,18 @@ jobs:
       - run: cd ./zephyrproject/zephyr && source zephyr-env.sh && cd ../..
       - run: west manifest --validate
       - run: west --help
-      - run: west build firefly --pristine
+      - run: west build firefly --pristine && mv ./build/zephyr/{zephyr,firefly}.hex
       - uses: actions/upload-artifact@v1
         with:
           name: firefly.hex
-          path: ./build/zephyr/zephyr.hex
-      - run: west build activator --pristine
+          path: ./build/zephyr/firefly.hex
+      - run: west build activator --pristine && mv ./build/zephyr/{zephyr,activator}.hex
       - uses: actions/upload-artifact@v1
         with:
           name: activator.hex
-          path: ./build/zephyr/zephyr.hex
-      - run: west build smoke_test --pristine
+          path: ./build/zephyr/activator.hex
+      - run: west build smoke_test --pristine && mv ./build/zephyr/{zephyr,smoke_test}.hex
       - uses: actions/upload-artifact@v1
         with:
           name: smoke_test.hex
-          path: ./build/zephyr/zephyr.hex
+          path: ./build/zephyr/smoke_test.hex

@@ -10,6 +10,7 @@
 #include "cc1101.h"
 #include "rgb_led.h"
 #include "timer.h"
+#include "eeprom.h"
 
 void test_two_plus_two_is_four(void) {
   zassert_equal(2 + 2, 4, "2 + 2 is not 4");
@@ -93,6 +94,22 @@ class TimerTest {
 	}
 };
 
+class EepromTest {
+ public:
+	static void CanReadWritten() {
+		eeprom::EnablePower();
+
+		for (int i = 0; i < 200; ++i) {
+			uint16_t in = sys_rand32_get() % 32768 + 23;
+			uint32_t address = (2 * sys_rand32_get()) % (31 * 1024);
+			eeprom::Write(in, address);
+			k_sleep(5);
+			uint16_t out = eeprom::Read<uint16_t>(address);
+			zassert_equal(in, out, "%d != %d, iteration %d", in, out, i);
+		}
+	}
+};
+
 Timer flusher([]{ printk("                \n"); });
 
 void test_main(void) {
@@ -104,7 +121,8 @@ void test_main(void) {
 									 ztest_unit_test(RgbLedTest::InstantColorTransition),
 									 ztest_unit_test(RgbLedTest::SmoothColorTransition),
 									 ztest_unit_test(TimerTest::RunsDelayed),
-									 ztest_unit_test(TimerTest::RunsEvery)
+									 ztest_unit_test(TimerTest::RunsEvery),
+									 ztest_unit_test(EepromTest::CanReadWritten)
   );
   ztest_run_test_suite(smoke_test);
 	// Flash the console. For some reason it doesn't happen automatically.

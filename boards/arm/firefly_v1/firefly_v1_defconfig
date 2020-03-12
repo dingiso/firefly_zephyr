@@ -23,6 +23,11 @@ CONFIG_RTT_CONSOLE=y
 # Enable SPI to be able to communicate to the radio chip (cc1101).
 CONFIG_SPI=y
 
+# I2C is used by eeprom and pill
+CONFIG_I2C=y
+CONFIG_EEPROM=y
+CONFIG_EEPROM_AT24=y
+
 # Required to have smooth LED control
 CONFIG_PWM=y
 

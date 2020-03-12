@@ -3,6 +3,7 @@
 
 / {
 	// See hardware info, spec and blueprints here https://github.com/Kreyl/firefly_hw
+	// Specifically, https://github.com/Kreyl/Firefly_hw/blob/master/PCB/Gerber/FireFly_SCH.pdf
 	model = "Firefly board";
 	compatible = "nordic,nrf52832-qfaa", "nordic,nrf52832";
 
@@ -46,6 +47,11 @@
 			gpios = <&gpio0 22 GPIO_ACTIVE_HIGH>;
 			label = "LED voltage stabilizer";
 		};
+
+		eeprom_en: eeprom_en {
+			gpios = <&gpio0 16 GPIO_ACTIVE_HIGH>;
+			label = "EEPROM power";
+		};
 	};
 
 	buttons {
@@ -76,6 +82,9 @@
 		led-en = &led_en;
 
 		buzzer = &buzzer;
+
+		eeprom = &eeprom;
+		eeprom-en = &eeprom_en;
 	};
 };
 
@@ -100,12 +109,25 @@
 };
 
 // EEPROM
+// Needs power on 16
 &i2c0 {
 	compatible = "nordic,nrf-twi";
 	status = "okay";
-	sda-pin = <15>;
+	sda-pin = <14>;
 	scl-pin = <15>;
-	// Needs power on 16
+	clock-frequency = <I2C_BITRATE_FAST>;
+
+	// Datasheet: https://www.terraelectronica.ru/pdf/show?pdf_file=%252Fds%252Fpdf%252FM%252Fm24256-bw.pdf
+	eeprom: eeprom@50 {
+		compatible = "atmel,at24";
+		// 1010 (type identifier code) 000 (A0-A2 pins are connected to the ground)
+		reg = <0x50>;
+		label = "EEPROM";
+		size = <DT_SIZE_K(32)>;
+		pagesize = <64>;
+		address-width = <8>;
+		timeout = <5>;
+	};
 };
 
 // Pill

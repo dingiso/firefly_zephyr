@@ -19,24 +19,24 @@ jobs:
       - run: cd ./zephyrproject/zephyr && source zephyr-env.sh && cd ../..
       - run: west manifest --validate
       - run: west --help
-      - run: west build firefly --pristine && mv ./build/zephyr/{zephyr,firefly}.hex
+      - run: west build firefly --pristine && mv ./build/zephyr/zephyr.hex firefly.hex
       - uses: actions/upload-artifact@v1
         with:
           name: firefly.hex
-          path: ./build/zephyr/firefly.hex
-      - run: west build activator --pristine && mv ./build/zephyr/{zephyr,activator}.hex
+          path: firefly.hex
+      - run: west build activator --pristine && mv ./build/zephyr/zephyr.hex activator.hex
       - uses: actions/upload-artifact@v1
         with:
           name: activator.hex
-          path: ./build/zephyr/activator.hex
-      - run: west build smoke_test --pristine && mv ./build/zephyr/{zephyr,smoke_test}.hex
+          path: activator.hex
+      - run: west build smoke_test --pristine && mv ./build/zephyr/zephyr.hex smoke_test.hex
       - uses: actions/upload-artifact@v1
         with:
           name: smoke_test.hex
-          path: ./build/zephyr/smoke_test.hex
+          path: smoke_test.hex
       - uses: ncipollo/release-action@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          artifacts: ./build/zephyr/firefly.hex,./build/zephyr/activator.hex,./build/zephyr/smoke_test.hex
+          artifacts: firefly.hex,activator.hex,smoke_test.hex
           bodyFile: RELEASE.md
           token: ${{ secrets.GITHUB_TOKEN }}

@@ -52,4 +52,4 @@ jobs:
       - run: JLinkExe -if SWD -autoconnect 1 -speed 4000 -device nrf52 -CommanderScript smoke_test/flash.jlink
       - run: sleep 10
       - run: cat log.txt
-      - run: kill "$!"
+      - run: cat log.txt | grep "PROJECT EXECUTION SUCCESSFUL"

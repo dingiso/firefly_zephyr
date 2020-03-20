@@ -40,3 +40,9 @@ jobs:
           artifacts: firefly.hex,activator.hex,smoke_test.hex
           bodyFile: RELEASE.md
           token: ${{ secrets.GITHUB_TOKEN }}
+  hardware_test:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v1
+      - run: git status
+      - run: echo Hello

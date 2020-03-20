@@ -42,7 +42,9 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
   hardware_test:
     runs-on: self-hosted
+    needs: [build]
     steps:
       - uses: actions/checkout@v1
-      - run: git status
-      - run: echo Hello
+      - uses: actions/download-artifact@v1
+        with:
+          name: smoke_test.hex

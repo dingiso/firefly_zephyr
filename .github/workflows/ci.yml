@@ -48,6 +48,7 @@ jobs:
       - uses: actions/download-artifact@v1
         with:
           name: smoke_test.hex
+      - run: stty -F /dev/ttyACM0 115200
       - run: cat /dev/ttyACM0 > log.txt &
       - run: JLinkExe -if SWD -autoconnect 1 -speed 4000 -device nrf52 -CommanderScript smoke_test/flash.jlink
       - run: sleep 10

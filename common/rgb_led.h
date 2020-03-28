@@ -8,6 +8,7 @@
 
 #include "color.h"
 #include "timer.h"
+#include "sequences.h"
 
 class RgbLed {
 public:
@@ -29,6 +30,22 @@ private:
   device* device_ = device_get_binding(DT_PWM_LEDS_PWM_LED_R_PWMS_CONTROLLER);
   device* device_stabilizer_ = device_get_binding(DT_ALIAS_LED_EN_GPIOS_CONTROLLER);
   Timer timer_;
+};
+
+
+class RgbLedSequencer {
+public:
+  RgbLedSequencer(RgbLed& led);
+
+  void StartOrRestart(const LedChunk* sequence);
+
+private:
+  void StartChunk();
+  void EndChunk();
+
+  RgbLed& led_;
+  Timer timer_;
+  const LedChunk* current_ = nullptr;
 };
 
 // All tree LEDs (R, G, B) must be configured in the devictree to use same PMW controller.

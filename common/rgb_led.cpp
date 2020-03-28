@@ -58,3 +58,26 @@ void RgbLed::OnTimer() {
   ActuateColor();
   if (color_ != target_color_) timer_.RunDelayed(timer_period_);
 }
+
+
+RgbLedSequencer::RgbLedSequencer(RgbLed& led): led_(led), timer_([this](){ this->EndChunk(); }) {
+}
+
+void RgbLedSequencer::StartOrRestart(const LedChunk* sequence) {
+  timer_.Cancel();
+  current_ = sequence;
+  StartChunk();
+}
+
+void RgbLedSequencer::StartChunk() {
+  if (current_->type == LedChunkType::Finish) return;
+  if (current_->type == LedChunkType::SetColor) {
+    led_.SetColorSmooth(current_->color, current_->time_ms);
+  }
+  timer_.RunDelayed(current_->time_ms);
+}
+
+void RgbLedSequencer::EndChunk() {
+  ++current_;
+  StartChunk();
+}

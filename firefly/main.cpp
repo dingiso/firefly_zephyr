@@ -16,6 +16,7 @@
 #include "timer.h"
 #include "color.h"
 #include "rgb_led.h"
+#include "sequences.h"
 #include "bluetooth.h"
 #include "magic_path_packet.h"
 
@@ -25,6 +26,7 @@ LOG_MODULE_REGISTER();
 namespace {
 Buzzer buzzer;
 RgbLed led;
+RgbLedSequencer led_sequencer(led);
 }
 
 struct ColorAndTimestamp {
@@ -97,18 +99,15 @@ ssize_t write_beep(struct bt_conn *conn,
   return len;
 }
 
+
+
 ssize_t write_blink(struct bt_conn *conn,
                            const struct bt_gatt_attr *attr,
                            const void *buf, u16_t len, u16_t offset,
                            u8_t flags) {
   LOG_INF("Blink!");
   led.EnablePowerStabilizer();
-  for (int i = 0; i < 3; ++i) {
-    led.SetColor({255, 255, 255});
-    k_sleep(100);
-    led.SetColor({0, 0, 0});
-    k_sleep(100);
-  }
+  led_sequencer.StartOrRestart(lsqFastBlink);
   return len;
 }
 
@@ -161,6 +160,8 @@ void main(void) {
       cc1101.EnterPwrDown();
     }
   }, 5000);
+
+  led_sequencer.StartOrRestart(lsqStart);
 
   while (true) {
     MagicPathRadioPacket pkt;

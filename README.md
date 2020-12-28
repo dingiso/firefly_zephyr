@@ -60,6 +60,7 @@ Behaviours:
   Both of the services can be used by [dedicated Android app](https://install.appcenter.ms/users/a.eremin.msu/apps/ostranna-configurator/distribution_groups/public).
   App sources are [here](https://github.com/aeremin/ostranna_configurator).      
 
+
 ## Smoke test
 This is a test image. Currently it only contains very basic test covering SPI usage and smooth LED transitions.
 Will output the test log to the UART/RTT.

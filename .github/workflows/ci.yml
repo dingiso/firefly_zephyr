@@ -45,6 +45,7 @@ jobs:
   hardware_test:
     runs-on: self-hosted
     needs: [build]
+    if: github.ref == 'never'
     steps:
       - uses: actions/checkout@v1
       - uses: actions/download-artifact@v1

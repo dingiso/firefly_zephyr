@@ -2,8 +2,8 @@
 ![](https://github.com/aeremin/firefly_zephyr/workflows/CI/badge.svg)
 
 # Software prerequisites
-* Zephyr RTOS 2.2.0. See [Getting Started](https://docs.zephyrproject.org/latest/getting_started/index.html).
-  When doing `west init`, use `west init zephyrproject --mr v2.2.0` to install this specific version.
+* Zephyr RTOS 2.2.1. See [Getting Started](https://docs.zephyrproject.org/latest/getting_started/index.html).
+  When doing `west init`, use `west init zephyrproject --mr v2.2.1` to install this specific version.
   Make sure you can build some of Zephyr examples before proceeding.
 * IDE: At the moment, Visual Studio Code with the bunch of plugins is used (VSCode will automatically ask to install them when
   opening this repository. Other IDEs can be also potentially used, more investigation is needed. Most of the commands are run

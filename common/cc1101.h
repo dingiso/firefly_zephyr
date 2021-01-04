@@ -48,7 +48,7 @@ class Cc1101 {
     Recalibrate();
     FlushRxFIFO();
     EnterRX();
-    if (k_sem_take(&gd_ready_, timeout_ms) == 0) {
+    if (k_sem_take(&gd_ready_, K_MSEC(timeout_ms)) == 0) {
       return ReadFifo(result);
     } else {
       EnterIdle();

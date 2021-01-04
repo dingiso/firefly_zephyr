@@ -130,6 +130,6 @@ void main(void) {
   while (true) {
     ScopedMutexLock l(packet_mutex);
     cc1101.Transmit(packet.value());
-    k_sleep(36);
+    k_sleep(K_MSEC(36));
   }
 }

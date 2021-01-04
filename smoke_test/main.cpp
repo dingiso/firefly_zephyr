@@ -56,9 +56,9 @@ public:
 		led.SetColor({0, 0, 0});
 		led.SetColorSmooth({254, 0, 0}, 1000);
 		zassert_equal(led.GetColor(), Color(0, 0, 0), "");
-		k_sleep(550);
+		k_sleep(K_MSEC(550));
 		zassert_within(led.GetColor().r, 127, 10, "");
-		k_sleep(550);
+		k_sleep(K_MSEC(550));
 		zassert_equal(led.GetColor().r, 254, "");
 	}
 };
@@ -70,26 +70,26 @@ class TimerTest {
 	static void RunsDelayed() {
 		uint8_t counter = 0;
 		const auto t = RunDelayed([&](){ ++counter; }, 30);
-		k_sleep(10);
+		k_sleep(K_MSEC(10));
 		zassert_equal(counter, 0, "");
-		k_sleep(10);
+		k_sleep(K_MSEC(10));
 		zassert_equal(counter, 0, "");
-		k_sleep(10);
+		k_sleep(K_MSEC(10));
 		zassert_equal(counter, 1, "");
-		k_sleep(10);
+		k_sleep(K_MSEC(10));
 		zassert_equal(counter, 1, "");
 	}
 
 	static void RunsEvery() {
 		uint8_t counter = 0;
 		const auto t = RunEvery([&](){ ++counter; }, 10);
-		k_sleep(10);
+		k_sleep(K_MSEC(10));
 		zassert_equal(counter, 1, "");
-		k_sleep(10);
+		k_sleep(K_MSEC(10));
 		zassert_equal(counter, 2, "");
-		k_sleep(10);
+		k_sleep(K_MSEC(10));
 		zassert_equal(counter, 3, "");
-		k_sleep(10);
+		k_sleep(K_MSEC(10));
 		zassert_equal(counter, 4, "");
 	}
 };
@@ -103,7 +103,7 @@ class EepromTest {
 			uint16_t in = sys_rand32_get() % 32768 + 23;
 			uint32_t address = (2 * sys_rand32_get()) % (31 * 1024);
 			eeprom::Write(in, address);
-			k_sleep(5);
+			k_sleep(K_MSEC(5));
 			uint16_t out = eeprom::Read<uint16_t>(address);
 			zassert_equal(in, out, "%d != %d, iteration %d", in, out, i);
 		}

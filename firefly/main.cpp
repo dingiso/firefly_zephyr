@@ -174,6 +174,6 @@ void main(void) {
         log.ProcessRadioPacket(pkt);
       }
     }
-    k_sleep(810);
+    k_sleep(K_MSEC(810));
   }
 }

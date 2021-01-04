@@ -32,7 +32,7 @@ void Cc1101::Init() {
   // but there is no direct support for that in nRF SPI library. From the datasheet it
   // seems that it's actually only required when leaving SLEEP or XOFF states
   // (see p. 29, "4-wire Serial Configuration and Data Interface").
-  k_sleep(40);
+  k_sleep(K_MSEC(40));
 
   RfConfig();
   FlushRxFIFO();

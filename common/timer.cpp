@@ -29,13 +29,13 @@ Timer::~Timer() {
 
 void Timer::RunDelayed(uint32_t delay_ms) {
   Cancel();
-  k_timer_start(&timer_, delay_ms, 0);
+  k_timer_start(&timer_, K_MSEC(delay_ms), K_MSEC(0));
 }
 
 
 void Timer::RunEvery(uint32_t period_ms) {
   Cancel();
-  k_timer_start(&timer_, period_ms, period_ms);
+  k_timer_start(&timer_, K_MSEC(period_ms), K_MSEC(period_ms));
 }
 
 void Timer::Cancel() {

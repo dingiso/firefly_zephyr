@@ -5,7 +5,6 @@
 	// See hardware info, spec and blueprints here https://github.com/Kreyl/firefly_hw
 	// Specifically, https://github.com/Kreyl/Firefly_hw/blob/master/PCB/Gerber/FireFly_SCH.pdf
 	model = "Firefly board";
-	compatible = "nordic,nrf52832-qfaa", "nordic,nrf52832";
 
 	chosen {
 		zephyr,console = &uart0;
@@ -73,6 +72,7 @@
 
 	aliases {
 		cc1101-spi = &spi1;
+		cc1101 = &cc1101;
 		cc1101-gdo0 = &gdo0;
 
 		led-r = &pwm_led_r;
@@ -132,7 +132,7 @@
 // Pill
 &i2c1 {
 	compatible = "nordic,nrf-twi";
-	status = "okay";
+	status = "disabled";
 	sda-pin = <12>;
 	scl-pin = <13>;
 	// Needs power on 11
@@ -163,6 +163,9 @@
 	mosi-pin = <8>;
 	miso-pin = <7>;
 	cs-gpios = <&gpio0 5 0>;
+	cc1101: spi-dev@0 {
+		reg = <0>;
+	};
 };
 
 &flash0 {

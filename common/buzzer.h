@@ -10,6 +10,6 @@ public:
 private:
   void Silence();
 
-  device* device_ = device_get_binding(DT_ALIAS_BUZZER_PWMS_CONTROLLER);
+  device* device_ = device_get_binding(DT_PWMS_LABEL(DT_ALIAS(buzzer)));
   Timer t_{ [this](){ Silence(); } };
 };

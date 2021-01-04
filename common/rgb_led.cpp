@@ -19,11 +19,11 @@ RgbLed::RgbLed(): timer_([this](){ this->OnTimer(); }) {
 
 void RgbLed::EnablePowerStabilizer() {
   gpio_pin_configure(device_stabilizer_,
-    DT_ALIAS_LED_EN_GPIOS_PIN, GPIO_OUTPUT_ACTIVE | DT_ALIAS_LED_EN_GPIOS_FLAGS);
+    DT_GPIO_PIN(DT_ALIAS(led_en), gpios), GPIO_OUTPUT_ACTIVE | DT_GPIO_FLAGS(DT_ALIAS(led_en), gpios));
 }
 
 void RgbLed::DisablePowerStabilizer() {
-  gpio_pin_set(device_stabilizer_, DT_ALIAS_LED_EN_GPIOS_PIN, 0);
+  gpio_pin_set(device_stabilizer_, DT_GPIO_PIN(DT_ALIAS(led_en), gpios), 0);
 }
 
 void RgbLed::SetColor(const Color& color) {
@@ -39,11 +39,11 @@ const Color& RgbLed::GetColor() const {
 }
 
 void RgbLed::ActuateColor() {
-  pwm_pin_set_usec(device_, DT_ALIAS_LED_R_PWMS_CHANNEL,
+  pwm_pin_set_usec(device_, DT_PWMS_CHANNEL(DT_ALIAS(led_r)),
     kCyclePeriodUs, colorComponentToPulseWidth(color_.r), /*flags=*/0u);
-  pwm_pin_set_usec(device_, DT_ALIAS_LED_G_PWMS_CHANNEL,
+  pwm_pin_set_usec(device_, DT_PWMS_CHANNEL(DT_ALIAS(led_g)),
     kCyclePeriodUs, colorComponentToPulseWidth(color_.g), /*flags=*/0u);
-  pwm_pin_set_usec(device_, DT_ALIAS_LED_B_PWMS_CHANNEL,
+  pwm_pin_set_usec(device_, DT_PWMS_CHANNEL(DT_ALIAS(led_b)),
     kCyclePeriodUs, colorComponentToPulseWidth(color_.b), /*flags=*/0u);
 }
 

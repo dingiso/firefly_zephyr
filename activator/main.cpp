@@ -37,8 +37,6 @@ const struct bt_data ad[] = {
 
 RgbLed led;
 
-device* flash_device = device_get_binding(DT_FLASH_DEV_NAME);
-
 /* Radio packet ID, UUID 8ec87064-8865-4eca-82e0-2ea8e45e8221 */
 struct bt_uuid_128 radio_packet_id_characteristic_uuid = BT_UUID_INIT_128(
     0x21, 0x82, 0x5e, 0xe4, 0xa8, 0x2e, 0xe0, 0x82,

@@ -22,7 +22,7 @@ adc_channel_cfg ChannelConfig() {
 }
 
 Battery::Battery():
-  adc_device_(device_get_binding(DT_ADC_0_NAME)),
+  adc_device_(device_get_binding(DT_LABEL(DT_INST(0, nordic_nrf_saadc)))),
   channel_config_(ChannelConfig()),
   adc_seq_({
     .options      = nullptr,

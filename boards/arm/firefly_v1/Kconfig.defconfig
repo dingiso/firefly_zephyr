@@ -3,21 +3,9 @@ if BOARD_FIREFLY_V1
 config BOARD
 	default "firefly_v1"
 
-config ADC_0
-	default y
-	depends on ADC
-
 config I2C_0
 	default y
 	depends on I2C
-
-config PWM_0
-	default y
-	depends on PWM
-
-config PWM_1
-	default y
-	depends on PWM
 
 if SPI
 

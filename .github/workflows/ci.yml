@@ -18,7 +18,7 @@ jobs:
       - uses: actions/checkout@v1
       - run: sudo apt-get update && sudo apt-get install --no-install-recommends gcc-arm-none-eabi git cmake ninja-build gperf ccache dfu-util device-tree-compiler wget python3-pip python3-setuptools python3-tk python3-wheel xz-utils file make gcc gcc-multilib g++-multilib libsdl2-dev
       - run: sudo pip3 install west
-      - run: west init zephyrproject --mr v2.2.1 && cd zephyrproject && west update && cd ..
+      - run: west init zephyrproject --mr v2.3.0 && cd zephyrproject && west update && cd ..
       - run: pip3 install -r ./zephyrproject/zephyr/scripts/requirements.txt
       - run: wget https://github.com/zephyrproject-rtos/sdk-ng/releases/download/v0.11.1/zephyr-sdk-0.11.1-setup.run && chmod +x zephyr-sdk-0.11.1-setup.run && ./zephyr-sdk-0.11.1-setup.run -- -d /home/runner/work/firefly_zephyr/firefly_zephyr/zephyr-sdk-0.11.1
       - run: cd ./zephyrproject/zephyr && source zephyr-env.sh && cd ../..

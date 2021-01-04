@@ -5,7 +5,7 @@
 // Helper to automatically release mutex on scope end
 class ScopedMutexLock {
 public:
-  ScopedMutexLock(k_mutex& m, int32_t timeout = K_FOREVER) : m_(m) {
+  ScopedMutexLock(k_mutex& m, k_timeout_t timeout = K_FOREVER) : m_(m) {
     locked_ = k_mutex_lock(&m_, timeout) == 0;
   }
 

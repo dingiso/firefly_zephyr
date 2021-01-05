@@ -7,12 +7,12 @@
 
 namespace eeprom {
 namespace internal {
-device* kEepromDevice = device_get_binding(DT_LABEL(DT_ALIAS(eeprom)));
+const device* kEepromDevice = device_get_binding(DT_LABEL(DT_ALIAS(eeprom)));
 }
 
 // Enables eeprom power. Without that reads/writes won't work.
 void EnablePower() {
-  device* gpio = device_get_binding(DT_GPIO_LABEL(DT_ALIAS(eeprom_en), gpios));
+  const device* gpio = device_get_binding(DT_GPIO_LABEL(DT_ALIAS(eeprom_en), gpios));
   gpio_pin_configure(gpio, DT_GPIO_PIN(DT_ALIAS(eeprom_en), gpios), GPIO_OUTPUT_ACTIVE | DT_GPIO_FLAGS(DT_ALIAS(eeprom_en), gpios));
 }
 

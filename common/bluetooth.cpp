@@ -54,5 +54,5 @@ void InitBleAdvertising(const bt_le_adv_param& params) {
 }
 
 void SetBatteryLevel(uint8_t level) {
-  bt_gatt_bas_set_battery_level(level);
+  bt_bas_set_battery_level(level);
 }

@@ -2,9 +2,9 @@
 
 LOG_MODULE_DECLARE();
 
-device* Cc1101::spi_ = device_get_binding(DT_LABEL(DT_ALIAS(cc1101_spi)));
+const device* Cc1101::spi_ = device_get_binding(DT_LABEL(DT_ALIAS(cc1101_spi)));
 
-device* gpio_device = device_get_binding(DT_GPIO_LABEL(DT_ALIAS(cc1101_gdo0), gpios));
+const device* gpio_device = device_get_binding(DT_GPIO_LABEL(DT_ALIAS(cc1101_gdo0), gpios));
 gpio_pin_t gd_pin = DT_GPIO_PIN(DT_ALIAS(cc1101_gdo0), gpios);
 
 k_sem Cc1101::gd_ready_;
@@ -12,8 +12,9 @@ gpio_callback Cc1101::gdo0_callback_data_;
 
 spi_cs_control Cc1101::spi_cs_cfg_ = {
     .gpio_dev = device_get_binding(DT_SPI_DEV_CS_GPIOS_LABEL(DT_ALIAS(cc1101))),
+    .delay = 0,
     .gpio_pin = DT_SPI_DEV_CS_GPIOS_PIN(DT_ALIAS(cc1101)),
-    .delay = 0};
+    .gpio_dt_flags = GPIO_ACTIVE_LOW};
 
 spi_config Cc1101::spi_config_ = {
     .frequency = 0x400000UL, // 4 MHz
@@ -50,7 +51,7 @@ void Cc1101::Init() {
 	gpio_add_callback(gpio_device, &gdo0_callback_data_);
 }
 
-void Cc1101::Gdo0Callback(struct device *dev, struct gpio_callback *cb, u32_t pins)
+void Cc1101::Gdo0Callback(const device *dev, gpio_callback *cb, gpio_port_pins_t pins)
 {
    k_sem_give(&Cc1101::gd_ready_);
 }

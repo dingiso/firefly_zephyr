@@ -27,8 +27,8 @@ private:
   Color color_ = {0, 0, 0};
   Color target_color_ = {0, 0, 0};
   uint32_t timer_period_ = 0;
-  device* device_ = device_get_binding(DT_PWMS_LABEL(DT_ALIAS(led_r)));
-  device* device_stabilizer_ = device_get_binding(DT_GPIO_LABEL(DT_ALIAS(led_en), gpios));
+  const device* device_ = device_get_binding(DT_PWMS_LABEL(DT_ALIAS(led_r)));
+  const device* device_stabilizer_ = device_get_binding(DT_GPIO_LABEL(DT_ALIAS(led_en), gpios));
   Timer timer_;
 };
 

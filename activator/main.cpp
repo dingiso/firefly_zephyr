@@ -60,7 +60,7 @@ struct bt_uuid_128 radio_packet_config_mode_characteristic_uuid = BT_UUID_INIT_1
 template<size_t Offset, size_t Size> ssize_t read_radio_packet(
   struct bt_conn *conn,
   const struct bt_gatt_attr *attr,
-  void *buf, u16_t len, u16_t offset) {
+  void *buf, uint16_t len, uint16_t offset) {
   ScopedMutexLock l(packet_mutex);
   return bt_gatt_attr_read(conn, attr, buf, len, offset, reinterpret_cast<uint8_t*>(&(packet.value())) + Offset, Size);
 }
@@ -68,8 +68,8 @@ template<size_t Offset, size_t Size> ssize_t read_radio_packet(
 template<size_t Offset, size_t Size> ssize_t write_radio_packet(
   struct bt_conn *conn,
   const struct bt_gatt_attr *attr,
-  const void *buf, u16_t len, u16_t offset,
-  u8_t flags) {
+  const void *buf, uint16_t len, uint16_t offset,
+  uint8_t flags) {
   if (offset + len > Size) {
     return BT_GATT_ERR(BT_ATT_ERR_INVALID_OFFSET);
   }

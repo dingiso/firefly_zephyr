@@ -5,6 +5,7 @@
 
 #include <vector>
 #include <kernel.h>
+#include <random/rand32.h>
 #include <ztest.h>
 
 #include "cc1101.h"

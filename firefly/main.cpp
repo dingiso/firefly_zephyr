@@ -88,8 +88,8 @@ struct bt_uuid_128 blink_characteristic_uuid = BT_UUID_INIT_128(
 
 ssize_t write_beep(struct bt_conn *conn,
                            const struct bt_gatt_attr *attr,
-                           const void *buf, u16_t len, u16_t offset,
-                           u8_t flags) {
+                           const void *buf, uint16_t len, uint16_t offset,
+                           uint8_t flags) {
   if (len <= 0) {
     return BT_GATT_ERR(BT_ATT_ERR_INVALID_OFFSET);
   }
@@ -103,8 +103,8 @@ ssize_t write_beep(struct bt_conn *conn,
 
 ssize_t write_blink(struct bt_conn *conn,
                            const struct bt_gatt_attr *attr,
-                           const void *buf, u16_t len, u16_t offset,
-                           u8_t flags) {
+                           const void *buf, uint16_t len, uint16_t offset,
+                           uint8_t flags) {
   LOG_INF("Blink!");
   led.EnablePowerStabilizer();
   led_sequencer.StartOrRestart(lsqFastBlink);

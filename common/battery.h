@@ -21,7 +21,7 @@ public:
 private:
   Battery();
 
-  device* adc_device_;
+  const device* adc_device_;
   const adc_channel_cfg channel_config_;
   adc_sequence adc_seq_;
   int16_t buffer_ = 0;

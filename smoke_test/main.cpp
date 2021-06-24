@@ -127,4 +127,6 @@ void test_main(void) {
   ztest_run_test_suite(smoke_test);
 	// Flash the console. For some reason it doesn't happen automatically.
 	flusher.RunDelayed(100);
+
+	while(true) k_sleep(K_MSEC(1000));
 }

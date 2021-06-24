@@ -23,7 +23,6 @@ class Cc1101Test {
 
  public:
 	static void CanInit() {
-		Cc1101 cc1101;
 		cc1101.Init();
 	}
 

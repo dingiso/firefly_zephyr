@@ -61,12 +61,12 @@
 
 		button_1: button_1 {
 			gpios = <&gpio0 23 (GPIO_PULL_DOWN)>;
-			label = "CC1101 GD0";
+			label = "First button";
 		};
 
 		button_2: button_2 {
 			gpios = <&gpio0 24 (GPIO_PULL_DOWN)>;
-			label = "CC1101 GD0";
+			label = "Second button";
 		};
 	};
 

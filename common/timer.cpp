@@ -29,7 +29,7 @@ Timer::~Timer() {
 
 void Timer::RunDelayed(uint32_t delay_ms) {
   Cancel();
-  k_timer_start(&timer_, K_MSEC(delay_ms), K_MSEC(0));
+  k_timer_start(&timer_, K_MSEC(delay_ms), K_FOREVER);
 }
 
 

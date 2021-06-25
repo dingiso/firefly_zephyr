@@ -39,11 +39,11 @@ const Color& RgbLed::GetColor() const {
 }
 
 void RgbLed::ActuateColor() {
-  pwm_pin_set_usec(device_, DT_PWMS_CHANNEL(DT_ALIAS(led_r)),
+  pwm_pin_set_usec(device_r_, DT_PWMS_CHANNEL(DT_ALIAS(led_r)),
     kCyclePeriodUs, colorComponentToPulseWidth(color_.r), /*flags=*/0u);
-  pwm_pin_set_usec(device_, DT_PWMS_CHANNEL(DT_ALIAS(led_g)),
+  pwm_pin_set_usec(device_g_, DT_PWMS_CHANNEL(DT_ALIAS(led_g)),
     kCyclePeriodUs, colorComponentToPulseWidth(color_.g), /*flags=*/0u);
-  pwm_pin_set_usec(device_, DT_PWMS_CHANNEL(DT_ALIAS(led_b)),
+  pwm_pin_set_usec(device_b_, DT_PWMS_CHANNEL(DT_ALIAS(led_b)),
     kCyclePeriodUs, colorComponentToPulseWidth(color_.b), /*flags=*/0u);
 }
 

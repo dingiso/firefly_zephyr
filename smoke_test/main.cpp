@@ -1,4 +1,5 @@
 #include <array>
+#include <atomic>
 #include <functional>
 #include <memory>
 #include <vector>
@@ -68,7 +69,7 @@ RgbLed RgbLedTest::led;
 class TimerTest {
  public:
 	static void RunsDelayed() {
-		uint8_t counter = 0;
+		std::atomic<uint8_t> counter = 0;
 		const auto t = RunDelayed([&](){ ++counter; }, 30);
 		k_sleep(K_MSEC(10));
 		zassert_equal(counter, 0, "");
@@ -101,7 +102,7 @@ class EepromTest {
 
 		for (int i = 0; i < 200; ++i) {
 			uint16_t in = sys_rand32_get() % 32768 + 23;
-			uint32_t address = (2 * sys_rand32_get()) % (31 * 1024);
+			uint32_t address = (2 * sys_rand32_get()) % 1024;
 			eeprom::Write(in, address);
 			k_sleep(K_MSEC(5));
 			uint16_t out = eeprom::Read<uint16_t>(address);

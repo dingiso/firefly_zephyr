@@ -10,6 +10,7 @@ public:
 private:
   void Silence();
 
-  const device* device_ = device_get_binding(DT_PWMS_LABEL(DT_ALIAS(buzzer)));
+  const device* device_ = DEVICE_DT_GET(DT_PWMS_CTLR(DT_ALIAS(buzzer)));
   Timer t_{ [this](){ Silence(); } };
 };
+

@@ -3,10 +3,6 @@ if BOARD_FIREFLY_V1
 config BOARD
 	default "firefly_v1"
 
-config I2C_0
-	default y
-	depends on I2C
-
 config BT_CTLR
 	default BT
 

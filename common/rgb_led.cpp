@@ -4,7 +4,7 @@
 #include <drivers/gpio.h>
 
 namespace {
-const uint32_t kFrequencyHertz = 1000;
+const uint32_t kFrequencyHertz = 50;
 const uint32_t kUsecPerSecond = 1000 * 1000;
 const uint32_t kCyclePeriodUs = kUsecPerSecond / kFrequencyHertz;
 

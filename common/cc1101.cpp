@@ -11,10 +11,13 @@ k_sem Cc1101::gd_ready_;
 gpio_callback Cc1101::gdo0_callback_data_;
 
 spi_cs_control Cc1101::spi_cs_cfg_ = {
-    .gpio_dev = device_get_binding(DT_SPI_DEV_CS_GPIOS_LABEL(DT_ALIAS(cc1101))),
-    .delay = 0,
-    .gpio_pin = DT_SPI_DEV_CS_GPIOS_PIN(DT_ALIAS(cc1101)),
-    .gpio_dt_flags = GPIO_ACTIVE_LOW};
+  .gpio = {
+    .port = device_get_binding(DT_SPI_DEV_CS_GPIOS_LABEL(DT_ALIAS(cc1101))),
+    .pin = DT_SPI_DEV_CS_GPIOS_PIN(DT_ALIAS(cc1101)),
+    .dt_flags = DT_SPI_DEV_CS_GPIOS_FLAGS(DT_ALIAS(cc1101)),
+  },
+  .delay = 0,
+};
 
 spi_config Cc1101::spi_config_ = {
     .frequency = 0x400000UL, // 4 MHz

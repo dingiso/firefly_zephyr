@@ -18,4 +18,5 @@ target_link_libraries(app PRIVATE
   timer
   cc1101
   rgb_led
+  buzzer
 )

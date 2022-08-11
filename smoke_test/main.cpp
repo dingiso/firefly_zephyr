@@ -9,6 +9,7 @@
 #include <random/rand32.h>
 #include <ztest.h>
 
+#include "buzzer.h"
 #include "cc1101.h"
 #include "rgb_led.h"
 #include "timer.h"
@@ -113,6 +114,8 @@ class EepromTest {
 
 Timer flusher([]{ printk("                \n"); });
 
+Buzzer buzzer;
+
 void test_main(void) {
   ztest_test_suite(smoke_test,
                    ztest_unit_test(test_two_plus_two_is_four),
@@ -125,7 +128,12 @@ void test_main(void) {
                    ztest_unit_test(TimerTest::RunsEvery),
                    ztest_unit_test(EepromTest::CanReadWritten)
   );
-  ztest_run_test_suite(smoke_test);
+  int num_failures = ztest_run_test_suite(smoke_test);
+  if (!num_failures) {
+    buzzer.Beep(100, 600, 100);
+  } else {
+    buzzer.Beep(100, 600, 1000);
+  }
   // Flash the console. For some reason it doesn't happen automatically.
   flusher.RunDelayed(100);
 

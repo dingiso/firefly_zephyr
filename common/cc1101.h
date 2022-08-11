@@ -59,8 +59,6 @@ class Cc1101 {
   void EnterPwrDown() { WriteStrobe(CC_SPWD); }
 
  private:
-  friend class Cc1101Test;
-
   // Sends a single-byte instruction to the CC1101.
   // See documentation of instructions in datasheet, p.32,
   // 10.4 Command Strobes
@@ -150,7 +148,9 @@ class Cc1101 {
   void EnterIdle() { WriteStrobe(CC_SIDLE); }
   void FlushRxFIFO() { WriteStrobe(CC_SFRX); }
   void SetTxPower(uint8_t APwr) { WriteConfigurationRegister(CC_PATABLE, APwr); }
+  void Recalibrate();
+
+ public:
   void SetPacketSize(uint8_t ASize) { WriteConfigurationRegister(CC_PKTLEN, ASize); }
   uint8_t GetPacketSize() { return ReadRegister(CC_PKTLEN); }
-  void Recalibrate();
 };

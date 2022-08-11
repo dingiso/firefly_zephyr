@@ -26,3 +26,5 @@ CONFIG_PWM=y
 
 # enable pin controller
 CONFIG_PINCTRL=y
+
+CONFIG_ASSERT_NO_FILE_INFO=y

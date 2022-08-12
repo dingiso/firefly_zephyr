@@ -1,14 +1,14 @@
 #include <array>
-#include <device.h>
-#include <drivers/gpio.h>
-#include <drivers/spi.h>
-#include <logging/log.h>
-#include <zephyr.h>
-#include <bluetooth/bluetooth.h>
-#include <bluetooth/conn.h>
-#include <bluetooth/gatt.h>
-#include <bluetooth/hci.h>
-#include <bluetooth/uuid.h>
+#include <zephyr/device.h>
+#include <zephyr/drivers/gpio.h>
+#include <zephyr/drivers/spi.h>
+#include <zephyr/logging/log.h>
+#include <zephyr/zephyr.h>
+#include <zephyr/bluetooth/bluetooth.h>
+#include <zephyr/bluetooth/conn.h>
+#include <zephyr/bluetooth/gatt.h>
+#include <zephyr/bluetooth/hci.h>
+#include <zephyr/bluetooth/uuid.h>
 
 #include "battery.h"
 #include "buzzer.h"

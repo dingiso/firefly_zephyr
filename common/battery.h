@@ -1,6 +1,6 @@
 #pragma once
-#include <device.h>
-#include <drivers/adc.h>
+#include <zephyr/device.h>
+#include <zephyr/drivers/adc.h>
 
 // Helper for measuring battery voltage.
 // nRF-specific (uses nRF-specific SAADC driver).

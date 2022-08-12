@@ -5,8 +5,8 @@
 #include <vector>
 
 #include <vector>
-#include <kernel.h>
-#include <random/rand32.h>
+#include <zephyr/kernel.h>
+#include <zephyr/random/rand32.h>
 
 #include "buzzer.h"
 #include "cc1101.h"

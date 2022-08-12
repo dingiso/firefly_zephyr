@@ -1,9 +1,10 @@
 #pragma once
 
 #include <cstdint>
-#include <device.h>
-#include <drivers/eeprom.h>
-#include <drivers/gpio.h>
+
+#include <zephyr/device.h>
+#include <zephyr/drivers/eeprom.h>
+#include <zephyr/drivers/gpio.h>
 
 namespace eeprom {
 namespace internal {

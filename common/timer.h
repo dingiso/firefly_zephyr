@@ -1,6 +1,7 @@
 #pragma once
 #include <functional>
-#include <kernel.h>
+
+#include <zephyr/kernel.h>
 
 class Timer {
  public:

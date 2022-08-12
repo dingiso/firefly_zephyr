@@ -1,6 +1,6 @@
 #pragma once
 
-#include <kernel.h>
+#include <zephyr/kernel.h>
 
 // Helper to automatically release mutex on scope end
 class ScopedMutexLock {

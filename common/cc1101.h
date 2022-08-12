@@ -1,10 +1,11 @@
 #pragma once
 
-#include <device.h>
-#include <drivers/gpio.h>
-#include <drivers/spi.h>
-#include <logging/log.h>
-#include <zephyr.h>
+#include <zephyr/device.h>
+#include <zephyr/drivers/gpio.h>
+#include <zephyr/drivers/spi.h>
+#include <zephyr/logging/log.h>
+#include <zephyr/zephyr.h>
+
 #include "cc1101_constants.h"
 #include "cc1101_rf_settings.h"
 

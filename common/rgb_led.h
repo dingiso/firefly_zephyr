@@ -3,8 +3,9 @@
 #include <cstdint>
 #include <functional>
 #include <string_view>
-#include <drivers/pwm.h>
-#include <device.h>
+
+#include <zephyr/drivers/pwm.h>
+#include <zephyr/device.h>
 
 #include "color.h"
 #include "timer.h"

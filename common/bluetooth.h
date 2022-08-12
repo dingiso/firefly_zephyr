@@ -1,7 +1,7 @@
 #pragma once
 #include <cstdint>
-#include <bluetooth/bluetooth.h>
-#include <bluetooth/uuid.h>
+#include <zephyr/bluetooth/bluetooth.h>
+#include <zephyr/bluetooth/uuid.h>
 
 // Service UUID 8ec87060-8865-4eca-82e0-2ea8e45e8221
 // This is randomly-generated vendor-specific (i.e. Ostranna's) UUID.

@@ -1,17 +1,17 @@
 #include <errno.h>
-#include <logging/log.h>
 #include <stddef.h>
 #include <string.h>
-#include <sys/byteorder.h>
-#include <sys/printk.h>
-#include <zephyr.h>
+#include <zephyr/logging/log.h>
+#include <zephyr/sys/byteorder.h>
+#include <zephyr/sys/printk.h>
+#include <zephyr/zephyr.h>
 #include <zephyr/types.h>
 
-#include <bluetooth/bluetooth.h>
-#include <bluetooth/conn.h>
-#include <bluetooth/gatt.h>
-#include <bluetooth/hci.h>
-#include <bluetooth/uuid.h>
+#include <zephyr/bluetooth/bluetooth.h>
+#include <zephyr/bluetooth/conn.h>
+#include <zephyr/bluetooth/gatt.h>
+#include <zephyr/bluetooth/hci.h>
+#include <zephyr/bluetooth/uuid.h>
 
 #include "battery.h"
 #include "bluetooth.h"

@@ -1,7 +1,7 @@
 #include "buzzer.h"
 
-#include <drivers/gpio.h>
-#include <drivers/pwm.h>
+#include <zephyr/drivers/gpio.h>
+#include <zephyr/drivers/pwm.h>
 
 namespace {
 const uint32_t kUsecPerSecond = 1000 * 1000;

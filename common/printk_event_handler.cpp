@@ -2,7 +2,7 @@
 
 #include <cstdarg>
 
-#include <sys/printk.h>
+#include <zephyr/sys/printk.h>
 
 void PrintkEventHandler::Write(const char* content) { 
     printk("%s", content);

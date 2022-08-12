@@ -1,5 +1,5 @@
 #pragma once
-#include <device.h>
+#include <zephyr/device.h>
 
 #include "timer.h"
 

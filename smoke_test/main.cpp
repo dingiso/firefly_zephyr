@@ -13,32 +13,11 @@
 #include "rgb_led.h"
 #include "timer.h"
 #include "eeprom.h"
+#include "printk_event_handler.h"
 
 #include "gtest/gtest.h"
-#include "pw_unit_test/googletest_style_event_handler.h"
 
-Timer flusher([]{ printk("                \n"); });
 Buzzer buzzer;
-
-class PrintfEventHandler final : public pw::unit_test::GoogleTestStyleEventHandler {
- public:
-  constexpr PrintfEventHandler(bool verbose = false)
-      : GoogleTestStyleEventHandler(verbose) {}
-
- private:
-  void Write(const char* content) override { printk("%s", content); }
-
-  void WriteLine(const char* format, ...) override {
-    va_list args;
-
-    va_start(args, format);
-    vprintk(format, args);
-    printk("\n");
-    va_end(args);
-  }
-};
-
-
 Cc1101 cc1101;
 
 TEST(Cc1101Test, CanInit) {
@@ -119,7 +98,7 @@ TEST(EepromTest, CanReadWritten) {
 }
 
 int main() {
-  PrintfEventHandler handler;
+  PrintkEventHandler handler;
   pw::unit_test::RegisterEventHandler(&handler);
 
   int num_failures = RUN_ALL_TESTS();
@@ -128,7 +107,5 @@ int main() {
   } else {
     buzzer.Beep(100, 600, 1000);
   }
-  // Flash the console. For some reason it doesn't happen automatically.
-  // flusher.RunDelayed(100);
   while(true) k_sleep(K_MSEC(1000));
 }

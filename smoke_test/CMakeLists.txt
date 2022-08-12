@@ -27,7 +27,7 @@ target_link_libraries(app PRIVATE
   rgb_led
   buzzer
   pw_unit_test.light
-  pw_unit_test.googletest_style_event_handler
+  printk_event_handler
 )
 
 # Remove when migrating to the Zephyr RTOS version containing

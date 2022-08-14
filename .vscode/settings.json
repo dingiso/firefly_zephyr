@@ -5,4 +5,9 @@
   "cmake.configureOnOpen": true,
   "cmake.sourceDirectory": "${workspaceFolder}/firefly",
   "terminal.integrated.shell.windows": "C:\\Program Files\\Git\\bin\\bash.exe",
+  "nrf-connect.applications": [
+    "${workspaceFolder}/activator",
+    "${workspaceFolder}/firefly",
+    "${workspaceFolder}/smoke_test"
+  ],
 }

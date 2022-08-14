@@ -39,12 +39,12 @@ const Color& RgbLed::GetColor() const {
 }
 
 void RgbLed::ActuateColor() {
-  pwm_pin_set_usec(device_r_, DT_PWMS_CHANNEL(DT_ALIAS(led_r)),
-    kCyclePeriodUs, colorComponentToPulseWidth(color_.r), DT_PWMS_FLAGS(DT_ALIAS(led_r)));
-  pwm_pin_set_usec(device_g_, DT_PWMS_CHANNEL(DT_ALIAS(led_g)),
-    kCyclePeriodUs, colorComponentToPulseWidth(color_.g), DT_PWMS_FLAGS(DT_ALIAS(led_g)));
-  pwm_pin_set_usec(device_b_, DT_PWMS_CHANNEL(DT_ALIAS(led_b)),
-    kCyclePeriodUs, colorComponentToPulseWidth(color_.b), DT_PWMS_FLAGS(DT_ALIAS(led_b)));
+  pwm_set(device_r_, DT_PWMS_CHANNEL(DT_ALIAS(led_r)),
+    PWM_USEC(kCyclePeriodUs), PWM_USEC(colorComponentToPulseWidth(color_.r)), DT_PWMS_FLAGS(DT_ALIAS(led_r)));
+  pwm_set(device_g_, DT_PWMS_CHANNEL(DT_ALIAS(led_g)),
+    PWM_USEC(kCyclePeriodUs), PWM_USEC(colorComponentToPulseWidth(color_.g)), DT_PWMS_FLAGS(DT_ALIAS(led_g)));
+  pwm_set(device_b_, DT_PWMS_CHANNEL(DT_ALIAS(led_b)),
+    PWM_USEC(kCyclePeriodUs), PWM_USEC(colorComponentToPulseWidth(color_.b)), DT_PWMS_FLAGS(DT_ALIAS(led_b)));
 }
 
 void RgbLed::SetColorSmooth(const Color& color, uint32_t delay_ms) {

@@ -32,3 +32,6 @@ CONFIG_PWM=y
 
 # ADC to measure battery level
 CONFIG_ADC=y
+
+# enable pin controller
+CONFIG_PINCTRL=y

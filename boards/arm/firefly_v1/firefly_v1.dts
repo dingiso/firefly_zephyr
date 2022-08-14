@@ -1,5 +1,6 @@
 /dts-v1/;
 #include <nordic/nrf52832_qfaa.dtsi>
+#include "board-pinctrl.dtsi"
 
 / {
 	// See hardware info, spec and blueprints here https://github.com/Kreyl/firefly_hw
@@ -103,8 +104,8 @@
 	status = "okay";
 	compatible = "nordic,nrf-uart";
 	current-speed = <115200>;
-	tx-pin = <2>;
-	rx-pin = <3>;
+	pinctrl-0 = <&uart0_default>;
+	pinctrl-names = "default";
 };
 
 // EEPROM
@@ -112,8 +113,8 @@
 &i2c0 {
 	compatible = "nordic,nrf-twi";
 	status = "okay";
-	sda-pin = <14>;
-	scl-pin = <15>;
+	pinctrl-0 = <&i2c0_default>;
+	pinctrl-names = "default";
 	clock-frequency = <I2C_BITRATE_FAST>;
 
 	// Datasheet: https://www.terraelectronica.ru/pdf/show?pdf_file=%252Fds%252Fpdf%252FM%252Fm24256-bw.pdf
@@ -133,35 +134,31 @@
 &i2c1 {
 	compatible = "nordic,nrf-twi";
 	status = "disabled";
-	sda-pin = <12>;
-	scl-pin = <13>;
+	pinctrl-0 = <&i2c1_default>;
+	pinctrl-names = "default";
 	// Needs power on 11
 };
 
 // LEDs
 &pwm0 {
 	status = "okay";
-	ch0-pin = <17>;
-	ch0-inverted;
-	ch1-pin = <20>;
-	ch1-inverted;
-	ch2-pin = <19>;
-	ch2-inverted;
+	pinctrl-0 = <&pwm0_default>;
+	pinctrl-names = "default";	
 };
 
 // Buzzer
 &pwm1 {
 	status = "okay";
-	ch3-pin = <30>;
+	pinctrl-0 = <&pwm1_default>;
+	pinctrl-names = "default";	
 };
 
 // CC1101
 &spi1 {
 	compatible = "nordic,nrf-spi";
 	status = "okay";
-	sck-pin = <6>;
-	mosi-pin = <8>;
-	miso-pin = <7>;
+	pinctrl-0 = <&spi1_default>;
+	pinctrl-names = "default";
 	cs-gpios = <&gpio0 5 GPIO_ACTIVE_LOW>;
 	cc1101: spi-dev@0 {
 		reg = <0>;

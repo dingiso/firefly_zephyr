@@ -38,6 +38,10 @@ jobs:
         with:
           name: smoke_test_firefly.hex
           path: smoke_test_firefly.hex
+      - uses: actions/upload-artifact@v1
+        with:
+          name: smoke_test_firefly.elf
+          path: ./build/zephyr/zephyr.elf
       - run: west build smoke_test --pristine --board locket && mv ./build/zephyr/zephyr.hex smoke_test_locket.hex
       - uses: actions/upload-artifact@v1
         with:
@@ -52,15 +56,14 @@ jobs:
   hardware_test:
     runs-on: self-hosted
     needs: [build]
-    if: github.ref == 'never'
     steps:
       - uses: actions/checkout@v1
       - uses: actions/download-artifact@v1
         with:
-          name: smoke_test.hex
-      - run: stty -F /dev/ttyACM0 115200
-      - run: cat /dev/ttyACM0 > log.txt &
-      - run: JLinkExe -if SWD -autoconnect 1 -speed 4000 -device nrf52 -CommanderScript smoke_test/flash.jlink
+          name: smoke_test_firefly.elf
+      - run: stty -F /dev/ttyACM1 115200
+      - run: cat /dev/ttyACM1 > log.txt &
+      - run: gdb-multiarch -nx --batch -ex 'target extended-remote /dev/ttyACM0' -ex 'monitor swdp_scan' -ex 'attach 1' -ex 'load' -ex 'compare-sections' -ex 'kill' smoke_test_firefly.elf
       - run: sleep 10
       - run: cat log.txt
-      - run: cat log.txt | grep "PROJECT EXECUTION SUCCESSFUL"
+      - run: cat log.txt | grep "\[  PASSED  \]"

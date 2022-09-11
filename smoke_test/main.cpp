@@ -81,7 +81,7 @@ TEST(TimerTest, RunsEvery) {
   k_sleep(K_MSEC(10));
   ASSERT_EQ(counter, 3);
   k_sleep(K_MSEC(10));
-  ASSERT_EQ(counter, 44);
+  ASSERT_EQ(counter, 4);
 }
 
 TEST(EepromTest, CanReadWritten) {

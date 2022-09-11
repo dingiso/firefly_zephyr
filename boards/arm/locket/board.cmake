@@ -2,3 +2,5 @@
 board_runner_args(openocd "--cmd-pre-init=reset_config none separate")
 include(${ZEPHYR_BASE}/boards/common/openocd.board.cmake)
 
+include(${ZEPHYR_BASE}/boards/common/blackmagicprobe.board.cmake)
+

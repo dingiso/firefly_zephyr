@@ -12,7 +12,7 @@ list(APPEND ZEPHYR_EXTRA_MODULES
 # set(BOARD_ROOT ${CMAKE_CURRENT_LIST_DIR}..)
 set(BOARD_ROOT ${CMAKE_CURRENT_LIST_DIR}/..)
 
-include($ENV{ZEPHYR_BASE}/cmake/app/boilerplate.cmake NO_POLICY_SCOPE)
+find_package(Zephyr)
 
 project(smoke_test)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)

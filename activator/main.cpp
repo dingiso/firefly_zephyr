@@ -4,7 +4,7 @@
 #include <zephyr/logging/log.h>
 #include <zephyr/sys/byteorder.h>
 #include <zephyr/sys/printk.h>
-#include <zephyr/zephyr.h>
+#include <zephyr/kernel.h>
 #include <zephyr/types.h>
 
 #include <zephyr/bluetooth/bluetooth.h>
@@ -102,7 +102,7 @@ BT_GATT_SERVICE_DEFINE(firefly_service,
 
 } // namespace
 
-void main(void) {
+int main(void) {
   InitBleAdvertising(ConnectableFastAdvertisingParams());
 
   packet.LoadOrInit({

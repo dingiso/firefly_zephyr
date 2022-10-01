@@ -2,17 +2,16 @@
 
 LOG_MODULE_DECLARE();
 
-const device* Cc1101::spi_ = device_get_binding(DT_LABEL(DT_ALIAS(cc1101_spi)));
+const device* Cc1101::spi_ = DEVICE_DT_GET(DT_ALIAS(cc1101_spi));
 
-const device* gpio_device = device_get_binding(DT_GPIO_LABEL(DT_ALIAS(cc1101_gdo0), gpios));
-gpio_pin_t gd_pin = DT_GPIO_PIN(DT_ALIAS(cc1101_gdo0), gpios);
+const gpio_dt_spec gpio_device_spec = GPIO_DT_SPEC_GET(DT_ALIAS(cc1101_gdo0), gpios);
 
 k_sem Cc1101::gd_ready_;
 gpio_callback Cc1101::gdo0_callback_data_;
 
 spi_cs_control Cc1101::spi_cs_cfg_ = {
   .gpio = {
-    .port = device_get_binding(DT_SPI_DEV_CS_GPIOS_LABEL(DT_ALIAS(cc1101))),
+    .port = DEVICE_DT_GET(DT_SPI_DEV_CS_GPIOS_CTLR(DT_ALIAS(cc1101))),
     .pin = DT_SPI_DEV_CS_GPIOS_PIN(DT_ALIAS(cc1101)),
     .dt_flags = DT_SPI_DEV_CS_GPIOS_FLAGS(DT_ALIAS(cc1101)),
   },
@@ -44,14 +43,14 @@ void Cc1101::Init() {
   SetTxPower(CC_PwrMinus30dBm);
   SetChannel(0);
 
-	auto ret = gpio_pin_configure(gpio_device, gd_pin, DT_GPIO_FLAGS(DT_ALIAS(cc1101_gdo0), gpios) | GPIO_INPUT);
+	auto ret = gpio_pin_configure_dt(&gpio_device_spec, GPIO_INPUT);
 	if (ret != 0) LOG_ERR("Failed to configure button pin: %d", ret);
 
-	ret = gpio_pin_interrupt_configure(gpio_device, gd_pin, GPIO_INT_EDGE_FALLING);
+	ret = gpio_pin_interrupt_configure_dt(&gpio_device_spec, GPIO_INT_EDGE_FALLING);
 	if (ret != 0) LOG_ERR("Failed to configure interrupt on pin: %d", ret);
 
-	gpio_init_callback(&gdo0_callback_data_, Gdo0Callback, BIT(gd_pin));
-	gpio_add_callback(gpio_device, &gdo0_callback_data_);
+	gpio_init_callback(&gdo0_callback_data_, Gdo0Callback, BIT(gpio_device_spec.pin));
+	gpio_add_callback(gpio_device_spec.port, &gdo0_callback_data_);
 }
 
 void Cc1101::Gdo0Callback(const device *dev, gpio_callback *cb, gpio_port_pins_t pins)

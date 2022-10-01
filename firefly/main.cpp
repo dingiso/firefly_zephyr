@@ -3,7 +3,7 @@
 #include <zephyr/drivers/gpio.h>
 #include <zephyr/drivers/spi.h>
 #include <zephyr/logging/log.h>
-#include <zephyr/zephyr.h>
+#include <zephyr/kernel.h>
 #include <zephyr/bluetooth/bluetooth.h>
 #include <zephyr/bluetooth/conn.h>
 #include <zephyr/bluetooth/gatt.h>
@@ -126,7 +126,7 @@ BT_GATT_SERVICE_DEFINE(firefly_service,
 );
 
 
-void main(void) {
+int main(void) {
   LOG_WRN("Hello! Application started successfully.");
   InitBleAdvertising(ConnectableSlowAdvertisingParams());
 

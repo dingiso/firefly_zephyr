@@ -6,6 +6,7 @@
 
 #include <zephyr/drivers/pwm.h>
 #include <zephyr/device.h>
+#include <zephyr/drivers/gpio.h>
 
 #include "color.h"
 #include "timer.h"
@@ -31,7 +32,7 @@ private:
   const device* device_r_ = DEVICE_DT_GET(DT_PWMS_CTLR(DT_ALIAS(led_r)));
   const device* device_g_ = DEVICE_DT_GET(DT_PWMS_CTLR(DT_ALIAS(led_g)));
   const device* device_b_ = DEVICE_DT_GET(DT_PWMS_CTLR(DT_ALIAS(led_b)));
-  const device* device_stabilizer_ = device_get_binding(DT_GPIO_LABEL(DT_ALIAS(led_en), gpios));
+  const gpio_dt_spec device_stabilizer_spec_ = GPIO_DT_SPEC_GET(DT_ALIAS(led_en), gpios);
   Timer timer_;
 };
 

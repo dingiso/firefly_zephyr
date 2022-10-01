@@ -18,12 +18,11 @@ RgbLed::RgbLed(): timer_([this](){ this->OnTimer(); }) {
 }
 
 void RgbLed::EnablePowerStabilizer() {
-  gpio_pin_configure(device_stabilizer_,
-    DT_GPIO_PIN(DT_ALIAS(led_en), gpios), GPIO_OUTPUT_ACTIVE | DT_GPIO_FLAGS(DT_ALIAS(led_en), gpios));
+  gpio_pin_configure_dt(&device_stabilizer_spec_, GPIO_OUTPUT_ACTIVE);
 }
 
 void RgbLed::DisablePowerStabilizer() {
-  gpio_pin_set(device_stabilizer_, DT_GPIO_PIN(DT_ALIAS(led_en), gpios), 0);
+  gpio_pin_set_dt(&device_stabilizer_spec_, 0);
 }
 
 void RgbLed::SetColor(const Color& color) {

@@ -8,6 +8,9 @@
 * IDE: At the moment, Visual Studio Code with the bunch of plugins is used (VSCode will automatically ask to install them when
   opening this repository. Other IDEs can be also potentially used, more investigation is needed. Most of the commands are run
   from the command line anyway.
+* Linux or running via WSL under Windows is recommended, as Black Magic Probe programming [doesn't work on Windows](https://github.com/zephyrproject-rtos/zephyr/issues/50789)
+  When running under WSL, [usbipd](https://devblogs.microsoft.com/commandline/connecting-usb-devices-to-wsl/) can be used to allow interaction
+  with the hardware from WSL.
 
 # Hardware prerequisites
 * For flashing, one of [nRF devkits](https://www.nordicsemi.com/Software-and-Tools/Development-Kits) is required.

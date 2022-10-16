@@ -19,7 +19,7 @@ jobs:
       - run: sudo apt-get update && sudo apt-get install --no-install-recommends git cmake ninja-build gperf ccache dfu-util device-tree-compiler wget python3-dev python3-pip python3-setuptools python3-tk python3-wheel xz-utils file make gcc gcc-multilib g++-multilib libsdl2-dev
       - run: sudo pip3 install west
       - run: cd .. && git clone https://pigweed.googlesource.com/pigweed/pigweed && cd -
-      - run: west init zephyrproject --mr v3.2.0-rc3 && cd zephyrproject && west update && west zephyr-export && cd -
+      - run: west init zephyrproject --mr v3.2.0 && cd zephyrproject && west update && west zephyr-export && cd -
       - run: pip3 install -r ./zephyrproject/zephyr/scripts/requirements.txt
       - run: cd ./zephyrproject/zephyr && source zephyr-env.sh && cd ../..
       - run: west manifest --validate

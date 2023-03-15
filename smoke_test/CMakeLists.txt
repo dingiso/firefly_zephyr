@@ -29,7 +29,3 @@ target_link_libraries(app PRIVATE
   pw_unit_test.light
   printk_event_handler
 )
-
-# Remove when migrating to the Zephyr RTOS version containing
-# https://github.com/zephyrproject-rtos/zephyr/commit/82caf98dde455f9a7a9b97a6c181072ab626e5c0
-target_compile_options(pw_sys_io_zephyr PRIVATE -Wno-error=missing-field-initializers)

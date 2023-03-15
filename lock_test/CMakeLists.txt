@@ -14,19 +14,13 @@ set(BOARD_ROOT ${CMAKE_CURRENT_LIST_DIR}/..)
 
 find_package(Zephyr)
 
-project(smoke_test)
+project(lock_test)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-add_subdirectory(../common common)
 add_subdirectory(../testing testing)
 
 target_sources(app PRIVATE main.cpp)
 target_link_libraries(app PRIVATE
-  color
-  timer
-  cc1101
-  rgb_led
-  buzzer
   pw_unit_test.light
   printk_event_handler
 )

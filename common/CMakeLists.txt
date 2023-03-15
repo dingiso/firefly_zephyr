@@ -32,8 +32,3 @@ target_link_libraries(buzzer PRIVATE timer)
 
 custom_library(rgb_led rgb_led.cpp)
 target_link_libraries(rgb_led PRIVATE color timer)
-
-if(CONFIG_TEST)
-  custom_library(printk_event_handler printk_event_handler.cpp)
-  target_link_libraries(printk_event_handler PRIVATE pw_unit_test.googletest_style_event_handler)
-endif()

@@ -1,0 +1,4 @@
+r
+loadfile smoke_test.hex/lock_test.hex
+r
+exit

@@ -2,14 +2,11 @@
   "files.exclude": {
     "build/": true,
   },
-  "cmake.configureOnOpen": true,
-  "cmake.sourceDirectory": "${workspaceFolder}/firefly",
-  "terminal.integrated.shell.windows": "C:\\Program Files\\Git\\bin\\bash.exe",
   "nrf-connect.applications": [
     "${workspaceFolder}/activator",
     "${workspaceFolder}/firefly",
     "${workspaceFolder}/smoke_test"
   ],
-  "nrf-connect.topdir": "${nrf-connect.sdk:Zephyr 3.2.0-rc3}",
-  "nrf-connect.toolchain.path": "PATH",
+  "nrf-connect.topdir": "${nrf-connect.sdk:2.3.0}",
+  "nrf-connect.toolchain.path": "${nrf-connect.toolchain:2.3.0}"
 }

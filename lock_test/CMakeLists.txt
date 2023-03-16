@@ -19,8 +19,19 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 add_subdirectory(../testing testing)
 
+include($ENV{PW_ROOT}/pw_build/pigweed.cmake)
+include($ENV{PW_ROOT}/pw_protobuf_compiler/proto.cmake)
+
+pw_proto_library(lock_test.test_proto
+  SOURCES
+    test.proto
+  DEPS
+    pw_protobuf.field_options_proto
+)
+
 target_sources(app PRIVATE main.cpp)
 target_link_libraries(app PRIVATE
   pw_unit_test.light
   printk_event_handler
+  lock_test.test_proto.pwpb
 )

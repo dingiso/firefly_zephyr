@@ -1,0 +1,14 @@
+import "pw_protobuf_protos/field_options.proto";
+
+package lock_test;
+
+message Customer {
+  enum Status {
+    NEW = 1;
+    ACTIVE = 2;
+    INACTIVE = 3;
+  }
+  optional int32 age = 1;
+  optional string name = 2 [(pw.protobuf.pwpb).max_size = 10];
+  optional Status status = 3;
+}

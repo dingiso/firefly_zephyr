@@ -11,9 +11,24 @@
 #include "printk_event_handler.h"
 
 #include "gtest/gtest.h"
+#include "test.pwpb.h"
 
 TEST(BasicTest, Sum) {
   ASSERT_EQ(2 + 2, 4);
+}
+
+TEST(ProtoTest, Equality) {
+  static_assert(pw::protobuf::IsTriviallyComparable<lock_test::pwpb::Customer::Message>());
+  lock_test::pwpb::Customer::Message a, b;
+  a.age = 5;
+  a.status = lock_test::pwpb::Customer::Status::ACTIVE;
+  a.name = "Alexey";
+
+  b.age = 5;
+  b.status = lock_test::pwpb::Customer::Status::ACTIVE;
+  b.name = "Alexey";
+
+  ASSERT_EQ(a, b);
 }
 
 int main() {

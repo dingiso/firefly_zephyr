@@ -1,5 +1,9 @@
 cmake_minimum_required(VERSION 3.13.1)
 
+if(CMAKE_COMPILER_IS_GNUCXX)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-psabi")
+endif()
+
 # Pigweed used 16k by default which is A LOT.
 add_definitions(-DPW_UNIT_TEST_CONFIG_MEMORY_POOL_SIZE=512)
 

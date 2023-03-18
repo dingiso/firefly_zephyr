@@ -5,7 +5,6 @@
 #include <atomic>
 #include <functional>
 #include <memory>
-#include <vector>
 
 #include "gtest/gtest.h"
 #include "printk_event_handler.h"

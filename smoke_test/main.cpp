@@ -2,9 +2,7 @@
 #include <atomic>
 #include <functional>
 #include <memory>
-#include <vector>
 
-#include <vector>
 #include <zephyr/kernel.h>
 #include <zephyr/random/rand32.h>
 

@@ -10,5 +10,6 @@
   ],
   "nrf-connect.topdir": "${nrf-connect.sdk:2.3.0}",
   "nrf-connect.toolchain.path": "${nrf-connect.toolchain:2.3.0}",
-  "cmake.configureOnEdit": false
+  "cmake.configureOnEdit": false,
+  "C_Cpp.default.compileCommands": "lock_test/build/compile_commands.json"
 }

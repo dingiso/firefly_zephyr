@@ -55,5 +55,7 @@ target_link_libraries(app PRIVATE
   lock_test.test_proto.pwpb_rpc
   pw_unit_test.light
   printk_event_handler
+  pw_log.protos.raw_rpc
+  pw_log
 )
 

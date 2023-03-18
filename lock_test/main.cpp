@@ -15,6 +15,7 @@
 #include "system_server.h"
 #include "pw_log/log.h"
 #include "pw_assert/check.h"
+#include "pw_log/proto/log.raw_rpc.pb.h"
 
 TEST(BasicTest, Sum) {
   ASSERT_EQ(2 + 2, 4);
@@ -44,7 +45,13 @@ class EchoService final
   }
 };
 
+class LogService final : public pw::log::pw_rpc::raw::Logs::Service<LogService> {
+ public:
+  void Listen(pw::ConstByteSpan, pw::rpc::RawServerWriter&) {}
+};
+
 static EchoService echo_service;
+static LogService log_service;
 
 int main() {
   PrintkEventHandler handler;
@@ -56,6 +63,7 @@ int main() {
   }
 
   lock_test::rpc::system_server::Server().RegisterService(echo_service);
+  lock_test::rpc::system_server::Server().RegisterService(log_service);
 
   PW_LOG_INFO("Starting pw_rpc server");
   PW_CHECK_OK(lock_test::rpc::system_server::Start());

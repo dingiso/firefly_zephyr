@@ -17,8 +17,8 @@ find_package(Zephyr)
 project(smoke_test)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-add_subdirectory(../common common)
-add_subdirectory(../testing testing)
+add_subdirectory(../common common EXCLUDE_FROM_ALL)
+add_subdirectory(../testing testing EXCLUDE_FROM_ALL)
 
 target_sources(app PRIVATE main.cpp)
 target_link_libraries(app PRIVATE

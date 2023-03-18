@@ -21,7 +21,8 @@ find_package(Zephyr)
 project(lock_test)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-add_subdirectory(../testing testing)
+add_subdirectory(../testing testing EXCLUDE_FROM_ALL)
+add_subdirectory(../common common EXCLUDE_FROM_ALL)
 
 include($ENV{PW_ROOT}/pw_build/pigweed.cmake)
 include($ENV{PW_ROOT}/pw_protobuf_compiler/proto.cmake)

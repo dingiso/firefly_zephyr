@@ -1,6 +1,7 @@
-import "pw_protobuf_protos/field_options.proto";
-
+syntax = "proto2";
 package lock_test;
+
+import "pw_protobuf_protos/field_options.proto";
 
 message Customer {
   enum Status {
@@ -12,3 +13,22 @@ message Customer {
   optional string name = 2 [(pw.protobuf.pwpb).max_size = 10];
   optional Status status = 3;
 }
+
+// To call this service:
+// Start an interactive console:
+//   python -m pw_system.console --device COM6   --verbose --proto-globs test.proto
+// Note: currently it doesn't process test.proto correctly if field_options.proto import is present
+// (as it doesn't pass proper include folder to proto compiler),
+// so just remove the import and the corresponding annotation.
+// Hopefully it won't be a problem when proper client is used instead of a console.
+//
+// Then, in the console run
+//   rpcs.lock_test.EchoService.Echo(age=15, name='Alexey')
+//
+// If that doesn't work - consider running just `rpcs` in the console to see if test.proto was imported
+// correctly and service was recognised.
+// There is also a `protos` command to list all loaded protos.
+service EchoService {
+  rpc Echo(Customer) returns (Customer);
+}
+

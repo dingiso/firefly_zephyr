@@ -1,17 +1,20 @@
+#include <zephyr/kernel.h>
+#include <zephyr/random/rand32.h>
+
 #include <array>
 #include <atomic>
 #include <functional>
 #include <memory>
 #include <vector>
 
-#include <vector>
-#include <zephyr/kernel.h>
-#include <zephyr/random/rand32.h>
-
-#include "printk_event_handler.h"
-
 #include "gtest/gtest.h"
+#include "printk_event_handler.h"
+#include "pw_rpc/server.h"
 #include "test.pwpb.h"
+#include "test.rpc.pwpb.h"
+#include "system_server.h"
+#include "pw_log/log.h"
+#include "pw_assert/check.h"
 
 TEST(BasicTest, Sum) {
   ASSERT_EQ(2 + 2, 4);
@@ -31,6 +34,18 @@ TEST(ProtoTest, Equality) {
   ASSERT_EQ(a, b);
 }
 
+class EchoService
+    : public lock_test::pw_rpc::pwpb::EchoService::Service<EchoService> {
+ public:
+  pw::Status Echo(const lock_test::pwpb::Customer::Message& request, lock_test::pwpb::Customer::Message& response) {
+    response = request;
+    response.age += 7;
+    return pw::OkStatus();
+  }
+};
+
+static EchoService echo_service;
+
 int main() {
   PrintkEventHandler handler;
   pw::unit_test::RegisterEventHandler(&handler);
@@ -39,5 +54,12 @@ int main() {
   if (!num_failures) {
     printk("All tests passed!\n");
   }
-  while(true) k_sleep(K_MSEC(1000));
+
+  lock_test::rpc::system_server::Server().RegisterService(echo_service);
+
+  PW_LOG_INFO("Starting pw_rpc server");
+  PW_CHECK_OK(lock_test::rpc::system_server::Start());
+
+
+  while (true) k_sleep(K_MSEC(1000));
 }

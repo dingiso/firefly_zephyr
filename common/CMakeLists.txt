@@ -26,3 +26,6 @@ target_link_libraries(buzzer PRIVATE timer)
 
 custom_library(rgb_led rgb_led.cpp)
 target_link_libraries(rgb_led PRIVATE color timer)
+
+custom_library(common.keyboard keyboard.cpp)
+target_link_libraries(common.keyboard PRIVATE timer)

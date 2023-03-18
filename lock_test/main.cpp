@@ -6,6 +6,7 @@
 #include <functional>
 #include <memory>
 
+#include "keyboard.h"
 #include "gtest/gtest.h"
 #include "printk_event_handler.h"
 #include "pw_rpc/server.h"
@@ -60,6 +61,10 @@ int main() {
   if (!num_failures) {
     printk("All tests passed!\n");
   }
+
+  Keyboard keyboard([](char c) {
+    PW_LOG_INFO("Pressed %c", c);
+  });
 
   lock_test::rpc::system_server::Server().RegisterService(echo_service);
   lock_test::rpc::system_server::Server().RegisterService(log_service);

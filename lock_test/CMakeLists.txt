@@ -48,6 +48,7 @@ pw_add_library(lock_test.system_server STATIC
 
 target_sources(app PRIVATE main.cpp)
 target_link_libraries(app PRIVATE
+  common.keyboard
   pw_hdlc
   pw_hdlc.pw_rpc
   pw_rpc.server

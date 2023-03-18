@@ -1,5 +1,9 @@
 cmake_minimum_required(VERSION 3.13.1)
 
+list(APPEND ZEPHYR_EXTRA_MODULES
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../pigweed
+)
+
 # Re-direct the directory where the 'boards' directory is found from
 # $ZEPHYR_BASE to this directory.
 # set(BOARD_ROOT ${CMAKE_CURRENT_LIST_DIR}..)

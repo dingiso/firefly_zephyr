@@ -2,12 +2,12 @@
 
 namespace {
 void GenericCallback(k_timer *timer) {
-  auto* f = static_cast<std::function<void()>*>(k_timer_user_data_get(timer));
+  auto* f = static_cast<pw::Function<void()>*>(k_timer_user_data_get(timer));
   (*f)();
 }
 }
 
-Timer::Timer(std::function<void()> action): action_(std::move(action)) {
+Timer::Timer(pw::Function<void()> action): action_(std::move(action)) {
   k_timer_init(&timer_, GenericCallback, nullptr);
   k_timer_user_data_set(&timer_, const_cast<void*>(static_cast<const void*>(&action_)));
 }
@@ -42,13 +42,13 @@ void Timer::Cancel() {
   k_timer_stop(&timer_);
 }
 
-Timer RunDelayed(std::function<void()> action, uint32_t delay_ms) {
+Timer RunDelayed(pw::Function<void()> action, uint32_t delay_ms) {
   Timer t(std::move(action));
   t.RunDelayed(delay_ms);
   return t;
 }
 
-Timer RunEvery(std::function<void()> action, uint32_t period_ms) {
+Timer RunEvery(pw::Function<void()> action, uint32_t period_ms) {
   Timer t(std::move(action));
   t.RunEvery(period_ms);
   return t;

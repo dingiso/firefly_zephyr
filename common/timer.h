@@ -3,9 +3,11 @@
 
 #include <zephyr/kernel.h>
 
+#include "pw_function/function.h"
+
 class Timer {
  public:
-  explicit Timer(std::function<void()> action);
+  explicit Timer(pw::Function<void()> action);
   Timer(const Timer& other) = delete;
   Timer(Timer&& other);
   const Timer& operator=(Timer&& other);
@@ -17,8 +19,8 @@ class Timer {
   void Cancel();
  private:
   k_timer timer_;
-  std::function<void()> action_;
+  pw::Function<void()> action_;
 };
 
-Timer RunDelayed(std::function<void()> action, uint32_t delay_ms);
-Timer RunEvery(std::function<void()> action, uint32_t delay_ms);
+Timer RunDelayed(pw::Function<void()> action, uint32_t delay_ms);
+Timer RunEvery(pw::Function<void()> action, uint32_t delay_ms);

@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.13.1)
 
-if(CMAKE_COMPILER_IS_GNUCXX)
+if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-psabi")
 endif()
 

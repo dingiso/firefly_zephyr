@@ -34,7 +34,7 @@ TEST(ProtoTest, Equality) {
   ASSERT_EQ(a, b);
 }
 
-class EchoService
+class EchoService final
     : public lock_test::pw_rpc::pwpb::EchoService::Service<EchoService> {
  public:
   pw::Status Echo(const lock_test::pwpb::Customer::Message& request, lock_test::pwpb::Customer::Message& response) {

@@ -212,6 +212,8 @@ static const device* mfrc522_dev = DEVICE_DT_GET(DT_ALIAS(mfrc522_spi));
 const gpio_dt_spec irq_gpio_device_spec = GPIO_DT_SPEC_GET(DT_NODELABEL(nfc_irq), gpios);
 static gpio_callback irq_callback_data;
 
+const gpio_dt_spec beeper_gpio_device_spec = GPIO_DT_SPEC_GET(DT_NODELABEL(rx_beeper), gpios);
+
 static const spi_cs_control spi_cs_cfg = {
     .gpio = {
         .port = DEVICE_DT_GET(DT_SPI_DEV_CS_GPIOS_CTLR(DT_ALIAS(mfrc522))),
@@ -296,6 +298,8 @@ void ConfigureInterrupts() {
   PW_CHECK_INT_EQ(gpio_pin_interrupt_configure_dt(&irq_gpio_device_spec, GPIO_INT_EDGE_RISING), 0);
   gpio_init_callback(&irq_callback_data, RqCallback, BIT(irq_gpio_device_spec.pin));
   PW_CHECK_INT_EQ(gpio_add_callback(irq_gpio_device_spec.port, &irq_callback_data), 0);
+
+  PW_CHECK_INT_EQ(gpio_pin_configure_dt(&beeper_gpio_device_spec, GPIO_OUTPUT), 0);
 }
 
 void CheckWriteRead() {
@@ -330,8 +334,7 @@ void Nfc::RunTests() {
 
   while (true) {
     SendCommand(Command::Idle);
-    // WriteRegister(Register::ComIrqReg, underlying(~ComIrqRegBits::Set1));
-    WriteRegister(Register::ComIrqReg, 0b01111111);
+    WriteRegister(Register::ComIrqReg, underlying(~ComIrqRegBits::Set1));
 
     k_sleep(K_MSEC(5));
 
@@ -345,6 +348,7 @@ void Nfc::RunTests() {
       Log(ErrorRegBits(err));
     }
 
+    auto delay = 400;
     auto got_a_reply = any(ComIrqRegBits(ReadRegister(Register::ComIrqReg)) & ComIrqRegBits::RxIRq);
     if (got_a_reply) {
       // Wait for data to appear in the FIFO
@@ -354,11 +358,15 @@ void Nfc::RunTests() {
         auto b1 = ReadRegister(Register::FIFODataReg);
         auto b2 = ReadRegister(Register::FIFODataReg);
         PW_LOG_INFO("ATQA: 0x%x 0x%x", b1, b2);
+        gpio_pin_set_dt(&beeper_gpio_device_spec, 1);
+        k_sleep(K_MSEC(300));
+        delay -= 300;
+        gpio_pin_set_dt(&beeper_gpio_device_spec, 0);
       } else {
         PW_LOG_ERROR("Unexpected fifo level: %d", s);
       }
     }
 
-    k_sleep(K_MSEC(400));
+    k_sleep(K_MSEC(delay));
   }
 }

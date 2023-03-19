@@ -111,6 +111,13 @@ any(const Enum& v) {
   return static_cast<underlying>(v) ? 1 : 0;
 }
 
+template <typename Enum>
+typename std::enable_if_t<is_bitmask_enum_v<Enum>, std::underlying_type_t<Enum>>
+underlying(const Enum& v) {
+  using underlying = typename std::underlying_type_t<Enum>;
+  return static_cast<underlying>(v);
+}
+
 // ----- Bitwise mask checks --------------------------------------------------
 
 template <typename Enum>

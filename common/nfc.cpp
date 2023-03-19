@@ -102,7 +102,7 @@ ENABLE_BITMASK_OPERATORS(ComIrqRegBits)
 
 void Log(ComIrqRegBits bits) {
   PW_LOG_INFO("ComIrqReg: %d (Set1 = %d, TxIRq = %d, RxIRq = %d, IdleIRq = %d, HiAlertIRq = %d, LoAlertIRq = %d, ErrIRq = %d, TimerIRq = %d)",
-              uint8_t(bits),
+              underlying(bits),
               any(bits & ComIrqRegBits::Set1),
               any(bits & ComIrqRegBits::TxIRq),
               any(bits & ComIrqRegBits::RxIRq),
@@ -127,7 +127,7 @@ ENABLE_BITMASK_OPERATORS(Status1RegBits);
 
 void Log(Status1RegBits bits) {
   PW_LOG_INFO("Status1Reg: %d (CRCOk = %d, CRCReady = %d, IRq = %d, TRunning = %d, HiAlert = %d, LoAlert = %d)",
-              uint8_t(bits),
+              underlying(bits),
               any(bits & Status1RegBits::CRCOk),
               any(bits & Status1RegBits::CRCReady),
               any(bits & Status1RegBits::IRq),
@@ -136,10 +136,76 @@ void Log(Status1RegBits bits) {
               any(bits & Status1RegBits::LoAlert));
 }
 
+enum class RFCfgRegRegBits : uint8_t {
+  Gain18db = 0b010 << 4,
+  Gain23db = 0b011 << 4,
+  Gain33db = 0b100 << 4,
+  Gain38db = 0b101 << 4,
+  Gain43db = 0b110 << 4,
+  Gain48db = 0b111 << 4,
+};
+ENABLE_BITMASK_OPERATORS(RFCfgRegRegBits)
+
 enum class FifoLevelRegBits : uint8_t {
-  FlushBuffer = 1 << 7,    //  Immediately clears the internal FIFO buffer’s read and write pointer and ErrorReg register’s BufferOvfl bit.
+  FlushBuffer = 1 << 7, //  Immediately clears the internal FIFO buffer’s read and write pointer and ErrorReg register’s BufferOvfl bit.
   // Lower bits represent the number of bytes stored in the FIFO buffer.
 };
+ENABLE_BITMASK_OPERATORS(FifoLevelRegBits)
+
+enum class ComIEnRegBits : uint8_t {
+  IRqInv = 1 << 7,     // Invert the signal on the IRQ pit (make it active low)
+  TxIEn = 1 << 6,      // Allows the transmitter interrupt request (TxIRq bit) to be propagated to IRQ pin
+  RxIEn = 1 << 5,      // Allows the transmitter interrupt request (RxIRq bit) to be propagated to IRQ pin
+  IdleIEn = 1 << 4,    // Allows the idle interrupt request (IdleIRq bit) to be propagated to IRQ pin
+  HiAlertIEn = 1 << 3, // Allows the high alert interrupt request (HiAlertIRq bit) to be propagated to IRQ pin
+  LoAlertIEn = 1 << 2, // Allows the low alert interrupt request (LoAlertIRq bit) to be propagated to IRQ pin
+  ErrIEn = 1 << 1,     // Allows the error interrupt request (ErrIRq bit) to be propagated to IRQ pin
+  TimerIEn = 1 << 0,   // Allows the timer interrupt request (TimerIRq bit)  to be propagated to IRQ pin
+};
+ENABLE_BITMASK_OPERATORS(ComIEnRegBits)
+
+enum class ErrorRegBits : uint8_t {
+  WrErr = 1 << 7,       // Data is written into the FIFO buffer by the host during the MFAuthent
+                        // command or if data is written into the FIFO buffer by the host during the
+                        // time between sending the last bit on the RF interface and receiving the
+                        // last bit on the RF interface.
+  TempErr = 1 << 6,     // Internal temperature sensor detects overheating, in which case the
+                        // antenna drivers are automatically switched off.
+  BufferOvfl = 1 << 4,  // Indicates a FIFO overflow.
+  CollErr = 1 << 3,     // A bit-collision is detected
+                        // * cleared automatically at receiver start-up phase
+                        // * only valid during the bitwise anticollision at 106 kBd
+  CRCErr = 1 << 2,      // The RxModeReg register’s RxCRCEn bit is set and the CRC calculation fails
+                        // * automatically cleared to logic 0 during receiver start-up phase
+  ParityErr = 1 << 1,   // Parity check failed
+                        // * automatically cleared during receiver start-up phase
+                        // * only valid for ISO/IEC 14443 A/MIFARE communication at 106 kBd
+  ProtocolErr = 1 << 0, // Set to logic 1 if the SOF is incorrect
+                        // * automatically cleared during receiver start-up phase
+                        // * bit is only valid for 106 kBd.
+};
+ENABLE_BITMASK_OPERATORS(ErrorRegBits)
+void Log(ErrorRegBits bits) {
+  PW_LOG_INFO("ErrorReg: %d (WrErr = %d, TempErr = %d, BufferOvfl = %d, CollErr = %d, CRCErr = %d, ParityErr = %d, ProtocolErr = %d)",
+              underlying(bits),
+              any(bits & ErrorRegBits::WrErr),
+              any(bits & ErrorRegBits::TempErr),
+              any(bits & ErrorRegBits::BufferOvfl),
+              any(bits & ErrorRegBits::CollErr),
+              any(bits & ErrorRegBits::CRCErr),
+              any(bits & ErrorRegBits::ParityErr),
+              any(bits & ErrorRegBits::ProtocolErr));
+}
+
+enum class TxControlRegBits {
+  // There are other bits in this register, but they are not used in this driver.
+  // Ones below are 0 by default, need to be 1 to enable antenna.
+  Tx2RFEn = 1 << 1,   // Output signal on pin TX2 delivers the 13.56 MHz energy carrier
+                      // modulated by the transmission data.
+  Tx1RFEn = 1 << 0,   // Output signal on pin TX1 delivers the 13.56 MHz energy carrier
+                      // modulated by the transmission data.
+};
+ENABLE_BITMASK_OPERATORS(TxControlRegBits)
 
 static const device* mfrc522_dev = DEVICE_DT_GET(DT_ALIAS(mfrc522_spi));
 
@@ -211,7 +277,7 @@ void UnsetRegisterBits(Register reg, uint8_t mask) {
 }
 
 void SendCommand(Command cmd, pw::span<const uint8_t> arguments = {}) {
-  WriteRegister(Register::FIFOLevelReg, uint8_t(FifoLevelRegBits::FlushBuffer));
+  WriteRegister(Register::FIFOLevelReg, underlying(FifoLevelRegBits::FlushBuffer));
   for (auto arg : arguments) {
     WriteRegister(Register::FIFODataReg, arg);
   }
@@ -222,18 +288,14 @@ void SendCommand(Command cmd, pw::span<const uint8_t> arguments = {}) {
 }
 
 void RqCallback(const device*, gpio_callback*, unsigned int pin) {
-  PW_LOG_INFO("--------------------------------------------------------------------- RqCallback %d", pin);
+  PW_LOG_INFO("Rx callback called.");
 }
 
 void ConfigureInterrupts() {
-  auto ret = gpio_pin_configure_dt(&irq_gpio_device_spec, GPIO_INPUT);
-  if (ret != 0) LOG_ERR("Failed to configure button pin: %d", ret);
-
-  ret = gpio_pin_interrupt_configure_dt(&irq_gpio_device_spec, GPIO_INT_EDGE_RISING);
-  if (ret != 0) LOG_ERR("Failed to configure interrupt on pin: %d", ret);
-
+  PW_CHECK_INT_EQ(gpio_pin_configure_dt(&irq_gpio_device_spec, GPIO_INPUT), 0);
+  PW_CHECK_INT_EQ(gpio_pin_interrupt_configure_dt(&irq_gpio_device_spec, GPIO_INT_EDGE_RISING), 0);
   gpio_init_callback(&irq_callback_data, RqCallback, BIT(irq_gpio_device_spec.pin));
-  gpio_add_callback(irq_gpio_device_spec.port, &irq_callback_data);
+  PW_CHECK_INT_EQ(gpio_add_callback(irq_gpio_device_spec.port, &irq_callback_data), 0);
 }
 
 void CheckWriteRead() {
@@ -241,16 +303,6 @@ void CheckWriteRead() {
     WriteRegister(Register::RFCfgReg, v << 4);
     auto read_back = ReadRegister(Register::RFCfgReg);
     PW_ASSERT(read_back == v << 4);
-  }
-}
-
-void OverflowFIFO() {
-  for (int i = 0; i < 70; ++i) {
-    WriteRegister(Register::FIFODataReg, 0x33);
-    PW_LOG_INFO("Fifo level: %d", ReadRegister(Register::FIFOLevelReg));
-    PW_LOG_INFO("Status1: %x", ReadRegister(Register::Status1Reg));
-    PW_LOG_INFO("Status2: %x", ReadRegister(Register::Status2Reg));
-    k_sleep(K_MSEC(20));
   }
 }
 
@@ -265,54 +317,48 @@ void Nfc::RunTests() {
 
   CheckWriteRead();
 
-  WriteRegister(Register::ComIEnReg, 0b01111110); // HiAlert interrupt
-  SetRegisterBits(Register::TxControlReg, 0x03); // Enable antenna
-  WriteRegister(Register::RFCfgReg, 0x70); // Maximal gain
+  WriteRegister(Register::ComIEnReg, underlying(ComIEnRegBits::RxIEn));
 
-  // Reset baud rates
-  WriteRegister(Register::TxModeReg, 0x00);
-  WriteRegister(Register::RxModeReg, 0x00);
+  SetRegisterBits(Register::TxControlReg, underlying(TxControlRegBits::Tx1RFEn | TxControlRegBits::Tx2RFEn));
+  WriteRegister(Register::RFCfgReg, underlying(RFCfgRegRegBits::Gain48db));
 
-  // Reset ModWidthReg
-  WriteRegister(Register::ModWidthReg, 0x26);
-
+  // This was taken from some other library, I am not completely sure about those values.
   // Default 0x00. Force a 100 % ASK modulation independent of the ModGsPReg register setting
   WriteRegister(Register::TxASKReg, 0x40);
-
   // Default 0x3F. Set the preset value for the CRC coprocessor for the CalcCRC command to 0x6363 (ISO 14443-3 part 6.2.4)
   WriteRegister(Register::ModeReg, 0x3d);
 
   while (true) {
     SendCommand(Command::Idle);
+    // WriteRegister(Register::ComIrqReg, underlying(~ComIrqRegBits::Set1));
     WriteRegister(Register::ComIrqReg, 0b01111111);
 
     k_sleep(K_MSEC(5));
 
     uint8_t picc_command_wupa[] = {0x52};
     SendCommand(Command::Transceive, picc_command_wupa);
-    k_sleep(K_MSEC(10));
-    for (int i = 0; i < 1; ++i) {
-      auto irq = ReadRegister(Register::ComIrqReg); // Read the ComIrqReg register
-      if (any(ComIrqRegBits(irq) & ComIrqRegBits::RxIRq)) {
-        PW_LOG_INFO("Something happenned in response to WUPA!");
-        Log(ComIrqRegBits(irq));
-        Log(Status1RegBits(ReadRegister(Register::Status1Reg)));
-      }
-      if (auto er = ReadRegister(Register::ErrorReg); er != 0) {
-        PW_LOG_INFO("ErrorReg: %x", er);
-      }
-      k_sleep(K_MSEC(10));
+    k_sleep(K_MSEC(25));
+
+    UnsetRegisterBits(Register::BitFramingReg, 0x80);
+
+    if (auto err = ReadRegister(Register::ErrorReg); err != 0) {
+      Log(ErrorRegBits(err));
     }
 
-    WriteRegister(Register::BitFramingReg, ReadRegister(Register::BitFramingReg) & (~0x80));
+    auto got_a_reply = any(ComIrqRegBits(ReadRegister(Register::ComIrqReg)) & ComIrqRegBits::RxIRq);
+    if (got_a_reply) {
+      // Wait for data to appear in the FIFO
+      k_sleep(K_MSEC(50));
 
-    k_sleep(K_MSEC(50));
-    if (auto b = ReadRegister(Register::FIFOLevelReg); b > 0) {
-      PW_LOG_INFO("Fifo level: %d", b);
-      for (int i = 0; i < b; ++i) {
-        PW_LOG_INFO("Fifo data: %x", ReadRegister(Register::FIFODataReg));
+      if (auto s = ReadRegister(Register::FIFOLevelReg); s == 2) {
+        auto b1 = ReadRegister(Register::FIFODataReg);
+        auto b2 = ReadRegister(Register::FIFODataReg);
+        PW_LOG_INFO("ATQA: 0x%x 0x%x", b1, b2);
+      } else {
+        PW_LOG_ERROR("Unexpected fifo level: %d", s);
       }
     }
-    k_sleep(K_MSEC(200));
+
+    k_sleep(K_MSEC(400));
   }
 }

@@ -7,6 +7,7 @@
 #include <memory>
 
 #include "keyboard.h"
+#include "nfc.h"
 #include "gtest/gtest.h"
 #include "printk_event_handler.h"
 #include "pw_rpc/server.h"
@@ -68,6 +69,9 @@ int main() {
 
   lock_test::rpc::system_server::Server().RegisterService(echo_service);
   lock_test::rpc::system_server::Server().RegisterService(log_service);
+
+  Nfc nfc;
+  nfc.RunTests();
 
   PW_LOG_INFO("Starting pw_rpc server");
   PW_CHECK_OK(lock_test::rpc::system_server::Start());

@@ -200,12 +200,29 @@ void Log(ErrorRegBits bits) {
 enum class TxControlRegBits {
   // There are other bits in this register, but they are not used in this driver.
   // Ones below are 0 by default, need to be 1 to enable antenna.
-  Tx2RFEn = 1 << 1,   // Output signal on pin TX2 delivers the 13.56 MHz energy carrier
-                      // modulated by the transmission data.
-  Tx1RFEn = 1 << 0,   // Output signal on pin TX1 delivers the 13.56 MHz energy carrier
-                      // modulated by the transmission data.
+  Tx2RFEn = 1 << 1, // Output signal on pin TX2 delivers the 13.56 MHz energy carrier
+                    // modulated by the transmission data.
+  Tx1RFEn = 1 << 0, // Output signal on pin TX1 delivers the 13.56 MHz energy carrier
+                    // modulated by the transmission data.
 };
 ENABLE_BITMASK_OPERATORS(TxControlRegBits)
+
+enum class PiccCommand : uint8_t {
+  ReqIdl = 0x26,    // find the antenna area does not enter hibernation
+  ReqAll = 0x52,    // find all the cards antenna area
+  AntiColl = 0x93,  // anti-collision
+  SelectTag = 0x93, // election card
+  Authent1A = 0x60, // authentication key A
+  Authent1B = 0x61, // authentication key B
+  Read = 0x30,      // Read Block
+  Write = 0xA0,     // write block
+  Decrement = 0xC0, // debit
+  Increment = 0xC1, // recharge
+  Restore = 0xC2,   // transfer block data to the buffer
+  Transfer = 0xB0,  // save the data in the buffer
+  Halt = 0x50       // Sleep
+};
+ENABLE_BITMASK_OPERATORS(PiccCommand)
 
 static const device* mfrc522_dev = DEVICE_DT_GET(DT_ALIAS(mfrc522_spi));
 
@@ -224,7 +241,7 @@ static const spi_cs_control spi_cs_cfg = {
 };
 
 static const spi_config spi_cfg = {
-    .frequency = 0x400000UL, // 4 MHz
+    .frequency = 0x080000UL, // 4 MHz
     .operation = SPI_OP_MODE_MASTER | SPI_TRANSFER_MSB | SPI_WORD_SET(8) | SPI_LINES_SINGLE,
     .slave = 0,
     .cs = &spi_cs_cfg};
@@ -278,15 +295,9 @@ void UnsetRegisterBits(Register reg, uint8_t mask) {
   WriteRegister(reg, ReadRegister(reg) & ~mask);
 }
 
-void SendCommand(Command cmd, pw::span<const uint8_t> arguments = {}) {
+void SendSimpleCommand(Command cmd) {
   WriteRegister(Register::FIFOLevelReg, underlying(FifoLevelRegBits::FlushBuffer));
-  for (auto arg : arguments) {
-    WriteRegister(Register::FIFODataReg, arg);
-  }
   WriteRegister(Register::CommandReg, uint8_t(cmd));
-  if (cmd == Command::Transceive) {
-    SetRegisterBits(Register::BitFramingReg, 0x87);
-  }
 }
 
 void RqCallback(const device*, gpio_callback*, unsigned int pin) {
@@ -310,63 +321,127 @@ void CheckWriteRead() {
   }
 }
 
-void Nfc::RunTests() {
+void Init() {
   ConfigureInterrupts();
 
-  SendCommand(Command::SoftReset);
+  SendSimpleCommand(Command::SoftReset);
   k_sleep(K_MSEC(10));
 
   PW_LOG_INFO("MFRC522 version: %d", ReadRegister(Register::VersionReg));
-  SendCommand(Command::Idle);
+  SendSimpleCommand(Command::Idle);
 
   CheckWriteRead();
 
   WriteRegister(Register::ComIEnReg, underlying(ComIEnRegBits::RxIEn));
-
   SetRegisterBits(Register::TxControlReg, underlying(TxControlRegBits::Tx1RFEn | TxControlRegBits::Tx2RFEn));
-  WriteRegister(Register::RFCfgReg, underlying(RFCfgRegRegBits::Gain48db));
+  WriteRegister(Register::RFCfgReg, underlying(RFCfgRegRegBits::Gain38db));
 
   // This was taken from some other library, I am not completely sure about those values.
   // Default 0x00. Force a 100 % ASK modulation independent of the ModGsPReg register setting
   WriteRegister(Register::TxASKReg, 0x40);
   // Default 0x3F. Set the preset value for the CRC coprocessor for the CalcCRC command to 0x6363 (ISO 14443-3 part 6.2.4)
   WriteRegister(Register::ModeReg, 0x3d);
+}
 
+// Returns the number of bytes in the response.
+int Transceive(PiccCommand cmd, pw::span<const uint8_t> args, pw::span<uint8_t> response) {
+  WriteRegister(Register::ComIrqReg, underlying(~ComIrqRegBits::Set1));
+
+  k_sleep(K_MSEC(5));
+
+  switch (cmd) {
+    case PiccCommand::ReqAll:
+      SetRegisterBits(Register::BitFramingReg, 0x07);
+      break;
+
+    default:
+      UnsetRegisterBits(Register::BitFramingReg, 0x07);
+  }
+
+  WriteRegister(Register::FIFOLevelReg, underlying(FifoLevelRegBits::FlushBuffer));
+  WriteRegister(Register::FIFODataReg, underlying(cmd));
+  for (auto arg : args) {
+    WriteRegister(Register::FIFODataReg, arg);
+  }
+  WriteRegister(Register::CommandReg, uint8_t(Command::Transceive));
+  SetRegisterBits(Register::BitFramingReg, 0x80);
+
+  k_sleep(K_MSEC(25));
+  UnsetRegisterBits(Register::BitFramingReg, 0x87);
+
+  if (auto err = ReadRegister(Register::ErrorReg); err != 0) {
+    Log(ErrorRegBits(err));
+    return 0;
+  }
+
+  auto got_a_reply = any(ComIrqRegBits(ReadRegister(Register::ComIrqReg)) & ComIrqRegBits::RxIRq);
+  if (!got_a_reply) {
+    return 0;
+  }
+
+  k_sleep(K_MSEC(50));
+  auto reply_size = ReadRegister(Register::FIFOLevelReg);
+  if (reply_size > response.size()) {
+    PW_LOG_ERROR("Response (size = %d) doesn't fit into passed buffer!", reply_size);
+    return 0;
+  }
+
+  for (int i = 0; i < reply_size; ++i) {
+    response[i] = ReadRegister(Register::FIFODataReg);
+  }
+
+  return reply_size;
+}
+
+// Returns true if a card was detected.
+bool SendWakeUp() {
+  uint8_t rx[2];
+  if (auto s = Transceive(PiccCommand::ReqAll, {}, rx); s == 2) {
+    PW_LOG_INFO("ATQA: 0x%x 0x%x", rx[0], rx[1]);
+    return true;
+  } else if (s != 0) {
+    PW_LOG_ERROR("Unexpected WUPA reply size: %d", s);
+    return false;
+  } else {
+    return false;
+  }
+}
+
+bool ReadUID() {
+  uint8_t tx[] = {0x20};
+  uint8_t rx[5];
+  if (auto s = Transceive(PiccCommand::AntiColl, tx, rx); s == 5) {
+    auto checksum = rx[0] ^ rx[1] ^ rx[2] ^ rx[3] ^ rx[4];
+    if (checksum == 0) {
+      PW_LOG_INFO("AntiColl response: 0x%x %x %x %x %x", rx[0], rx[1], rx[2], rx[3], rx[4]);
+    } else {
+      PW_LOG_ERROR("AntiColl response with bad checksum: %d", checksum);
+    }
+    return true;
+  } else if (s != 0) {
+    PW_LOG_ERROR("Unexpected AntiColl reply size: %d", s);
+    return false;
+  } else {
+    return false;
+  }
+}
+
+void Nfc::RunTests() {
+  Init();
   while (true) {
-    SendCommand(Command::Idle);
-    WriteRegister(Register::ComIrqReg, underlying(~ComIrqRegBits::Set1));
+    SendSimpleCommand(Command::Idle);
+    k_sleep(K_MSEC(400));
 
-    k_sleep(K_MSEC(5));
-
-    uint8_t picc_command_wupa[] = {0x52};
-    SendCommand(Command::Transceive, picc_command_wupa);
-    k_sleep(K_MSEC(25));
-
-    UnsetRegisterBits(Register::BitFramingReg, 0x80);
-
-    if (auto err = ReadRegister(Register::ErrorReg); err != 0) {
-      Log(ErrorRegBits(err));
+    if (!SendWakeUp()) {
+      continue;
     }
 
-    auto delay = 400;
-    auto got_a_reply = any(ComIrqRegBits(ReadRegister(Register::ComIrqReg)) & ComIrqRegBits::RxIRq);
-    if (got_a_reply) {
-      // Wait for data to appear in the FIFO
-      k_sleep(K_MSEC(50));
+    if (!ReadUID()) {
+      continue;
+    };
 
-      if (auto s = ReadRegister(Register::FIFOLevelReg); s == 2) {
-        auto b1 = ReadRegister(Register::FIFODataReg);
-        auto b2 = ReadRegister(Register::FIFODataReg);
-        PW_LOG_INFO("ATQA: 0x%x 0x%x", b1, b2);
-        gpio_pin_set_dt(&beeper_gpio_device_spec, 1);
-        k_sleep(K_MSEC(300));
-        delay -= 300;
-        gpio_pin_set_dt(&beeper_gpio_device_spec, 0);
-      } else {
-        PW_LOG_ERROR("Unexpected fifo level: %d", s);
-      }
-    }
-
-    k_sleep(K_MSEC(delay));
+    gpio_pin_set_dt(&beeper_gpio_device_spec, 1);
+    k_sleep(K_MSEC(100));
+    gpio_pin_set_dt(&beeper_gpio_device_spec, 0);
   }
 }

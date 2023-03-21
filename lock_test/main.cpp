@@ -18,6 +18,8 @@
 #include "pw_assert/check.h"
 #include "pw_log/proto/log.raw_rpc.pb.h"
 
+const gpio_dt_spec beeper_gpio_device_spec = GPIO_DT_SPEC_GET(DT_NODELABEL(rx_beeper), gpios);
+
 TEST(BasicTest, Sum) {
   ASSERT_EQ(2 + 2, 4);
 }
@@ -70,8 +72,24 @@ int main() {
   lock_test::rpc::system_server::Server().RegisterService(echo_service);
   lock_test::rpc::system_server::Server().RegisterService(log_service);
 
+  PW_CHECK_INT_EQ(gpio_pin_configure_dt(&beeper_gpio_device_spec, GPIO_OUTPUT), 0);
   Nfc nfc;
-  nfc.RunTests();
+  nfc.Init();
+  nfc.ReadUIDContinuously(400, [](const pw::Vector<uint8_t>& uid) {
+    if (uid.size() == 4) {
+      PW_LOG_INFO("4 byte UID: %02x %02x %02x %02x", uid[0], uid[1], uid[2], uid[3]);
+    } else if (uid.size() == 7) {
+      PW_LOG_INFO("7 byte UID: %02x %02x %02x %02x %02x %02x %02x", uid[0], uid[1], uid[2], uid[3], uid[4], uid[5], uid[6]);
+    } else {
+      PW_LOG_WARN("Unsupported UID length: %d", uid.size());
+    }
+
+    if (uid.size() > 0) {
+      gpio_pin_set_dt(&beeper_gpio_device_spec, 1);
+      k_sleep(K_MSEC(100));
+      gpio_pin_set_dt(&beeper_gpio_device_spec, 0);
+    }
+  });
 
   PW_LOG_INFO("Starting pw_rpc server");
   PW_CHECK_OK(lock_test::rpc::system_server::Start());

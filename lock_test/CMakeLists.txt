@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 3.13.1)
 
+# We create a pw::Function capturing 3 4-byte argument.
+add_definitions(-DPW_FUNCTION_INLINE_CALLABLE_SIZE=12)
+
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-psabi")
 endif()

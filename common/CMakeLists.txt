@@ -30,4 +30,6 @@ target_link_libraries(rgb_led PRIVATE color timer)
 custom_library(common.keyboard keyboard.cpp)
 target_link_libraries(common.keyboard PRIVATE timer)
 
-custom_library(common.nfc nfc.cpp)
+custom_library(common.nfc
+  nfc.cpp
+  nfc_definitions.cpp)

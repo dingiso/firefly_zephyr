@@ -6,6 +6,7 @@
 #include "bitmap_enum.h"
 #include "pw_assert/check.h"
 #include "pw_bytes/span.h"
+#include "pw_containers/vector.h"
 #include "pw_log/log.h"
 
 // MFRC522 Datasheet: https://www.nxp.com/docs/en/data-sheet/MFRC522.pdf
@@ -113,6 +114,13 @@ void Log(ComIrqRegBits bits) {
               any(bits & ComIrqRegBits::TimerIRq));
 }
 
+enum class DivIrqRegBits {
+  Set2 = 1 << 7,       // Write-only. Indicates that the marked bits in the DivIrqReg register are set (otherwise cleared).
+  MfinActIRq = 1 << 4, // MFIN is active
+  CrcIrq = 1 << 2,     // the CalcCRC command is active and all data is processed
+};
+ENABLE_BITMASK_OPERATORS(DivIrqRegBits)
+
 enum class Status1RegBits : uint8_t {
   CRCOk = 1 << 6,    // For data transmission and reception, the CRCOk bit is undefined: use the ErrorReg register’s CRCErr bit.
   CRCReady = 1 << 5, // Only valid for the CRC coprocessor calculation using the CalcCRC command.
@@ -210,8 +218,9 @@ ENABLE_BITMASK_OPERATORS(TxControlRegBits)
 enum class PiccCommand : uint8_t {
   ReqIdl = 0x26,    // find the antenna area does not enter hibernation
   ReqAll = 0x52,    // find all the cards antenna area
-  AntiColl = 0x93,  // anti-collision
-  SelectTag = 0x93, // election card
+  SelectTag1 = 0x93, // election card cascade level 1
+  SelectTag2 = 0x95, // election card cascade level 2
+  SelectTag3 = 0x97, // election card cascade level 3
   Authent1A = 0x60, // authentication key A
   Authent1B = 0x61, // authentication key B
   Read = 0x30,      // Read Block
@@ -301,7 +310,6 @@ void SendSimpleCommand(Command cmd) {
 }
 
 void RqCallback(const device*, gpio_callback*, unsigned int pin) {
-  PW_LOG_INFO("Rx callback called.");
 }
 
 void ConfigureInterrupts() {
@@ -343,11 +351,30 @@ void Init() {
   WriteRegister(Register::ModeReg, 0x3d);
 }
 
+void CalculateCRC(pw::span<const uint8_t> data, pw::span<uint8_t> out) {
+  WriteRegister(Register::DivIrqReg, underlying(~DivIrqRegBits::Set2));
+  WriteRegister(Register::FIFOLevelReg, underlying(FifoLevelRegBits::FlushBuffer));
+  WriteRegister(Register::CommandReg, uint8_t(Command::Idle));
+  for (auto arg : data) {
+    WriteRegister(Register::FIFODataReg, arg);
+  }
+  WriteRegister(Register::CommandReg, uint8_t(Command::CalcCRC));
+
+  k_sleep(K_MSEC(50));
+
+  if (any(DivIrqRegBits(ReadRegister(Register::DivIrqReg)) & DivIrqRegBits::CrcIrq)) {
+    out[0] = ReadRegister(Register::CRCResultRegL);
+    out[1] = ReadRegister(Register::CRCResultRegH);
+  } else {
+    PW_LOG_ERROR("CRC calculation failed.");
+  }
+  // Stop consuming data from the FIFO.
+  WriteRegister(Register::CommandReg, uint8_t(Command::Idle));
+}
+
 // Returns the number of bytes in the response.
 int Transceive(PiccCommand cmd, pw::span<const uint8_t> args, pw::span<uint8_t> response) {
   WriteRegister(Register::ComIrqReg, underlying(~ComIrqRegBits::Set1));
-
-  k_sleep(K_MSEC(5));
 
   switch (cmd) {
     case PiccCommand::ReqAll:
@@ -366,7 +393,7 @@ int Transceive(PiccCommand cmd, pw::span<const uint8_t> args, pw::span<uint8_t> 
   WriteRegister(Register::CommandReg, uint8_t(Command::Transceive));
   SetRegisterBits(Register::BitFramingReg, 0x80);
 
-  k_sleep(K_MSEC(25));
+  k_sleep(K_MSEC(50));
   UnsetRegisterBits(Register::BitFramingReg, 0x87);
 
   if (auto err = ReadRegister(Register::ErrorReg); err != 0) {
@@ -379,7 +406,6 @@ int Transceive(PiccCommand cmd, pw::span<const uint8_t> args, pw::span<uint8_t> 
     return 0;
   }
 
-  k_sleep(K_MSEC(50));
   auto reply_size = ReadRegister(Register::FIFOLevelReg);
   if (reply_size > response.size()) {
     PW_LOG_ERROR("Response (size = %d) doesn't fit into passed buffer!", reply_size);
@@ -393,37 +419,57 @@ int Transceive(PiccCommand cmd, pw::span<const uint8_t> args, pw::span<uint8_t> 
   return reply_size;
 }
 
-// Returns true if a card was detected.
-bool SendWakeUp() {
+// Returns UID size if a card was detected, 0 otherwise.
+int SendWakeUp() {
   uint8_t rx[2];
   if (auto s = Transceive(PiccCommand::ReqAll, {}, rx); s == 2) {
-    PW_LOG_INFO("ATQA: 0x%x 0x%x", rx[0], rx[1]);
-    return true;
+    auto uid_size = (rx[0] >> 6) + 1;
+    return uid_size;
   } else if (s != 0) {
     PW_LOG_ERROR("Unexpected WUPA reply size: %d", s);
-    return false;
+    return 0;
   } else {
-    return false;
+    return 0;
   }
 }
 
-bool ReadUID() {
+pw::Vector<uint8_t, 10> ReadUID(uint8_t uid_size) {
   uint8_t tx[] = {0x20};
-  uint8_t rx[5];
-  if (auto s = Transceive(PiccCommand::AntiColl, tx, rx); s == 5) {
-    auto checksum = rx[0] ^ rx[1] ^ rx[2] ^ rx[3] ^ rx[4];
-    if (checksum == 0) {
-      PW_LOG_INFO("AntiColl response: 0x%x %x %x %x %x", rx[0], rx[1], rx[2], rx[3], rx[4]);
+  uint8_t rx[5] = {};
+  pw::Vector<uint8_t, 10> result;
+  for (auto cmd : {PiccCommand::SelectTag1, PiccCommand::SelectTag2, PiccCommand::SelectTag3}) {
+    if (auto s = Transceive(cmd, tx, rx); s == 5) {
+      auto checksum = rx[0] ^ rx[1] ^ rx[2] ^ rx[3] ^ rx[4];
+      if (checksum == 0) {
+        for (int i = rx[0] == 0x88 ? 1 : 0; i < 4; ++i) {
+          result.push_back(rx[i]);
+        }
+      } else {
+        PW_LOG_ERROR("AntiColl response with bad checksum: %d", checksum);
+        return {};
+      }
+    } else if (s != 0) {
+      PW_LOG_ERROR("Unexpected AntiColl reply size: %d", s);
+      return {};
     } else {
-      PW_LOG_ERROR("AntiColl response with bad checksum: %d", checksum);
+      return {};
     }
-    return true;
-  } else if (s != 0) {
-    PW_LOG_ERROR("Unexpected AntiColl reply size: %d", s);
-    return false;
-  } else {
-    return false;
+
+    uint8_t select_tx[] = {uint8_t(cmd), 0x70, rx[0], rx[1], rx[2], rx[3], rx[4], 0, 0};
+    pw::span<uint8_t> full_span = select_tx;
+    CalculateCRC(full_span.first(7) , full_span.last(2));
+    if (auto s = Transceive(cmd, full_span.last(8), rx); s == 3) {
+      bool uid_incomplete = rx[0] & 0x04;
+      if (!uid_incomplete) {
+        return result;
+      }
+    } else {
+      PW_LOG_ERROR("Unexpected Select reply size: %d", s);
+      return {};
+    }
   }
+
+  return {};
 }
 
 void Nfc::RunTests() {
@@ -432,13 +478,24 @@ void Nfc::RunTests() {
     SendSimpleCommand(Command::Idle);
     k_sleep(K_MSEC(400));
 
-    if (!SendWakeUp()) {
+    int uid_size = SendWakeUp();
+    if (!uid_size) {
       continue;
     }
 
-    if (!ReadUID()) {
+    auto uid = ReadUID(uid_size);
+    if (uid.empty()) {
       continue;
-    };
+    }
+
+    if (uid.size() == 4) {
+      PW_LOG_INFO("4 byte UID: %02x %02x %02x %02x", uid[0], uid[1], uid[2], uid[3]);
+    } else if (uid.size() == 7) {
+      PW_LOG_INFO("7 byte UID: %02x %02x %02x %02x %02x %02x %02x", uid[0], uid[1], uid[2], uid[3], uid[4], uid[5], uid[6]);
+    } else {
+      PW_LOG_WARN("Unsupported UID length: %d", uid.size());
+      continue;
+    }
 
     gpio_pin_set_dt(&beeper_gpio_device_spec, 1);
     k_sleep(K_MSEC(100));

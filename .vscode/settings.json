@@ -6,10 +6,11 @@
     "${workspaceFolder}/activator",
     "${workspaceFolder}/firefly",
     "${workspaceFolder}/smoke_test",
-    "${workspaceFolder}/lock_test"
+    "${workspaceFolder}/lock_test",
+    "${workspaceFolder}/lock"
   ],
   "nrf-connect.topdir": "${nrf-connect.sdk:2.3.0}",
   "nrf-connect.toolchain.path": "${nrf-connect.toolchain:2.3.0}",
   "cmake.configureOnEdit": false,
-  "C_Cpp.default.compileCommands": "lock_test/build/compile_commands.json"
+  "C_Cpp.default.compileCommands": "lock/build/compile_commands.json"
 }

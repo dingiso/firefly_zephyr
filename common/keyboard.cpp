@@ -50,9 +50,9 @@ Keyboard::Keyboard(pw::Function<void(char)> callback):
     gpio_pin_set_dt(&in[column], 1);
   }, 50)) {
   for (auto& s : in) {
-    PW_CHECK_INT_EQ(0, gpio_pin_configure_dt(&s, GPIO_OUTPUT));
+    gpio_pin_configure_dt(&s, GPIO_OUTPUT);
   }
   for (auto& s : out) {
-    PW_CHECK_INT_EQ(0, gpio_pin_configure_dt(&s, GPIO_INPUT));
+    gpio_pin_configure_dt(&s, GPIO_INPUT);
   }
 }

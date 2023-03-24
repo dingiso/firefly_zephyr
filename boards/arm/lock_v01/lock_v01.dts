@@ -32,10 +32,41 @@
 			gpios = <&gpio0 2 GPIO_ACTIVE_LOW>;
 			label = "Blue LED";
 		};
+	};
 
+	power_control {
+		compatible = "gpio-keys";
 		led_en: led_en {
-			gpios = <&gpio1 10 0>;
-			label = "LED EN";
+			gpios = <&gpio1 10 GPIO_ACTIVE_HIGH>;
+			label = "LED voltage stabilizer";
+		};
+
+		eeprom_en: eeprom_en {
+			gpios = <&gpio0 8 GPIO_ACTIVE_HIGH>;
+			label = "EEPROM power";
+		};
+
+		pill_en: pill_en {
+			gpios = <&gpio0 6 GPIO_ACTIVE_HIGH>;
+			label = "Pill power";
+		};
+	};
+
+	buttons {
+		compatible = "gpio-keys";
+		reed_switch: reed_switch {
+			gpios = <&gpio1 11 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;
+			label = "CC1101 GD0";
+		};
+
+		button_sw1: button_sw1 {
+			gpios = <&gpio0 31 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;
+			label = "First button";
+		};
+
+		button_sw2: button_sw2 {
+			gpios = <&gpio0 29 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;
+			label = "Second button";
 		};
 	};
 

@@ -1,8 +1,10 @@
 #include <zephyr/kernel.h>
 #include <zephyr/drivers/gpio.h>
 #include <zephyr/logging/log.h>
+#include <zephyr/random/rand32.h>
 
 #include "keyboard.h"
+#include "eeprom.h"
 
 LOG_MODULE_REGISTER();
 
@@ -31,6 +33,21 @@ int main() {
       LOG_INF("Pressed %c", c);
   });
 
+  eeprom::EnablePower();
+
+  for (int i = 0; i < 200; ++i) {
+    uint16_t in = sys_rand32_get() % 32768 + 23;
+    uint32_t address = (2 * sys_rand32_get()) % 1024;
+    eeprom::Write(in, address);
+    k_sleep(K_MSEC(5));
+    uint16_t out = eeprom::Read<uint16_t>(address);
+    if (in != out) {
+      LOG_ERR("EEPROM read/write failed: %d != %d (address %d)", in, out, address);
+    }
+  }
+
+  LOG_ERR("EEPROM read/write test finished");
+
   initializer_list<pair<gpio_dt_spec, const char*>> buttons{{reed_switch, "Reed"}, {sw1, "Sw1"}, {sw2, "Sw2"}};
 
   while (true) {
@@ -39,7 +56,6 @@ int main() {
         LOG_INF("%s pressed", name);
       }
     }
-    LOG_INF("Blink!");
     gpio_pin_set_dt(&led, 0);
     k_sleep(K_MSEC(250));
     gpio_pin_set_dt(&led, 1);

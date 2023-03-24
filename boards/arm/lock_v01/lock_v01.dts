@@ -16,6 +16,11 @@
 		zephyr,flash = &flash0;
 	};
 
+	aliases {
+		eeprom = &eeprom;
+		eeprom-en = &eeprom_en;
+	};
+
 	test {
 		compatible = "gpio-keys";
 		led_r: led_r {
@@ -127,6 +132,28 @@
 	current-speed = <115200>;
 	pinctrl-0 = <&uart0_default>;
 	pinctrl-names = "default";
+};
+
+// EEPROM
+// Needs power on eeprom_en
+&i2c0 {
+	compatible = "nordic,nrf-twi";
+	status = "okay";
+	pinctrl-0 = <&i2c0_default>;
+	pinctrl-names = "default";
+	clock-frequency = <I2C_BITRATE_FAST>;
+
+	// Datasheet: https: //datasheet.lcsc.com/lcsc/1811151428_BL-Shanghai-Belling-BL24C256A-SFRC_C110276.pdf
+	eeprom: eeprom@50 {
+		compatible = "atmel,at24";
+		// 1010 (type identifier code) 000 (A0-A2 pins are connected to the ground)
+		reg = <0x50>;
+		label = "EEPROM";
+		size = <DT_SIZE_K(32)>;
+		pagesize = <64>;
+		address-width = <16>;
+		timeout = <3>;
+	};
 };
 
 &flash0 {

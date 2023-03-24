@@ -6,8 +6,8 @@ toolchain:
   - zephyr
   - gnuarmemb
   - xtools
-ram: 64
-flash: 512
+ram: 256
+flash: 1024
 supported:
   - adc
   - counter

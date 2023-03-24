@@ -35,3 +35,7 @@ CONFIG_ADC=y
 
 # enable pin controller
 CONFIG_PINCTRL=y
+
+# NFC pins aren't connected to any kind of antenna at this board,
+# instead they are routed to H8 connector as normal GPIOs.
+CONFIG_NFCT_PINS_AS_GPIOS=y

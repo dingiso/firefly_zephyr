@@ -16,26 +16,64 @@
 		zephyr,flash = &flash0;
 	};
 
-  test {
-    compatible = "gpio-keys";
-    led_r: led_r {
-      gpios = <&gpio1 15 GPIO_ACTIVE_LOW>;
-      label = "Red LED";
-    };
+	test {
+		compatible = "gpio-keys";
+		led_r: led_r {
+			gpios = <&gpio1 15 GPIO_ACTIVE_LOW>;
+			label = "Red LED";
+		};
 
-    led_g: led_g {
-      gpios = <&gpio1 13 GPIO_ACTIVE_LOW>;
-      label = "Green LED";
-    };
+		led_g: led_g {
+			gpios = <&gpio1 13 GPIO_ACTIVE_LOW>;
+			label = "Green LED";
+		};
 
-    led_b: led_b {
-      gpios = <&gpio0 2 GPIO_ACTIVE_LOW>;
-      label = "Blue LED";
-    };
+		led_b: led_b {
+			gpios = <&gpio0 2 GPIO_ACTIVE_LOW>;
+			label = "Blue LED";
+		};
 
 		led_en: led_en {
-      gpios = <&gpio1 10 0>;
-      label = "LED EN";
+			gpios = <&gpio1 10 0>;
+			label = "LED EN";
+		};
+	};
+
+	keyboard {
+		compatible = "gpio-keys";
+    in1: in1 {
+      gpios = <&gpio1 1 0>;
+      label = "IN1";
+    };
+
+    in2: in2 {
+      gpios = <&gpio1 2 0>;
+      label = "IN2";
+    };
+
+    in3: in3 {
+      gpios = <&gpio1 4 0>;
+      label = "IN3";
+    };
+
+    out1: out1 {
+      gpios = <&gpio1 6 (GPIO_PULL_DOWN | GPIO_ACTIVE_HIGH)>;
+      label = "OUT1";
+    };
+
+    out2: out2 {
+      gpios = <&gpio0 9 (GPIO_PULL_DOWN | GPIO_ACTIVE_HIGH)>;
+      label = "OUT2";
+    };
+
+    out3: out3 {
+      gpios = <&gpio0 10 (GPIO_PULL_DOWN | GPIO_ACTIVE_HIGH)>;
+      label = "OUT3";
+    };
+
+    out4: out4 {
+      gpios = <&gpio1 7 (GPIO_PULL_DOWN | GPIO_ACTIVE_HIGH)>;
+      label = "OUT4";
     };
 	};
 };

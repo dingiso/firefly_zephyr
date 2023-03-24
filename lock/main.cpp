@@ -2,6 +2,8 @@
 #include <zephyr/drivers/gpio.h>
 #include <zephyr/logging/log.h>
 
+#include "keyboard.h"
+
 LOG_MODULE_REGISTER();
 
 constexpr gpio_dt_spec led_en = GPIO_DT_SPEC_GET(DT_NODELABEL(led_en), gpios);
@@ -14,6 +16,10 @@ int main() {
   gpio_pin_configure_dt(&led, GPIO_OUTPUT);
 
   gpio_pin_set_dt(&led_en, 0);
+
+  Keyboard keyboard([](char c) {
+      LOG_INF("Pressed %c", c);
+  });
 
   while (true) {
     LOG_INF("Blink!");

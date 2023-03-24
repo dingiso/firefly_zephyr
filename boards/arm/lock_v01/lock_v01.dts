@@ -61,10 +61,10 @@
 };
 
 &flash0 {
-/*
-* For more information, see:
-* http://docs.zephyrproject.org/latest/guides/dts/index.html#flash-partitions
-*/
+	/*
+	 * For more information, see:
+	 * http: //docs.zephyrproject.org/latest/guides/dts/index.html#flash-partitions
+	 */
 	partitions {
 		compatible = "fixed-partitions";
 		#address-cells = <1>;
@@ -88,14 +88,14 @@
 		};
 
 		/*
-			* The flash starting at 0x000f8000 and ending at
-			* 0x000fffff is reserved for use by the application.
-			*/
+		 * The flash starting at 0x000f8000 and ending at
+		 * 0x000fffff is reserved for use by the application.
+		 */
 
 		/*
-			* Storage partition will be used by FCB/LittleFS/NVS
-			* if enabled.
-			*/
+		 * Storage partition will be used by FCB/LittleFS/NVS
+		 * if enabled.
+		 */
 		storage_partition: partition@f8000 {
 			label = "storage";
 			reg = <0x000f8000 0x00008000>;

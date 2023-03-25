@@ -1,10 +1,10 @@
 #pragma once
 #include "pw_rpc/server.h"
 
-namespace lock_test::rpc::system_server {
+namespace common::rpc::system_server {
 
 pw::rpc::Server& Server();
 
 pw::Status Start();
 
-}  // namespace lock_test::rpc::system_server
+}  // common::rpc::system_server

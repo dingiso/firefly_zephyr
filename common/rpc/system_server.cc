@@ -1,16 +1,3 @@
-// Copyright 2022 The Pigweed Authors
-//
-// Licensed under the Apache License, Version 2.0 (the "License"); you may not
-// use this file except in compliance with the License. You may obtain a copy of
-// the License at
-//
-//     https://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
-// WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
-// License for the specific language governing permissions and limitations under
-// the License.
 #include "system_server.h"
 
 #include <cstddef>
@@ -23,7 +10,7 @@
 #include "pw_stream/sys_io_stream.h"
 
 
-namespace lock_test::rpc::system_server {
+namespace common::rpc::system_server {
 namespace {
 
 // Hard-coded to 1055 bytes, which is enough to fit 512-byte payloads when using
@@ -55,6 +42,7 @@ pw::Status Start() {
 
   while (true) {
     std::byte byte;
+    // PW_LOG_INFO("Trying to read byte");
     pw::Status ret_val = pw::sys_io::ReadByte(&byte);
     if (!ret_val.ok()) {
       return ret_val;
@@ -68,4 +56,4 @@ pw::Status Start() {
   }
 }
 
-}  // namespace lock_test::rpc::system_server
+}  // namespace common::rpc::system_server

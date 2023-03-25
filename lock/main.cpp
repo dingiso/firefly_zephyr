@@ -1,8 +1,14 @@
 #include <zephyr/kernel.h>
+#include <zephyr/bluetooth/bluetooth.h>
+#include <zephyr/bluetooth/conn.h>
+#include <zephyr/bluetooth/gatt.h>
+#include <zephyr/bluetooth/hci.h>
+#include <zephyr/bluetooth/uuid.h>
 #include <zephyr/drivers/gpio.h>
 #include <zephyr/logging/log.h>
 #include <zephyr/random/rand32.h>
 
+#include "bluetooth.h"
 #include "buzzer.h"
 #include "eeprom.h"
 #include "keyboard.h"
@@ -21,8 +27,58 @@ Buzzer buzzer;
 
 using namespace std;
 
+/* Beep Characteristic, UUID 8ec87062-8865-4eca-82e0-2ea8e45e8221 */
+struct bt_uuid_128 beep_characteristic_uuid = BT_UUID_INIT_128(
+    0x21, 0x82, 0x5e, 0xe4, 0xa8, 0x2e, 0xe0, 0x82,
+    0xca, 0x4e, 0x65, 0x88, 0x62, 0x70, 0xc8, 0x8e);
+
+/* Blink Characteristic, UUID 8ec87063-8865-4eca-82e0-2ea8e45e8221 */
+struct bt_uuid_128 blink_characteristic_uuid = BT_UUID_INIT_128(
+    0x21, 0x82, 0x5e, 0xe4, 0xa8, 0x2e, 0xe0, 0x82,
+    0xca, 0x4e, 0x65, 0x88, 0x63, 0x70, 0xc8, 0x8e);
+
+ssize_t write_beep(struct bt_conn *conn,
+                           const struct bt_gatt_attr *attr,
+                           const void *buf, uint16_t len, uint16_t offset,
+                           uint8_t flags) {
+  if (len <= 0) {
+    return BT_GATT_ERR(BT_ATT_ERR_INVALID_OFFSET);
+  }
+  uint8_t volume = *reinterpret_cast<const uint8_t*>(buf);
+  LOG_INF("Beep!");
+  buzzer.Beep(volume, 600, 300);
+  return len;
+}
+
+
+
+ssize_t write_blink(struct bt_conn *conn,
+                           const struct bt_gatt_attr *attr,
+                           const void *buf, uint16_t len, uint16_t offset,
+                           uint8_t flags) {
+  LOG_INF("Blink!");
+  led_sequencer.StartOrRestart(lsqFastBlink);
+  return len;
+}
+
+BT_GATT_SERVICE_DEFINE(firefly_service,
+                       BT_GATT_PRIMARY_SERVICE(&firefly_service_uuid),
+                       BT_GATT_CHARACTERISTIC(&beep_characteristic_uuid.uuid,
+                                              BT_GATT_CHRC_WRITE,
+                                              BT_GATT_PERM_WRITE,
+                                              nullptr, write_beep, nullptr),
+                       BT_GATT_CUD("Beep", BT_GATT_PERM_READ),
+                       BT_GATT_CHARACTERISTIC(&blink_characteristic_uuid.uuid,
+                                              BT_GATT_CHRC_WRITE,
+                                              BT_GATT_PERM_WRITE,
+                                              nullptr, write_blink, nullptr),
+                       BT_GATT_CUD("Blink", BT_GATT_PERM_READ),
+);
+
+
 int main() {
   LOG_WRN("Hello! Application started successfully.");
+  InitBleAdvertising(ConnectableFastAdvertisingParams());
 
   for (auto& spec : {reed_switch, sw1, sw2}) {
     gpio_pin_configure_dt(&spec, GPIO_INPUT);

@@ -33,6 +33,7 @@ include($ENV{PW_ROOT}/pw_protobuf_compiler/proto.cmake)
 
 target_sources(app PRIVATE main.cpp)
 target_link_libraries(app PRIVATE
+  common.thread
   pw_hdlc
   pw_hdlc.pw_rpc
   pw_rpc.server

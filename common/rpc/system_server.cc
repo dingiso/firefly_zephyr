@@ -42,7 +42,6 @@ pw::Status Start() {
 
   while (true) {
     std::byte byte;
-    // PW_LOG_INFO("Trying to read byte");
     pw::Status ret_val = pw::sys_io::ReadByte(&byte);
     if (!ret_val.ok()) {
       return ret_val;

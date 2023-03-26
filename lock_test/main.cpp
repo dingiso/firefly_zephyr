@@ -1,5 +1,6 @@
 #include <zephyr/kernel.h>
 #include <zephyr/random/rand32.h>
+#include <zephyr/drivers/gpio.h>
 
 #include <array>
 #include <atomic>
@@ -11,12 +12,14 @@
 #include "rpc/system_server.h"
 #include "test.pwpb.h"
 #include "test.rpc.pwpb.h"
+#include "thread.h"
 #include "pw_log/log.h"
 #include "pw_assert/check.h"
 #include "pw_log/proto/log.raw_rpc.pb.h"
 
 using namespace common::rpc;
 
+const gpio_dt_spec led_dt_spec = GPIO_DT_SPEC_GET(DT_NODELABEL(led0), gpios);
 
 TEST(BasicTest, Sum) {
   ASSERT_EQ(2 + 2, 4);
@@ -39,7 +42,7 @@ class EchoService final
  public:
   pw::Status Echo(const pwpb::Customer::Message& request, pwpb::Customer::Message& response) {
     response = request;
-    response.age += 3;
+    response.age += 66;
     return pw::OkStatus();
   }
 };
@@ -63,9 +66,16 @@ int main() {
 
   system_server::Server().RegisterService(echo_service);
   system_server::Server().RegisterService(log_service);
+  Thread t{[](){
+    PW_CHECK_OK(system_server::Start());
+  }};
 
-  PW_LOG_INFO("Starting pw_rpc server");
-  PW_CHECK_OK(system_server::Start());
+  gpio_pin_configure_dt(&led_dt_spec, GPIO_OUTPUT);
 
-  while (true) k_sleep(K_MSEC(1000));
+  while (true) {
+    k_sleep(K_MSEC(400));
+    gpio_pin_set_dt(&led_dt_spec, 0);
+    k_sleep(K_MSEC(400));
+    gpio_pin_set_dt(&led_dt_spec, 1);
+  };
 }

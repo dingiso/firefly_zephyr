@@ -33,3 +33,6 @@ target_link_libraries(common.keyboard PRIVATE timer)
 custom_library(common.nfc
   nfc.cpp
   nfc_definitions.cpp)
+
+custom_library(common.thread
+  thread.cpp)

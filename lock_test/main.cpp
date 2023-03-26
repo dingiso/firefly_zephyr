@@ -16,10 +16,10 @@
 #include "pw_log/log.h"
 #include "pw_assert/check.h"
 #include "pw_log/proto/log.raw_rpc.pb.h"
+#include "rgb_led.h"
+#include "eeprom.h"
 
 using namespace common::rpc;
-
-const gpio_dt_spec led_dt_spec = GPIO_DT_SPEC_GET(DT_NODELABEL(led0), gpios);
 
 TEST(BasicTest, Sum) {
   ASSERT_EQ(2 + 2, 4);
@@ -35,6 +35,65 @@ TEST(ProtoTest, Equality) {
   b.status = pwpb::Customer::Status::ACTIVE;
 
   ASSERT_EQ(a, b);
+}
+
+RgbLed led;
+
+TEST(RgbLedTest, InstantColorTransition) {
+  const Color c = {255, 0, 0};
+  led.SetColor(c);
+  ASSERT_EQ(led.GetColor(), c);
+}
+
+TEST(RgbLedTest, SmoothColorTransition) {
+  led.SetColor({0, 0, 0});
+  led.SetColorSmooth({254, 0, 0}, 1000);
+  ASSERT_EQ(led.GetColor(), Color(0, 0, 0));
+  k_sleep(K_MSEC(550));
+  auto r = led.GetColor().r;
+  ASSERT_GE(r, 127 - 10);
+  ASSERT_LE(r, 127 + 10);
+  k_sleep(K_MSEC(550));
+  ASSERT_EQ(led.GetColor().r, 254);
+}
+
+TEST(TimerTest, RunsDelayed) {
+  std::atomic<uint8_t> counter = 0;
+  const auto t = RunDelayed([&](){ ++counter; }, 30);
+  k_sleep(K_MSEC(10));
+  ASSERT_EQ(counter, 0);
+  k_sleep(K_MSEC(10));
+  ASSERT_EQ(counter, 0);
+  k_sleep(K_MSEC(10));
+  ASSERT_EQ(counter, 1);
+  k_sleep(K_MSEC(10));
+  ASSERT_EQ(counter, 1);
+}
+
+TEST(TimerTest, RunsEvery) {
+  uint8_t counter = 0;
+  const auto t = RunEvery([&](){ ++counter; }, 10);
+  k_sleep(K_MSEC(10));
+  ASSERT_EQ(counter, 1);
+  k_sleep(K_MSEC(10));
+  ASSERT_EQ(counter, 2);
+  k_sleep(K_MSEC(10));
+  ASSERT_EQ(counter, 3);
+  k_sleep(K_MSEC(10));
+  ASSERT_EQ(counter, 4);
+}
+
+TEST(EepromTest, CanReadWritten) {
+  eeprom::EnablePower();
+
+  for (int i = 0; i < 200; ++i) {
+    uint16_t in = sys_rand32_get() % 32768 + 23;
+    uint32_t address = (2 * sys_rand32_get()) % 1024;
+    eeprom::Write(in, address);
+    k_sleep(K_MSEC(5));
+    uint16_t out = eeprom::Read<uint16_t>(address);
+    ASSERT_EQ(in, out);
+  }
 }
 
 class EchoService final
@@ -70,12 +129,7 @@ int main() {
     PW_CHECK_OK(system_server::Start());
   }};
 
-  gpio_pin_configure_dt(&led_dt_spec, GPIO_OUTPUT);
-
   while (true) {
     k_sleep(K_MSEC(400));
-    gpio_pin_set_dt(&led_dt_spec, 0);
-    k_sleep(K_MSEC(400));
-    gpio_pin_set_dt(&led_dt_spec, 1);
   };
 }

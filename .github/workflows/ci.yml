@@ -30,11 +30,15 @@ jobs:
         run: cd ./zephyrproject/zephyr && source zephyr-env.sh && cd ../..
       - name: Validate Zephyr environment
         run: west manifest --validate
-      - run: source ../pigweed/activate.sh && west build lock_test --pristine --board lock_v01 && mv ./build/zephyr/zephyr.hex lock_test.hex
+      - run: source ../pigweed/activate.sh && west build lock_test --pristine --board lock_v01 && mv ./build/zephyr/zephyr.hex lock_test.hex && mv ./build/zephyr/zephyr.elf lock_test.elf
       - uses: actions/upload-artifact@v1
         with:
           name: lock_test.hex
           path: lock_test.hex
+      - uses: actions/upload-artifact@v1
+        with:
+          name: lock_test.elf
+          path: lock_test.elf          
       - run: source ../pigweed/activate.sh && west build lock --pristine --board lock_v01 && mv ./build/zephyr/zephyr.hex lock.hex
       - uses: actions/upload-artifact@v1
         with:
@@ -81,6 +85,15 @@ jobs:
       - run: stty -F /dev/ttyACM1 115200
       - run: cat /dev/ttyACM1 > log.txt &
       - run: gdb-multiarch -nx --batch -ex 'target extended-remote /dev/ttyACM0' -ex 'monitor swdp_scan' -ex 'attach 1' -ex 'load' -ex 'compare-sections' -ex 'kill' smoke_test_firefly.elf/smoke_test_firefly.elf
+      - run: sleep 10
+      - run: cat log.txt
+      - run: cat log.txt | grep "All tests passed!"
+      - uses: actions/download-artifact@v1
+        with:
+          name: lock_test.elf
+      - run: stty -F /dev/ttyACM3 115200
+      - run: cat /dev/ttyACM3 > log.txt &
+      - run: gdb-multiarch -nx --batch -ex 'target extended-remote /dev/ttyACM2' -ex 'monitor swdp_scan' -ex 'attach 1' -ex 'load' -ex 'compare-sections' -ex 'kill' lock_test.elf/lock_test.elf
       - run: sleep 10
       - run: cat log.txt
       - run: cat log.txt | grep "All tests passed!"

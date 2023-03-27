@@ -93,20 +93,6 @@ int main() {
 
   led_sequencer.StartOrRestart(lsqStart);
 
-  eeprom::EnablePower();
-
-  for (int i = 0; i < 200; ++i) {
-    uint16_t in = sys_rand32_get() % 32768 + 23;
-    uint32_t address = (2 * sys_rand32_get()) % 1024;
-    eeprom::Write(in, address);
-    k_sleep(K_MSEC(5));
-    uint16_t out = eeprom::Read<uint16_t>(address);
-    if (in != out) {
-      LOG_ERR("EEPROM read/write failed: %d != %d (address %d)", in, out, address);
-    }
-  }
-
-  LOG_ERR("EEPROM read/write test finished");
   buzzer.Beep(100, 600, 100);
 
   initializer_list<pair<gpio_dt_spec, const char*>> buttons{{reed_switch, "Reed"}, {sw1, "Sw1"}, {sw2, "Sw2"}};

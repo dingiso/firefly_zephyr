@@ -16,10 +16,13 @@
 #include "pw_log/log.h"
 #include "pw_assert/check.h"
 #include "pw_log/proto/log.raw_rpc.pb.h"
+#include "buzzer.h"
 #include "rgb_led.h"
 #include "eeprom.h"
 
 using namespace common::rpc;
+
+Buzzer buzzer;
 
 TEST(BasicTest, Sum) {
   ASSERT_EQ(2 + 2, 4);
@@ -171,7 +174,10 @@ int main() {
 
   int num_failures = RUN_ALL_TESTS();
   if (!num_failures) {
+    buzzer.Beep(100, 600, 100);
     printk("All tests passed!\n");
+  } else {
+    buzzer.Beep(100, 600, 1000);
   }
 
   system_server::Server().RegisterService(echo_service);

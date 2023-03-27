@@ -30,7 +30,7 @@ jobs:
         run: cd ./zephyrproject/zephyr && source zephyr-env.sh && cd ../..
       - name: Validate Zephyr environment
         run: west manifest --validate
-      - run: source ../pigweed/activate.sh && west build lock_test --pristine --board nrf52840dk_nrf52840 && mv ./build/zephyr/zephyr.hex lock_test.hex
+      - run: source ../pigweed/activate.sh && west build lock_test --pristine --board lock_v01 && mv ./build/zephyr/zephyr.hex lock_test.hex
       - uses: actions/upload-artifact@v1
         with:
           name: lock_test.hex

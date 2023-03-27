@@ -1,0 +1,39 @@
+/ {
+	keyboard {
+		compatible = "gpio-keys";
+		in1: in1 {
+			gpios = <&expansion_header_1 0 0>;
+			label = "IN1";
+		};
+
+		in2: in2 {
+			gpios = <&expansion_header_1 1 0>;
+			label = "IN2";
+		};
+
+		in3: in3 {
+			gpios = <&expansion_header_1 2 0>;
+			label = "IN3";
+		};
+
+		out1: out1 {
+			gpios = <&expansion_header_1 3 (GPIO_PULL_DOWN | GPIO_ACTIVE_HIGH)>;
+			label = "OUT1";
+		};
+
+		out2: out2 {
+			gpios = <&expansion_header_1 4 (GPIO_PULL_DOWN | GPIO_ACTIVE_HIGH)>;
+			label = "OUT2";
+		};
+
+		out3: out3 {
+			gpios = <&expansion_header_1 5 (GPIO_PULL_DOWN | GPIO_ACTIVE_HIGH)>;
+			label = "OUT3";
+		};
+
+		out4: out4 {
+			gpios = <&expansion_header_1 6 (GPIO_PULL_DOWN | GPIO_ACTIVE_HIGH)>;
+			label = "OUT4";
+		};
+	};
+};

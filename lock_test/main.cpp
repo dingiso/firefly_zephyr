@@ -96,6 +96,57 @@ TEST(EepromTest, CanReadWritten) {
   }
 }
 
+TEST(Header1Test, NoShortCircuit) {
+  gpio_dt_spec spec[7] = {
+    GPIO_DT_SPEC_GET_BY_IDX(DT_NODELABEL(header_1), gpios, 0),
+    GPIO_DT_SPEC_GET_BY_IDX(DT_NODELABEL(header_1), gpios, 1),
+    GPIO_DT_SPEC_GET_BY_IDX(DT_NODELABEL(header_1), gpios, 2),
+    GPIO_DT_SPEC_GET_BY_IDX(DT_NODELABEL(header_1), gpios, 3),
+    GPIO_DT_SPEC_GET_BY_IDX(DT_NODELABEL(header_1), gpios, 4),
+    GPIO_DT_SPEC_GET_BY_IDX(DT_NODELABEL(header_1), gpios, 5),
+    GPIO_DT_SPEC_GET_BY_IDX(DT_NODELABEL(header_1), gpios, 6),
+  };
+  for (auto& s : spec) {
+    gpio_pin_configure_dt(&s, GPIO_INPUT);
+  }
+
+  for (int i = 0; i < 7; ++i) {
+    gpio_pin_configure_dt(&spec[i], GPIO_OUTPUT_ACTIVE);
+    for (int j = 0; j < 7; ++j) {
+      if (i != j) {
+        ASSERT_EQ(gpio_pin_get_dt(&spec[j]), 0);
+      }
+    }
+    gpio_pin_configure_dt(&spec[i], GPIO_INPUT);
+  }
+}
+
+TEST(Header2Test, NoShortCircuit) {
+  gpio_dt_spec spec[8] = {
+    GPIO_DT_SPEC_GET_BY_IDX(DT_NODELABEL(header_2), gpios, 0),
+    GPIO_DT_SPEC_GET_BY_IDX(DT_NODELABEL(header_2), gpios, 1),
+    GPIO_DT_SPEC_GET_BY_IDX(DT_NODELABEL(header_2), gpios, 2),
+    GPIO_DT_SPEC_GET_BY_IDX(DT_NODELABEL(header_2), gpios, 3),
+    GPIO_DT_SPEC_GET_BY_IDX(DT_NODELABEL(header_2), gpios, 4),
+    GPIO_DT_SPEC_GET_BY_IDX(DT_NODELABEL(header_2), gpios, 5),
+    GPIO_DT_SPEC_GET_BY_IDX(DT_NODELABEL(header_2), gpios, 6),
+    GPIO_DT_SPEC_GET_BY_IDX(DT_NODELABEL(header_2), gpios, 7),
+  };
+  for (auto& s : spec) {
+    gpio_pin_configure_dt(&s, GPIO_INPUT);
+  }
+
+  for (int i = 0; i < 8; ++i) {
+    gpio_pin_configure_dt(&spec[i], GPIO_OUTPUT_ACTIVE);
+    for (int j = 0; j < 8; ++j) {
+      if (i != j) {
+        ASSERT_EQ(gpio_pin_get_dt(&spec[j]), 0);
+      }
+    }
+    gpio_pin_configure_dt(&spec[i], GPIO_INPUT);
+  }
+}
+
 class EchoService final
     : public common::rpc::pw_rpc::pwpb::EchoService::Service<EchoService> {
  public:

@@ -1,0 +1,27 @@
+/ {
+	headers {
+		compatible = "gpio-keys";
+		header_1: header_1 {
+			gpios = <&expansion_header_1 0 GPIO_PULL_DOWN>,
+							<&expansion_header_1 1 GPIO_PULL_DOWN>,
+							<&expansion_header_1 2 GPIO_PULL_DOWN>,
+							<&expansion_header_1 3 GPIO_PULL_DOWN>,
+							<&expansion_header_1 4 GPIO_PULL_DOWN>,
+							<&expansion_header_1 5 GPIO_PULL_DOWN>,
+							<&expansion_header_1 6 GPIO_PULL_DOWN>;
+			label = "7-pin header on the bottom-right";
+		};
+
+		header_2: header_2 {
+			gpios = <&expansion_header_2 0 GPIO_PULL_DOWN>,
+							<&expansion_header_2 1 GPIO_PULL_DOWN>,
+							<&expansion_header_2 2 GPIO_PULL_DOWN>,
+							<&expansion_header_2 3 GPIO_PULL_DOWN>,
+							<&expansion_header_2 4 GPIO_PULL_DOWN>,
+							<&expansion_header_2 5 GPIO_PULL_DOWN>,
+							<&expansion_header_2 6 GPIO_PULL_DOWN>,
+							<&expansion_header_2 7 GPIO_PULL_DOWN>;
+			label = "8-pin header on the top";
+		};
+	};
+};

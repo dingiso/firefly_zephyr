@@ -1,26 +1,33 @@
+#include <zephyr/drivers/gpio.h>
 #include <zephyr/kernel.h>
 #include <zephyr/random/rand32.h>
-#include <zephyr/drivers/gpio.h>
 
 #include <array>
 #include <atomic>
 #include <functional>
 #include <memory>
+#include <chrono>
 
+#include "buzzer.h"
+#include "eeprom.h"
 #include "gtest/gtest.h"
 #include "printk_event_handler.h"
+#include "pw_assert/check.h"
+#include "pw_log/log.h"
+#include "pw_log/proto/log.raw_rpc.pb.h"
+#include "pw_thread/detached_thread.h"
+#include "pw_thread/id.h"
+#include "pw_thread/sleep.h"
+#include "pw_thread/thread.h"
+#include "pw_thread_zephyr/options.h"
+#include "rgb_led.h"
 #include "rpc/system_server.h"
 #include "test.pwpb.h"
 #include "test.rpc.pwpb.h"
-#include "thread.h"
-#include "pw_log/log.h"
-#include "pw_assert/check.h"
-#include "pw_log/proto/log.raw_rpc.pb.h"
-#include "buzzer.h"
-#include "rgb_led.h"
-#include "eeprom.h"
 
 using namespace common::rpc;
+using namespace std::chrono_literals;
+using pw::chrono::SystemClock;
 
 Buzzer buzzer;
 
@@ -52,37 +59,37 @@ TEST(RgbLedTest, SmoothColorTransition) {
   led.SetColor({0, 0, 0});
   led.SetColorSmooth({254, 0, 0}, 1000);
   ASSERT_EQ(led.GetColor(), Color(0, 0, 0));
-  k_sleep(K_MSEC(550));
+  pw::this_thread::sleep_for(SystemClock::for_at_least(550ms));
   auto r = led.GetColor().r;
   ASSERT_GE(r, 127 - 10);
   ASSERT_LE(r, 127 + 10);
-  k_sleep(K_MSEC(550));
+  pw::this_thread::sleep_for(SystemClock::for_at_least(550ms));
   ASSERT_EQ(led.GetColor().r, 254);
 }
 
 TEST(TimerTest, RunsDelayed) {
   std::atomic<uint8_t> counter = 0;
-  const auto t = RunDelayed([&](){ ++counter; }, 30);
-  k_sleep(K_MSEC(10));
+  const auto t = RunDelayed([&]() { ++counter; }, 30);
+  pw::this_thread::sleep_for(SystemClock::for_at_least(10ms));
   ASSERT_EQ(counter, 0);
-  k_sleep(K_MSEC(10));
+  pw::this_thread::sleep_for(SystemClock::for_at_least(10ms));
   ASSERT_EQ(counter, 0);
-  k_sleep(K_MSEC(10));
+  pw::this_thread::sleep_for(SystemClock::for_at_least(10ms));
   ASSERT_EQ(counter, 1);
-  k_sleep(K_MSEC(10));
+  pw::this_thread::sleep_for(SystemClock::for_at_least(10ms));
   ASSERT_EQ(counter, 1);
 }
 
 TEST(TimerTest, RunsEvery) {
   uint8_t counter = 0;
-  const auto t = RunEvery([&](){ ++counter; }, 10);
-  k_sleep(K_MSEC(10));
+  const auto t = RunEvery([&]() { ++counter; }, 10);
+  pw::this_thread::sleep_for(SystemClock::for_at_least(10ms));
   ASSERT_EQ(counter, 1);
-  k_sleep(K_MSEC(10));
+  pw::this_thread::sleep_for(SystemClock::for_at_least(10ms));
   ASSERT_EQ(counter, 2);
-  k_sleep(K_MSEC(10));
+  pw::this_thread::sleep_for(SystemClock::for_at_least(10ms));
   ASSERT_EQ(counter, 3);
-  k_sleep(K_MSEC(10));
+  pw::this_thread::sleep_for(SystemClock::for_at_least(10ms));
   ASSERT_EQ(counter, 4);
 }
 
@@ -93,7 +100,7 @@ TEST(EepromTest, CanReadWritten) {
     uint16_t in = sys_rand32_get() % 32768 + 23;
     uint32_t address = (2 * sys_rand32_get()) % 1024;
     eeprom::Write(in, address);
-    k_sleep(K_MSEC(5));
+    pw::this_thread::sleep_for(SystemClock::for_at_least(5ms));
     uint16_t out = eeprom::Read<uint16_t>(address);
     ASSERT_EQ(in, out);
   }
@@ -101,13 +108,13 @@ TEST(EepromTest, CanReadWritten) {
 
 TEST(Header1Test, NoShortCircuit) {
   gpio_dt_spec spec[7] = {
-    GPIO_DT_SPEC_GET_BY_IDX(DT_NODELABEL(header_1), gpios, 0),
-    GPIO_DT_SPEC_GET_BY_IDX(DT_NODELABEL(header_1), gpios, 1),
-    GPIO_DT_SPEC_GET_BY_IDX(DT_NODELABEL(header_1), gpios, 2),
-    GPIO_DT_SPEC_GET_BY_IDX(DT_NODELABEL(header_1), gpios, 3),
-    GPIO_DT_SPEC_GET_BY_IDX(DT_NODELABEL(header_1), gpios, 4),
-    GPIO_DT_SPEC_GET_BY_IDX(DT_NODELABEL(header_1), gpios, 5),
-    GPIO_DT_SPEC_GET_BY_IDX(DT_NODELABEL(header_1), gpios, 6),
+      GPIO_DT_SPEC_GET_BY_IDX(DT_NODELABEL(header_1), gpios, 0),
+      GPIO_DT_SPEC_GET_BY_IDX(DT_NODELABEL(header_1), gpios, 1),
+      GPIO_DT_SPEC_GET_BY_IDX(DT_NODELABEL(header_1), gpios, 2),
+      GPIO_DT_SPEC_GET_BY_IDX(DT_NODELABEL(header_1), gpios, 3),
+      GPIO_DT_SPEC_GET_BY_IDX(DT_NODELABEL(header_1), gpios, 4),
+      GPIO_DT_SPEC_GET_BY_IDX(DT_NODELABEL(header_1), gpios, 5),
+      GPIO_DT_SPEC_GET_BY_IDX(DT_NODELABEL(header_1), gpios, 6),
   };
   for (auto& s : spec) {
     gpio_pin_configure_dt(&s, GPIO_INPUT);
@@ -126,14 +133,14 @@ TEST(Header1Test, NoShortCircuit) {
 
 TEST(Header2Test, NoShortCircuit) {
   gpio_dt_spec spec[8] = {
-    GPIO_DT_SPEC_GET_BY_IDX(DT_NODELABEL(header_2), gpios, 0),
-    GPIO_DT_SPEC_GET_BY_IDX(DT_NODELABEL(header_2), gpios, 1),
-    GPIO_DT_SPEC_GET_BY_IDX(DT_NODELABEL(header_2), gpios, 2),
-    GPIO_DT_SPEC_GET_BY_IDX(DT_NODELABEL(header_2), gpios, 3),
-    GPIO_DT_SPEC_GET_BY_IDX(DT_NODELABEL(header_2), gpios, 4),
-    GPIO_DT_SPEC_GET_BY_IDX(DT_NODELABEL(header_2), gpios, 5),
-    GPIO_DT_SPEC_GET_BY_IDX(DT_NODELABEL(header_2), gpios, 6),
-    GPIO_DT_SPEC_GET_BY_IDX(DT_NODELABEL(header_2), gpios, 7),
+      GPIO_DT_SPEC_GET_BY_IDX(DT_NODELABEL(header_2), gpios, 0),
+      GPIO_DT_SPEC_GET_BY_IDX(DT_NODELABEL(header_2), gpios, 1),
+      GPIO_DT_SPEC_GET_BY_IDX(DT_NODELABEL(header_2), gpios, 2),
+      GPIO_DT_SPEC_GET_BY_IDX(DT_NODELABEL(header_2), gpios, 3),
+      GPIO_DT_SPEC_GET_BY_IDX(DT_NODELABEL(header_2), gpios, 4),
+      GPIO_DT_SPEC_GET_BY_IDX(DT_NODELABEL(header_2), gpios, 5),
+      GPIO_DT_SPEC_GET_BY_IDX(DT_NODELABEL(header_2), gpios, 6),
+      GPIO_DT_SPEC_GET_BY_IDX(DT_NODELABEL(header_2), gpios, 7),
   };
   for (auto& s : spec) {
     gpio_pin_configure_dt(&s, GPIO_INPUT);
@@ -148,6 +155,65 @@ TEST(Header2Test, NoShortCircuit) {
     }
     gpio_pin_configure_dt(&spec[i], GPIO_INPUT);
   }
+}
+
+TEST(ThreadTest, Detach) {
+  static pw::thread::zephyr::StaticContextWithStack<512> thread_context;
+  pw::thread::Thread(
+      pw::thread::zephyr::Options(thread_context), [](void* arg) {
+        pw::this_thread::sleep_for(SystemClock::for_at_least(1s));
+        PW_LOG_INFO("ThreadTest_Detach");
+      },
+      nullptr)
+      .detach();
+}
+
+TEST(ThreadTest, Join) {
+  static pw::thread::zephyr::StaticContextWithStack<512> thread_context;
+  pw::thread::Thread(
+      pw::thread::zephyr::Options(thread_context), [](void* arg) {
+        pw::this_thread::sleep_for(SystemClock::for_at_least(1s));
+        PW_LOG_INFO("ThreadTest_Join");
+      },
+      nullptr)
+      .join();
+}
+
+TEST(ThreadTest, ContextReuseAfterJoin) {
+  static pw::thread::zephyr::StaticContextWithStack<512> thread_context;
+  pw::thread::Thread(
+      pw::thread::zephyr::Options(thread_context), [](void* arg) {
+        pw::this_thread::sleep_for(SystemClock::for_at_least(200ms));
+        PW_LOG_INFO("ThreadTest_Join_1");
+      },
+      nullptr)
+      .join();
+  pw::thread::Thread(
+      pw::thread::zephyr::Options(thread_context), [](void* arg) {
+        pw::this_thread::sleep_for(SystemClock::for_at_least(200ms));
+        PW_LOG_INFO("ThreadTest_Join_2");
+      },
+      nullptr)
+      .join();
+}
+
+TEST(ThreadTest, ContextReuseAfterDetach) {
+  static pw::thread::zephyr::StaticContextWithStack<512> thread_context;
+  pw::thread::Thread(
+      pw::thread::zephyr::Options(thread_context), [](void* arg) {
+        pw::this_thread::sleep_for(SystemClock::for_at_least(200ms));
+        PW_LOG_INFO("ThreadTest_Detach_1");
+      },
+      nullptr)
+      .detach();
+  pw::this_thread::sleep_for(SystemClock::for_at_least(300ms));
+  pw::thread::Thread(
+      pw::thread::zephyr::Options(thread_context), [](void* arg) {
+        pw::this_thread::sleep_for(SystemClock::for_at_least(200ms));
+        PW_LOG_INFO("ThreadTest_Detach_2");
+      },
+      nullptr)
+      .detach();
 }
 
 class EchoService final
@@ -182,11 +248,13 @@ int main() {
 
   system_server::Server().RegisterService(echo_service);
   system_server::Server().RegisterService(log_service);
-  Thread t{[](){
+
+  static pw::thread::zephyr::StaticContextWithStack<2048> rpc_thread_context;
+  pw::thread::DetachedThread(pw::thread::zephyr::Options(rpc_thread_context).set_priority(2), [](void*){
     PW_CHECK_OK(system_server::Start());
-  }};
+  }, nullptr);
 
   while (true) {
-    k_sleep(K_MSEC(400));
+    pw::this_thread::sleep_for(SystemClock::for_at_least(1s));
   };
 }

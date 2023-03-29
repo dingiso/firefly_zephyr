@@ -35,7 +35,6 @@ target_sources(app PRIVATE main.cpp)
 target_link_libraries(app PRIVATE
   buzzer
   rgb_led
-  common.thread
   pw_hdlc
   pw_hdlc.pw_rpc
   pw_rpc.server
@@ -46,5 +45,7 @@ target_link_libraries(app PRIVATE
   printk_event_handler
   pw_log.protos.raw_rpc
   pw_log
+  pw_thread.id
+  pw_thread.thread
 )
 

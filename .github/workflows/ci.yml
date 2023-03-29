@@ -19,7 +19,7 @@ jobs:
       - name: Install Arm GCC
         run: mkdir gcc && cd gcc && wget https://developer.arm.com/-/media/Files/downloads/gnu-rm/10-2020q4/gcc-arm-none-eabi-10-2020-q4-major-x86_64-linux.tar.bz2 && tar xjf gcc-arm-none-eabi-10-2020-q4-major-x86_64-linux.tar.bz2 && cd ..
       - name: Download and activate Pigweed
-        run: cd .. && git clone https://pigweed.googlesource.com/pigweed/pigweed && source pigweed/bootstrap.sh && cd -
+        run: cd .. && git clone https://github.com/aeremin/pigweed.git && source pigweed/bootstrap.sh && cd -
       - name: Install West to Pigweed's virtualenv
         run: pip3 install west
       - name: Download Zephyr RTOS sources

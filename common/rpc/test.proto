@@ -12,7 +12,9 @@ message Customer {
 }
 
 // To call this service:
-// Start an interactive console:
+//   python common/rpc/rpc_example.py --device COM7
+//
+// Alternatively, via an interactive console:
 //   python -m pw_system.console --device COM6   --verbose --proto-globs test.proto
 //
 // Then, in the console run

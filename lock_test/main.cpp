@@ -249,7 +249,7 @@ int main() {
   system_server::Server().RegisterService(echo_service);
   system_server::Server().RegisterService(log_service);
 
-  static pw::thread::zephyr::StaticContextWithStack<2048> rpc_thread_context;
+  static pw::thread::zephyr::StaticContextWithStack<2500> rpc_thread_context;
   pw::thread::DetachedThread(pw::thread::zephyr::Options(rpc_thread_context).set_priority(2), [](void*){
     PW_CHECK_OK(system_server::Start());
   }, nullptr);

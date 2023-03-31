@@ -11,6 +11,12 @@
   ],
   "nrf-connect.topdir": "${nrf-connect.sdk:2.3.0}",
   "nrf-connect.toolchain.path": "PATH",
+  "nrf-connect.west.env": {
+    "GNUARMEMB_TOOLCHAIN_PATH": "/home/aeremin/Documents/Dev/pigweed/environment/cipd/packages/arm"
+  },
+  "terminal.integrated.defaultProfile.linux": "nRF Connect",
+  "terminal.integrated.defaultProfile.windows": "nRF Connect",
+  "terminal.integrated.defaultProfile.osx": "nRF Connect",
   "cmake.configureOnEdit": false,
-  "C_Cpp.default.compileCommands": "lock/build/compile_commands.json"
+  "C_Cpp.default.compileCommands": "lock_test/build/compile_commands.json"
 }

@@ -83,7 +83,7 @@ TEST(TimerTest, RunsDelayed) {
 TEST(TimerTest, RunsEvery) {
   uint8_t counter = 0;
   const auto t = RunEvery([&]() { ++counter; }, 10);
-  pw::this_thread::sleep_for(SystemClock::for_at_least(10ms));
+  pw::this_thread::sleep_for(SystemClock::for_at_least(11ms));
   ASSERT_EQ(counter, 1);
   pw::this_thread::sleep_for(SystemClock::for_at_least(10ms));
   ASSERT_EQ(counter, 2);

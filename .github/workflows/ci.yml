@@ -21,13 +21,11 @@ jobs:
       - name: Install West to Pigweed's virtualenv
         run: pip3 install west
       - name: Download Zephyr RTOS sources
-        run: west init zephyrproject --mr v3.2.0 && cd zephyrproject && west update && west zephyr-export && cd -
+        run: west init ncs --manifest-url https://github.com/nrfconnect/sdk-nrf.git --mr v2.3-branch && cd ncs && west update && west zephyr-export && cd -
       - name: Install Zephyr python dependencies to Pigweed's virtualenv
-        run: pip3 install -r ./zephyrproject/zephyr/scripts/requirements.txt
+        run: pip3 install -r ./ncs/zephyr/scripts/requirements.txt
       - name: Activate Zephyr environment
-        run: cd ./zephyrproject/zephyr && source zephyr-env.sh && cd ../..
-      - name: Validate Zephyr environment
-        run: west manifest --validate
+        run: cd ./ncs/zephyr && source zephyr-env.sh && cd ../..
       - run: source ../pigweed/activate.sh && west build lock_test --pristine --board lock_v01 && mv ./build/zephyr/zephyr.hex lock_test.hex && mv ./build/zephyr/zephyr.elf lock_test.elf
       - uses: actions/upload-artifact@v1
         with:

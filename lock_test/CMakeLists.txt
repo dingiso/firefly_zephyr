@@ -7,6 +7,10 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-psabi")
 endif()
 
+include($ENV{PW_ROOT}/pw_system/backend.cmake)
+pw_set_backend(pw_system.rpc_server
+               pw_system.hdlc_rpc_server)
+
 # Pigweed used 16k by default which is A LOT.
 add_definitions(-DPW_UNIT_TEST_CONFIG_MEMORY_POOL_SIZE=512)
 
@@ -35,17 +39,13 @@ target_sources(app PRIVATE main.cpp)
 target_link_libraries(app PRIVATE
   buzzer
   rgb_led
-  pw_hdlc
-  pw_hdlc.pw_rpc
-  pw_rpc.server
-  rpc.system_server
+  pw_system.rpc_server
   rpc.test_proto.pwpb
   rpc.test_proto.pwpb_rpc
   pw_unit_test.light
   printk_event_handler
   pw_log.protos.raw_rpc
   pw_log
-  pw_thread.id
   pw_thread.thread
 )
 

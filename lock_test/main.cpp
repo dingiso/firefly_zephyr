@@ -2,10 +2,7 @@
 #include <zephyr/kernel.h>
 #include <zephyr/random/rand32.h>
 
-#include <array>
 #include <atomic>
-#include <functional>
-#include <memory>
 #include <chrono>
 
 #include "buzzer.h"
@@ -15,13 +12,12 @@
 #include "pw_assert/check.h"
 #include "pw_log/log.h"
 #include "pw_log/proto/log.raw_rpc.pb.h"
+#include "pw_system/rpc_server.h"
 #include "pw_thread/detached_thread.h"
-#include "pw_thread/id.h"
 #include "pw_thread/sleep.h"
 #include "pw_thread/thread.h"
 #include "pw_thread_zephyr/options.h"
 #include "rgb_led.h"
-#include "rpc/system_server.h"
 #include "test.pwpb.h"
 #include "test.rpc.pwpb.h"
 
@@ -246,13 +242,12 @@ int main() {
     buzzer.Beep(100, 600, 1000);
   }
 
-  system_server::Server().RegisterService(echo_service);
-  system_server::Server().RegisterService(log_service);
+  pw::system::GetRpcServer().RegisterService(echo_service);
+  pw::system::GetRpcServer().RegisterService(log_service);
 
   static pw::thread::zephyr::StaticContextWithStack<2500> rpc_thread_context;
-  pw::thread::DetachedThread(pw::thread::zephyr::Options(rpc_thread_context).set_priority(2), [](void*){
-    PW_CHECK_OK(system_server::Start());
-  }, nullptr);
+  pw::thread::DetachedThread(pw::thread::zephyr::Options(rpc_thread_context).set_priority(2),
+                             pw::system::GetRpcDispatchThread());
 
   while (true) {
     pw::this_thread::sleep_for(SystemClock::for_at_least(1s));

@@ -11,13 +11,11 @@ jobs:
     env:
       ZEPHYR_BASE: /home/runner/work/firefly_zephyr/firefly_zephyr/zephyrproject/zephyr
       ZEPHYR_TOOLCHAIN_VARIANT: gnuarmemb
-      GNUARMEMB_TOOLCHAIN_PATH: /home/runner/work/firefly_zephyr/firefly_zephyr/gcc/gcc-arm-none-eabi-10-2020-q4-major
+      GNUARMEMB_TOOLCHAIN_PATH: /home/runner/work/firefly_zephyr/pigweed/environment/cipd/packages/arm
     steps:
       - uses: actions/checkout@v1
       - name: Install dependencies via APT
-        run: sudo apt-get update && sudo apt-get install --no-install-recommends cmake ninja-build gperf ccache dfu-util device-tree-compiler wget xz-utils file make libsdl2-dev
-      - name: Install Arm GCC
-        run: mkdir gcc && cd gcc && wget https://developer.arm.com/-/media/Files/downloads/gnu-rm/10-2020q4/gcc-arm-none-eabi-10-2020-q4-major-x86_64-linux.tar.bz2 && tar xjf gcc-arm-none-eabi-10-2020-q4-major-x86_64-linux.tar.bz2 && cd ..
+        run: sudo apt-get update && sudo apt-get install --no-install-recommends gperf ccache dfu-util device-tree-compiler wget xz-utils file libsdl2-dev
       - name: Download and activate Pigweed
         run: cd .. && git clone https://github.com/aeremin/pigweed.git && source pigweed/bootstrap.sh && cd -
       - name: Install West to Pigweed's virtualenv
@@ -38,23 +36,23 @@ jobs:
       - uses: actions/upload-artifact@v1
         with:
           name: lock_test.elf
-          path: lock_test.elf          
+          path: lock_test.elf
       - run: source ../pigweed/activate.sh && west build lock --pristine --board lock_v01 && mv ./build/zephyr/zephyr.hex lock.hex
       - uses: actions/upload-artifact@v1
         with:
           name: lock.hex
           path: lock.hex
-      - run: west build firefly --pristine && mv ./build/zephyr/zephyr.hex firefly.hex
+      - run: source ../pigweed/activate.sh && west build firefly --pristine && mv ./build/zephyr/zephyr.hex firefly.hex
       - uses: actions/upload-artifact@v1
         with:
           name: firefly.hex
           path: firefly.hex
-      - run: west build activator --pristine && mv ./build/zephyr/zephyr.hex activator.hex
+      - run: source ../pigweed/activate.sh && west build activator --pristine && mv ./build/zephyr/zephyr.hex activator.hex
       - uses: actions/upload-artifact@v1
         with:
           name: activator.hex
           path: activator.hex
-      - run: west build smoke_test --pristine --board firefly_v1 && mv ./build/zephyr/zephyr.hex smoke_test_firefly.hex && mv ./build/zephyr/zephyr.elf smoke_test_firefly.elf
+      - run: source ../pigweed/activate.sh && west build smoke_test --pristine --board firefly_v1 && mv ./build/zephyr/zephyr.hex smoke_test_firefly.hex && mv ./build/zephyr/zephyr.elf smoke_test_firefly.elf
       - uses: actions/upload-artifact@v1
         with:
           name: smoke_test_firefly.hex
@@ -63,7 +61,7 @@ jobs:
         with:
           name: smoke_test_firefly.elf
           path: smoke_test_firefly.elf
-      - run: west build smoke_test --pristine --board locket && mv ./build/zephyr/zephyr.hex smoke_test_locket.hex
+      - run: source ../pigweed/activate.sh && west build smoke_test --pristine --board locket && mv ./build/zephyr/zephyr.hex smoke_test_locket.hex
       - uses: actions/upload-artifact@v1
         with:
           name: smoke_test_locket.hex

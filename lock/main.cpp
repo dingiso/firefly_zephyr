@@ -8,6 +8,9 @@
 #include <zephyr/logging/log.h>
 #include <zephyr/random/rand32.h>
 
+#include "pw_log/log.h"
+
+#include "nfc.h"
 #include "bluetooth.h"
 #include "buzzer.h"
 #include "eeprom.h"
@@ -15,11 +18,13 @@
 #include "rgb_led.h"
 #include "sequences.h"
 
-LOG_MODULE_REGISTER();
-
 constexpr gpio_dt_spec reed_switch = GPIO_DT_SPEC_GET(DT_NODELABEL(reed_switch), gpios);
 constexpr gpio_dt_spec sw1 = GPIO_DT_SPEC_GET(DT_NODELABEL(button_sw1), gpios);
 constexpr gpio_dt_spec sw2 = GPIO_DT_SPEC_GET(DT_NODELABEL(button_sw2), gpios);
+
+const gpio_dt_spec gnd_gpio_device_spec = GPIO_DT_SPEC_GET(DT_NODELABEL(nfc_gnd), gpios);
+const gpio_dt_spec rst_gpio_device_spec = GPIO_DT_SPEC_GET(DT_NODELABEL(nfc_rst), gpios);
+
 
 RgbLed led;
 RgbLedSequencer led_sequencer(led);
@@ -45,7 +50,7 @@ ssize_t write_beep(struct bt_conn *conn,
     return BT_GATT_ERR(BT_ATT_ERR_INVALID_OFFSET);
   }
   uint8_t volume = *reinterpret_cast<const uint8_t*>(buf);
-  LOG_INF("Beep!");
+  PW_LOG_INFO("Beep!");
   buzzer.Beep(volume, 600, 300);
   return len;
 }
@@ -56,7 +61,7 @@ ssize_t write_blink(struct bt_conn *conn,
                            const struct bt_gatt_attr *attr,
                            const void *buf, uint16_t len, uint16_t offset,
                            uint8_t flags) {
-  LOG_INF("Blink!");
+  PW_LOG_INFO("Blink!");
   led_sequencer.StartOrRestart(lsqFastBlink);
   return len;
 }
@@ -77,7 +82,7 @@ BT_GATT_SERVICE_DEFINE(firefly_service,
 
 
 int main() {
-  LOG_WRN("Hello! Application started successfully.");
+  PW_LOG_INFO("Hello! Application started successfully.");
   InitBleAdvertising(ConnectableFastAdvertisingParams());
 
   for (auto& spec : {reed_switch, sw1, sw2}) {
@@ -85,7 +90,7 @@ int main() {
   }
 
   Keyboard keyboard([&](char c) {
-      LOG_INF("Pressed %c", c);
+      PW_LOG_INFO("Pressed %c", c);
       if (c == '*') {
         buzzer.Beep(200, 700, 300);
       }
@@ -94,6 +99,22 @@ int main() {
   led_sequencer.StartOrRestart(lsqStart);
 
   buzzer.Beep(100, 600, 100);
+
+  gpio_pin_configure_dt(&gnd_gpio_device_spec, GPIO_OUTPUT_INACTIVE);
+  gpio_pin_configure_dt(&rst_gpio_device_spec, GPIO_OUTPUT_ACTIVE);
+
+  Nfc nfc;
+  nfc.Init();
+  nfc.ReadUIDContinuously(400, [](const pw::Vector<uint8_t>& uid) {
+    if (uid.size() == 4) {
+      PW_LOG_INFO("4 byte UID: %02x %02x %02x %02x", uid[0], uid[1], uid[2], uid[3]);
+    } else if (uid.size() == 7) {
+      PW_LOG_INFO("7 byte UID: %02x %02x %02x %02x %02x %02x %02x", uid[0], uid[1], uid[2], uid[3], uid[4], uid[5], uid[6]);
+    } else {
+      PW_LOG_WARN("Unsupported UID length: %d", uid.size());
+    }
+  });
+
 
   initializer_list<pair<gpio_dt_spec, const char*>> buttons{{reed_switch, "Reed"}, {sw1, "Sw1"}, {sw2, "Sw2"}};
 

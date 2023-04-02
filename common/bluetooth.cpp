@@ -6,7 +6,8 @@
 #include <zephyr/bluetooth/services/bas.h>
 #include <zephyr/bluetooth/uuid.h>
 #include <zephyr/logging/log.h>
-LOG_MODULE_DECLARE();
+
+LOG_MODULE_REGISTER();
 
 bt_uuid_128 firefly_service_uuid = BT_UUID_INIT_128(
     0x21, 0x82, 0x5e, 0xe4, 0xa8, 0x2e, 0xe0, 0x82,

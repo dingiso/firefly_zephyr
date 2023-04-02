@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - name: Install dependencies via APT
-        run: sudo apt-get update && sudo apt-get install --no-install-recommends gperf ccache dfu-util device-tree-compiler wget xz-utils file libsdl2-dev
+        run: sudo apt-get update && sudo apt-get install --no-install-recommends gperf dfu-util device-tree-compiler wget xz-utils file libsdl2-dev
       - name: Download and activate Pigweed
         run: cd .. && git clone https://github.com/aeremin/pigweed.git && source pigweed/bootstrap.sh && cd -
       - name: Install West to Pigweed's virtualenv

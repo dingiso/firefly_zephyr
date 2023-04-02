@@ -18,7 +18,9 @@ add_subdirectory(../common common EXCLUDE_FROM_ALL)
 
 target_sources(app PRIVATE main.cpp)
 target_link_libraries(app PRIVATE
+  pw_log
   common.keyboard
+  common.nfc
   bluetooth
   buzzer
   rgb_led

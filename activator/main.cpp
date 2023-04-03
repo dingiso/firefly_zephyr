@@ -22,7 +22,7 @@
 #include "magic_path_packet.h"
 #include "scoped_mutex_lock.h"
 
-LOG_MODULE_REGISTER();
+LOG_MODULE_DECLARE();
 
 namespace {
 

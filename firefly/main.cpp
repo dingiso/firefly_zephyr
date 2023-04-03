@@ -20,7 +20,7 @@
 #include "bluetooth.h"
 #include "magic_path_packet.h"
 
-LOG_MODULE_REGISTER();
+LOG_MODULE_DECLARE();
 
 
 namespace {

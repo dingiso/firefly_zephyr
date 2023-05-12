@@ -17,7 +17,7 @@ jobs:
       - name: Install dependencies via APT
         run: sudo apt-get update && sudo apt-get install --no-install-recommends gperf dfu-util device-tree-compiler wget xz-utils file libsdl2-dev
       - name: Download and activate Pigweed
-        run: cd .. && git clone https://pigweed.googlesource.com/pigweed/pigweed && source pigweed/bootstrap.sh && cd -
+        run: cd .. && git clone https://github.com/aeremin/pigweed.git && source pigweed/bootstrap.sh && cd -
       - name: Install West to Pigweed's virtualenv
         run: pip3 install west
       - name: Download Zephyr RTOS sources

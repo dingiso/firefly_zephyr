@@ -37,3 +37,9 @@ target_link_libraries(common.nfc PUBLIC pw_containers pw_span pw_bytes)
 
 custom_library(common.thread
   thread.cpp)
+
+custom_library(common.generic_device generic_device.h)
+target_link_libraries(common.generic_device PUBLIC pw_span pw_bytes)
+
+custom_library(common.st25r3911b st25r3911b.h)
+target_link_libraries(common.st25r3911b PUBLIC common.generic_device)

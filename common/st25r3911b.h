@@ -330,7 +330,7 @@ struct [[gnu::packed]] IcIdentityRegister {
   static constexpr uint8_t address = 0x3F;
   static constexpr RegisterKind kind = RegisterKind::R;
 
-  enum class Revision {
+  enum class Revision : uint8_t {
     r3_1 = 0b010,
     r3_3 = 0b011,
     r4_0 = 0b100,

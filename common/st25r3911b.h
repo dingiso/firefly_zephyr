@@ -13,6 +13,41 @@ struct [[gnu::packed]] Address {
 struct [[gnu::packed]] IoConfigurationRegister1 {
   static constexpr uint8_t address = 0x00;
   static constexpr RegisterKind kind = RegisterKind::RW;
+
+  enum class OutClockFrequency : uint8_t {
+    MHz_3_39 = 0b00,
+    MHz_6_78 = 0b01,
+    MHz_13_56 = 0b10,
+    Disabled = 0b11,
+  };
+
+  enum class OscillatorFrequency : uint8_t {
+    MHz_13_56 = 0,
+    MHz_27_12 = 1,
+  };
+
+  enum class FifoTransmitWaterLevel : uint8_t{
+    Bytes32 = 0,
+    Bytes16 = 1,
+  };
+
+  enum class FifoReceiveWaterLevel : uint8_t {
+    Bytes64 = 0,
+    Bytes80 = 1,
+  };
+
+  enum class OutputDriver : uint8_t{
+    RF_0 = 0,
+    RF_1 = 1,
+  };
+
+  bool lf_clk_off : 1;
+  OutClockFrequency out_cl: 2;
+  OscillatorFrequency osc : 1;
+  FifoTransmitWaterLevel fifo_lt : 1;
+  FifoReceiveWaterLevel fifo_lr : 1;
+  OutputDriver rfo : 1;   // Which driver to use in the single driving mode
+  bool single_driver : 1; // Use single driving instead of differential
 };
 
 struct [[gnu::packed]] IoConfigurationRegister2 {

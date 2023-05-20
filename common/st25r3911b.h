@@ -7,7 +7,7 @@ namespace st25r3911b {
 struct [[gnu::packed]] Address {
   uint8_t address : 6;
   bool read : 1;
-  uint8_t unused : 1;
+  uint8_t unused : 1 = 0;
 };
 
 struct [[gnu::packed]] IoConfigurationRegister1 {

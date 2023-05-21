@@ -732,4 +732,98 @@ struct [[gnu::packed]] IcIdentityRegister {
   uint8_t ic_type: 5;
 };
 
+enum class DirectCommands : uint8_t {
+  // Puts ST25R3911B in default state (same as after power-up)
+  SetDefault = 0xC1,
+
+  // Stops all activities and clears FIFO
+  Clear = 0xC2,
+
+  // Starts a transmit sequence using automatic CRC generation
+  TransmitWithCrc = 0xC4,
+
+  // Starts a transmit sequence without automatic CRC generation
+  TransmitWithoutCrc = 0xC5,
+
+  // Transmits REQA command (ISO14443A mode only)
+  TransmitReqA = 0xC6,
+
+  // Transmits WUPA command (ISO14443A mode only)
+  TransmitWupA = 0xC7,
+
+  // Performs initial RF collision avoidance and switch on the field
+  // Interrupts after termination.
+  NfcInitialFieldOn = 0xC8,
+
+  // Performs response RF collision avoidance and switch on the field
+  // Interrupts after termination.
+  NfcResponseFieldOn = 0xC9,
+
+  // Performs response RF collision avoidance with n=0 and switch on the field
+  // Interrupts after termination.
+  NfcResponseFieldOnN0 = 0xCA,
+
+  // Accepted in NFCIP-1 active communication bit rate detection mode
+  GoToNormalNfcMode = 0xCB,
+
+  // Presets Rx and Tx configuration based on state of Mode definition register and Bit rate definition register
+  AnalogPreset = 0xCC,
+
+  // Receive after this command is ignored
+  MaskReceiveData = 0xD0,
+
+  // Receive data following this command is normally processed (this command has priority over internal Mask Receive timer)
+  UnmaskReceiveData = 0xD1,
+
+  // Amplitude of signal present on RFI inputs is measured, result is stored in A/D converter output register
+  // Interrupts after termination.
+  MeasureAmplitude = 0xD3,
+
+  // Performs gain reduction based on the current noise level
+  Squelch = 0xD4,
+
+  // Clears the current squelch setting and loads the manual gain reduction from Receiver configuration register 1
+  ResetRxGain = 0xD5,
+
+  // Adjusts supply regulators according to the current supply voltage level
+  // Interrupts after termination.
+  AdjustRegulators = 0xD6,
+
+  // Starts sequence that activates the Tx, measures the modulation depth and adapts it to comply with the specified modulation depth
+  // Interrupts after termination.
+  CalibrateModulationDepth = 0xD7,
+
+  // Starts the sequence to adjust parallel capacitances connected to TRIMx_y pins so that the antenna LC tank is in resonance
+  // Interrupts after termination.
+  CalibrateAntenna = 0xD8,
+
+  // Measurement of phase difference between the signal on RFO and RFI
+  // Interrupts after termination.
+  MeasurePhase = 0xD9,
+
+  // Clears RSSI bits and restarts the measurement
+  ClearRssi = 0xDA,
+
+  // Amplitude of signal present on RFI inputs is measured, result is stored in A/D converter output register
+  // Interrupts after termination.
+  TransparentMode = 0xDC,
+
+  // Calibrates capacitive sensor
+  // Interrupts after termination.
+  CalibrateCapacitiveSensor = 0xDD,
+
+  // Perform capacitor sensor measurement
+  // Interrupts after termination.
+  MeasureCapacitance = 0xDE,
+
+  // Perform power supply measurement
+  // Interrupts after termination.
+  MeasurePowerSupply = 0xDF,
+  StartGeneralPurposeTimer = 0xE0,
+  StartWakeUpTimer = 0xE1,
+  StartMaskReceiveTimer = 0xE2,
+  StartNoResponseTimer = 0xE3,
+};
+
 } // namespace st25r3911b
+

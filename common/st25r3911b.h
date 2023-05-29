@@ -2,6 +2,9 @@
 
 #include "generic_device.h"
 
+// Driver for ST25R3911B NFC reader.
+// Datasheet is available at https://www.st.com/resource/en/datasheet/st25r3911b.pdf.
+
 namespace st25r3911b {
 
 struct [[gnu::packed]] Address {
@@ -111,6 +114,7 @@ struct [[gnu::packed]] ModeDefinitionRegister {
     NfcIp1ActiveCommunicationNormal = 0b0001,
   };
 
+  // Automatic start Response RF Collision Avoidance sequence
   bool nfc_ar: 1;
   uint8_t : 2;
   OperationMode om : 4;
@@ -752,15 +756,15 @@ enum class DirectCommands : uint8_t {
   TransmitWupA = 0xC7,
 
   // Performs initial RF collision avoidance and switch on the field
-  // Interrupts after termination.
+  // After termination of this command cat or cac IRQ is sent.
   NfcInitialFieldOn = 0xC8,
 
   // Performs response RF collision avoidance and switch on the field
-  // Interrupts after termination.
+  // After termination of this command cat or cac IRQ is sent.
   NfcResponseFieldOn = 0xC9,
 
   // Performs response RF collision avoidance with n=0 and switch on the field
-  // Interrupts after termination.
+  // After termination of this command cat or cac IRQ is sent.
   NfcResponseFieldOnN0 = 0xCA,
 
   // Accepted in NFCIP-1 active communication bit rate detection mode

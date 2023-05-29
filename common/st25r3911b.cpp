@@ -108,9 +108,7 @@ St25r3911b::InterruptRegisters St25r3911b::WaitForInterrupt() {
 void St25r3911b::EnableOscillator() {
   auto r = ReadRegister<OperationControlRegister>();
   if (!r.en) {
-    auto m = MakeRegisterModifier<MainInterruptConfigRegister>([](auto& p) {
-      p.mask_osc = false;
-    });
+    auto m = MakeRegisterModifier<MainInterruptConfigRegister>([](auto& p) { p.mask_osc = false; });
 
     r.en = true;
     WriteRegister(r);
@@ -132,18 +130,14 @@ void St25r3911b::NfcFieldOn() {
 }
 
 uint16_t St25r3911b::MeasureVoltage(RegulatorVoltageControlRegister::MeasurementSource source) {
-  ModifyRegister<RegulatorVoltageControlRegister>([source](auto& p) {
-    p.mpsv = source;
-  });
+  ModifyRegister<RegulatorVoltageControlRegister>([source](auto& p) { p.mpsv = source; });
   ExecuteCommand(DirectCommand::MeasurePowerSupply);
 
   return (ReadRegister<ADConverterOutputRegister>().ad * 23438u) / 1000u;
 }
 
 void St25r3911b::ExecuteCommand(DirectCommand cmd) {
-  auto m = MakeRegisterModifier<MaskTimerAndNfcInterruptRegister>([](auto& p) {
-    p.mask_dct = false;
-  });
+  auto m = MakeRegisterModifier<MaskTimerAndNfcInterruptRegister>([](auto& p) { p.mask_dct = false; });
   SendCommand(cmd);
   WaitForInterrupt();
 }

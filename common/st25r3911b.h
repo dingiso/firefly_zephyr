@@ -39,7 +39,7 @@ struct [[gnu::packed]] IoConfigurationRegister1 {
     MHz_27_12 = 1,
   };
 
-  enum class FifoTransmitWaterLevel : uint8_t{
+  enum class FifoTransmitWaterLevel : uint8_t {
     Bytes32 = 0,
     Bytes16 = 1,
   };
@@ -49,18 +49,18 @@ struct [[gnu::packed]] IoConfigurationRegister1 {
     Bytes80 = 1,
   };
 
-  enum class OutputDriver : uint8_t{
+  enum class OutputDriver : uint8_t {
     RF_0 = 0,
     RF_1 = 1,
   };
 
   bool lf_clk_off : 1;
-  OutClockFrequency out_cl: 2;
+  OutClockFrequency out_cl : 2;
   OscillatorFrequency osc : 1;
   FifoTransmitWaterLevel fifo_lt : 1;
   FifoReceiveWaterLevel fifo_lr : 1;
-  OutputDriver rfo : 1;   // Which driver to use in the single driving mode
-  bool single_driver : 1; // Use single driving instead of differential
+  OutputDriver rfo : 1;    // Which driver to use in the single driving mode
+  bool single_driver : 1;  // Use single driving instead of differential
 };
 
 struct [[gnu::packed]] IoConfigurationRegister2 {
@@ -72,14 +72,14 @@ struct [[gnu::packed]] IoConfigurationRegister2 {
     v3_3 = 1,
   };
 
-  bool slow_up: 1;
+  bool slow_up : 1;
   uint8_t : 1;
-  bool io_18: 1;
-  bool miso_pd1: 1;
-  bool miso_pd2: 1;
+  bool io_18 : 1;
+  bool miso_pd1 : 1;
+  bool miso_pd2 : 1;
   uint8_t : 1;
-  bool vspd_off: 1;
-  PowerSupply sup: 1;
+  bool vspd_off : 1;
+  PowerSupply sup : 1;
 };
 
 struct [[gnu::packed]] OperationControlRegister {
@@ -89,7 +89,7 @@ struct [[gnu::packed]] OperationControlRegister {
   uint8_t : 2;
   bool wake_up : 1;
   bool tx_en : 1;
-  bool rx_manual: 1;
+  bool rx_manual : 1;
   bool rx_chn : 1;
   bool rx_en : 1;
   bool en : 1;
@@ -115,10 +115,10 @@ struct [[gnu::packed]] ModeDefinitionRegister {
   };
 
   // Automatic start Response RF Collision Avoidance sequence
-  bool nfc_ar: 1;
+  bool nfc_ar : 1;
   uint8_t : 2;
   OperationMode om : 4;
-  bool targ: 1;
+  bool targ : 1;
 };
 
 struct [[gnu::packed]] BitRateDefinitionRegister {
@@ -133,11 +133,11 @@ struct [[gnu::packed]] Iso14443ASettingsRegister {
   static constexpr uint8_t address = 0x05;
   static constexpr RegisterKind kind = RegisterKind::RW;
 
-  bool antcl: 1;
-  uint8_t p_len: 4;
-  bool nfc_f0: 1;
-  bool no_rx_par: 1;
-  bool no_tx_par: 1;
+  bool antcl : 1;
+  uint8_t p_len : 4;
+  bool nfc_f0 : 1;
+  bool no_rx_par : 1;
+  bool no_tx_par : 1;
 };
 
 struct [[gnu::packed]] Iso14443BSettingsRegister1 {
@@ -167,11 +167,11 @@ struct [[gnu::packed]] AuxiliaryDefinitionRegister {
 
   uint8_t nfc_n : 2;
   bool rx_tol : 1;
-  bool ook_hr: 1;
-  bool en_fd: 1;
-  bool tr_am: 1;
-  bool crc_2_fifo: 1;
-  bool no_crc_rx: 1;
+  bool ook_hr : 1;
+  bool en_fd : 1;
+  bool tr_am : 1;
+  bool crc_2_fifo : 1;
+  bool no_crc_rx : 1;
 };
 
 struct [[gnu::packed]] ReceiverConfigurationRegister1 {
@@ -181,9 +181,9 @@ struct [[gnu::packed]] ReceiverConfigurationRegister1 {
   uint8_t z12k : 1;
   uint8_t h80 : 1;
   uint8_t h200 : 1;
-  uint8_t lp: 3;
-  uint8_t amd_sel: 1;
-  uint8_t ch_sel: 1;
+  uint8_t lp : 3;
+  uint8_t amd_sel : 1;
+  uint8_t ch_sel : 1;
 };
 
 struct [[gnu::packed]] ReceiverConfigurationRegister2 {
@@ -361,7 +361,7 @@ struct [[gnu::packed]] FifoStatusRegister1 {
   static constexpr uint8_t address = 0x1A;
   static constexpr RegisterKind kind = RegisterKind::R;
 
-  uint8_t fifo_bytes: 7;
+  uint8_t fifo_bytes : 7;
   uint8_t : 1;
 };
 
@@ -369,10 +369,10 @@ struct [[gnu::packed]] FifoStatusRegister2 {
   static constexpr uint8_t address = 0x1B;
   static constexpr RegisterKind kind = RegisterKind::R;
 
-  bool np_lb: 1;
-  uint8_t fifo_bits: 3;
-  bool overflow: 1;
-  bool underflow: 1;
+  bool np_lb : 1;
+  uint8_t fifo_bits : 3;
+  bool overflow : 1;
+  bool underflow : 1;
   uint8_t : 1;
 };
 
@@ -459,7 +459,7 @@ struct [[gnu::packed]] AmModulationDepthDisplayRegister {
   static constexpr uint8_t address = 0x25;
   static constexpr RegisterKind kind = RegisterKind::R;
 
-  uint8_t md: 8;
+  uint8_t md : 8;
 };
 
 struct [[gnu::packed]] RfoAmModulatedLevelDefinitionRegister {
@@ -545,8 +545,8 @@ struct [[gnu::packed]] RegulatorVoltageControlRegister {
 
   uint8_t : 1;
   MeasurementSource mpsv : 2;
-  uint8_t rege: 4;
-  bool reg_s: 1;
+  uint8_t rege : 4;
+  bool reg_s : 1;
 };
 
 struct [[gnu::packed]] RegulatorAndTimerDisplayRegister {
@@ -589,7 +589,7 @@ struct [[gnu::packed]] CapacitiveSensorControlRegister {
   };
 
   Gain cs_g : 3;
-  uint8_t cs_mcal: 5;
+  uint8_t cs_mcal : 5;
 };
 
 struct [[gnu::packed]] CapacitiveSensorDisplayRegister {
@@ -633,9 +633,9 @@ struct [[gnu::packed]] AmplitudeMeasurementConfigurationRegister {
   static constexpr RegisterKind kind = RegisterKind::RW;
 
   bool am_ae : 1;
-  uint8_t am_aew: 2;
+  uint8_t am_aew : 2;
   bool am_aam : 1;
-  uint8_t am_d: 4;
+  uint8_t am_d : 4;
 };
 
 struct [[gnu::packed]] AmplitudeMeasurementReferenceRegister {
@@ -664,9 +664,9 @@ struct [[gnu::packed]] PhaseMeasurementConfigurationRegister {
   static constexpr RegisterKind kind = RegisterKind::RW;
 
   bool pm_ae : 1;
-  uint8_t pm_aew: 2;
+  uint8_t pm_aew : 2;
   bool pm_aam : 1;
-  uint8_t pm_d: 4;
+  uint8_t pm_d : 4;
 };
 
 struct [[gnu::packed]] PhaseMeasurementReferenceRegister {
@@ -695,9 +695,9 @@ struct [[gnu::packed]] CapacitanceMeasurementConfigurationRegister {
   static constexpr RegisterKind kind = RegisterKind::RW;
 
   bool cm_ae : 1;
-  uint8_t cm_aew: 2;
+  uint8_t cm_aew : 2;
   bool cm_aam : 1;
-  uint8_t cm_d: 4;
+  uint8_t cm_d : 4;
 };
 
 struct [[gnu::packed]] CapacitanceMeasurementReferenceRegister {
@@ -732,8 +732,8 @@ struct [[gnu::packed]] IcIdentityRegister {
     r4_1 = 0b101,
   };
 
-  uint8_t ic_rev: 3;
-  uint8_t ic_type: 5;
+  uint8_t ic_rev : 3;
+  uint8_t ic_type : 5;
 };
 
 enum class DirectCommand : uint8_t {
@@ -776,7 +776,8 @@ enum class DirectCommand : uint8_t {
   // Receive after this command is ignored
   MaskReceiveData = 0xD0,
 
-  // Receive data following this command is normally processed (this command has priority over internal Mask Receive timer)
+  // Receive data following this command is normally processed (this command has priority over internal Mask Receive
+  // timer)
   UnmaskReceiveData = 0xD1,
 
   // Amplitude of signal present on RFI inputs is measured, result is stored in A/D converter output register
@@ -793,11 +794,13 @@ enum class DirectCommand : uint8_t {
   // Interrupts after termination.
   AdjustRegulators = 0xD6,
 
-  // Starts sequence that activates the Tx, measures the modulation depth and adapts it to comply with the specified modulation depth
+  // Starts sequence that activates the Tx, measures the modulation depth and adapts it to comply with the specified
+  // modulation depth
   // Interrupts after termination.
   CalibrateModulationDepth = 0xD7,
 
-  // Starts the sequence to adjust parallel capacitances connected to TRIMx_y pins so that the antenna LC tank is in resonance
+  // Starts the sequence to adjust parallel capacitances connected to TRIMx_y pins so that the antenna LC tank is in
+  // resonance
   // Interrupts after termination.
   CalibrateAntenna = 0xD8,
 
@@ -831,8 +834,8 @@ enum class DirectCommand : uint8_t {
 
 class St25r3911b : public GenericDevice<Address, DirectCommand> {
  public:
-  St25r3911b(const device* spi_dev, const spi_config* spi_config, const gpio_dt_spec* irq_pin_spec) :
-     GenericDevice(spi_dev, spi_config), irq_pin_spec_(irq_pin_spec) {}
+  St25r3911b(const device* spi_dev, const spi_config* spi_config, const gpio_dt_spec* irq_pin_spec)
+      : GenericDevice(spi_dev, spi_config), irq_pin_spec_(irq_pin_spec) {}
 
   void Init();
 
@@ -861,5 +864,4 @@ class St25r3911b : public GenericDevice<Address, DirectCommand> {
   gpio_callback gpio_cb_;
 };
 
-} // namespace st25r3911b
-
+}  // namespace st25r3911b

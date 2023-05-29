@@ -18,4 +18,5 @@
   "terminal.integrated.defaultProfile.windows": "nRF Connect",
   "terminal.integrated.defaultProfile.osx": "nRF Connect",
   "cmake.configureOnEdit": false,
+  "editor.formatOnSave": true
 }

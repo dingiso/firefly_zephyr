@@ -11,7 +11,7 @@ enum class RegisterKind {
   W = 2,
 };
 
-template<typename AddressType>
+template<typename AddressType, typename CommandType>
 class GenericDevice {
  public:
   static_assert(sizeof(AddressType) == 1, "AddressType must be 1 byte long");
@@ -88,6 +88,30 @@ class GenericDevice {
     static_assert(sizeof(T) == 1, "T must be 1 byte long");
     static_assert(T::kind == RegisterKind::W || T::kind == RegisterKind::RW, "T must be a writeable register");
     WriteRegisterRaw(T::address, *reinterpret_cast<uint8_t*>(&value));
+  }
+
+  template<typename T, typename F>
+  void ModifyRegister(F f) {
+    static_assert(sizeof(T) == 1, "T must be 1 byte long");
+    static_assert(T::kind == RegisterKind::W || T::kind == RegisterKind::RW, "T must be a writeable register");
+    auto r = ReadRegister<T>();
+    f(r);
+    WriteRegister(r);
+  }
+
+  void SendCommand(CommandType cmd) {
+    static_assert(sizeof(CommandType) == 1, "CommandType must be 1 byte long");
+
+    const spi_buf tx_bufs[] = {
+      {.buf = &cmd, .len = 1},
+    };
+    const spi_buf_set tx = {
+      .buffers = tx_bufs,
+      .count = 1,
+    };
+
+    auto err = spi_transceive(spi_dev_, spi_config_, &tx, nullptr);
+    PW_ASSERT(err == 0);
   }
 
  private:

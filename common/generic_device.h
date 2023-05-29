@@ -114,6 +114,30 @@ class GenericDevice {
     PW_ASSERT(err == 0);
   }
 
+  template<typename T, typename F>
+  class RegisterModifier {
+   public:
+    RegisterModifier(GenericDevice& device, F f) :
+      device_(device),
+      original_value_(device_.ReadRegister<T>()) {
+        auto new_value = original_value_;
+        f(new_value);
+        device_.WriteRegister(new_value);
+    }
+
+    ~RegisterModifier() {
+      device_.WriteRegister(original_value_);
+    }
+   private:
+    GenericDevice& device_;
+    T original_value_;
+  };
+
+  template<typename T, typename F>
+  RegisterModifier<T, F> MakeRegisterModifier(F f) {
+    return {*this, std::move(f)};
+  }
+
  private:
   const device* spi_dev_ = nullptr;
   const spi_config* spi_config_ = nullptr;

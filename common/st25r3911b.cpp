@@ -108,7 +108,7 @@ St25r3911b::InterruptRegisters St25r3911b::WaitForInterrupt() {
 void St25r3911b::EnableOscillator() {
   auto r = ReadRegister<OperationControlRegister>();
   if (!r.en) {
-    ModifyRegister<MainInterruptConfigRegister>([](auto& p) {
+    auto m = MakeRegisterModifier<MainInterruptConfigRegister>([](auto& p) {
       p.mask_osc = false;
     });
 
@@ -116,15 +116,11 @@ void St25r3911b::EnableOscillator() {
     WriteRegister(r);
 
     WaitForInterrupt();
-
-    ModifyRegister<MainInterruptConfigRegister>([](auto& p) {
-      p.mask_osc = true;
-    });
   }
 }
 
 void St25r3911b::NfcFieldOn() {
-  ModifyRegister<MaskTimerAndNfcInterruptRegister>([](auto& p) {
+  auto m = MakeRegisterModifier<MaskTimerAndNfcInterruptRegister>([](auto& p) {
     p.mask_cat = false;
     p.mask_cac = false;
   });
@@ -133,11 +129,6 @@ void St25r3911b::NfcFieldOn() {
   auto irqs = WaitForInterrupt();
 
   PW_ASSERT(irqs.timer_and_nfc.cac != irqs.timer_and_nfc.cat);
-
-  ModifyRegister<MaskTimerAndNfcInterruptRegister>([](auto& p) {
-    p.mask_cat = true;
-    p.mask_cac = true;
-  });
 }
 
 uint16_t St25r3911b::MeasureVoltage(RegulatorVoltageControlRegister::MeasurementSource source) {
@@ -150,17 +141,11 @@ uint16_t St25r3911b::MeasureVoltage(RegulatorVoltageControlRegister::Measurement
 }
 
 void St25r3911b::ExecuteCommand(DirectCommand cmd) {
-    ModifyRegister<MaskTimerAndNfcInterruptRegister>([](auto& p) {
-      p.mask_dct = false;
-    });
-
-    SendCommand(cmd);
-
-    WaitForInterrupt();
-
-    ModifyRegister<MaskTimerAndNfcInterruptRegister>([](auto& p) {
-      p.mask_dct = true;
-    });
+  auto m = MakeRegisterModifier<MaskTimerAndNfcInterruptRegister>([](auto& p) {
+    p.mask_dct = false;
+  });
+  SendCommand(cmd);
+  WaitForInterrupt();
 }
 
 } // namespace st25r3911b

@@ -23,6 +23,24 @@ void St25r3911b::Init() {
 
   EnableOscillator();
 
+  uint16_t mv = MeasureVoltage(RegulatorVoltageControlRegister::MeasurementSource::VDD);
+  PW_LOG_DEBUG("ST25R3911B Vdd: %d", mv);
+  ModifyRegister<IoConfigurationRegister2>([mv](auto& p) {
+    p.sup = mv > 3600 ? IoConfigurationRegister2::PowerSupply::v5 : IoConfigurationRegister2::PowerSupply::v3_3;
+  });
+
+  {
+    auto m = MakeRegisterModifier<OperationControlRegister>([](auto& p) {
+      p.tx_en = true;
+      p.rx_en = true;
+    });
+
+    ExecuteCommand(DirectCommand::AdjustRegulators);
+    ExecuteCommand(DirectCommand::CalibrateAntenna);
+  }
+
+  ExecuteCommand(DirectCommand::Clear);
+
   WriteRegister(ModeDefinitionRegister{
       .nfc_ar = false,
       .om = ModeDefinitionRegister::OperationMode::Iso14443A,
@@ -35,15 +53,6 @@ void St25r3911b::Init() {
   });
 
   SendCommand(DirectCommand::AnalogPreset);
-
-  uint16_t mv = MeasureVoltage(RegulatorVoltageControlRegister::MeasurementSource::VDD);
-  PW_LOG_DEBUG("ST25R3911B Vdd: %d", mv);
-  ModifyRegister<IoConfigurationRegister2>([mv](auto& p) {
-    p.sup = mv > 3600 ? IoConfigurationRegister2::PowerSupply::v5 : IoConfigurationRegister2::PowerSupply::v3_3;
-  });
-
-  ExecuteCommand(DirectCommand::AdjustRegulators);
-  ExecuteCommand(DirectCommand::CalibrateAntenna);
 
   NfcFieldOn();
 }
@@ -142,4 +151,4 @@ void St25r3911b::ExecuteCommand(DirectCommand cmd) {
   WaitForInterrupt();
 }
 
-} // namespace st25r3911b
+}  // namespace st25r3911b

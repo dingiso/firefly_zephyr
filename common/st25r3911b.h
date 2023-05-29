@@ -736,7 +736,7 @@ struct [[gnu::packed]] IcIdentityRegister {
   uint8_t ic_type: 5;
 };
 
-enum class DirectCommands : uint8_t {
+enum class DirectCommand : uint8_t {
   // Puts ST25R3911B in default state (same as after power-up)
   SetDefault = 0xC1,
 
@@ -827,6 +827,38 @@ enum class DirectCommands : uint8_t {
   StartWakeUpTimer = 0xE1,
   StartMaskReceiveTimer = 0xE2,
   StartNoResponseTimer = 0xE3,
+};
+
+class St25r3911b : public GenericDevice<Address, DirectCommand> {
+ public:
+  St25r3911b(const device* spi_dev, const spi_config* spi_config, const gpio_dt_spec* irq_pin_spec) :
+     GenericDevice(spi_dev, spi_config), irq_pin_spec_(irq_pin_spec) {}
+
+  void Init();
+
+ private:
+  struct [[gnu::packed]] InterruptRegisters {
+    MainInterruptRegister main;
+    TimerAndNfcInterruptRegister timer_and_nfc;
+    ErrorAndWakeUpInterruptRegister error_and_wakeup;
+  };
+
+  void InitIrq();
+  InterruptRegisters GetInterrupts();
+  void DisableInterrupts();
+  InterruptRegisters WaitForInterrupt();
+  void EnableOscillator();
+  void NfcFieldOn();
+  void ExecuteCommand(DirectCommand cmd);
+
+  uint16_t MeasureVoltage(RegulatorVoltageControlRegister::MeasurementSource source);
+
+  static void irq_pin_cb(const device* gpio, gpio_callback* cb, uint32_t pins);
+
+ private:
+  const gpio_dt_spec* irq_pin_spec_;
+  k_sem irq_sem_;
+  gpio_callback gpio_cb_;
 };
 
 } // namespace st25r3911b

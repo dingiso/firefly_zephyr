@@ -41,5 +41,5 @@ custom_library(common.thread
 custom_library(common.generic_device generic_device.h)
 target_link_libraries(common.generic_device PUBLIC pw_span pw_bytes)
 
-custom_library(common.st25r3911b st25r3911b.h)
+custom_library(common.st25r3911b st25r3911b.cpp)
 target_link_libraries(common.st25r3911b PUBLIC common.generic_device)

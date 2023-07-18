@@ -55,7 +55,14 @@
           "width": 0.0
         }
       ],
-      "drc_exclusions": [],
+      "drc_exclusions": [
+        "annular_width|112737500|100376000|e4421d03-45bf-47ce-a8e1-be01143412e3|00000000-0000-0000-0000-000000000000",
+        "annular_width|112737500|104856000|bd294629-668e-4df7-a4e5-15826e6e2551|00000000-0000-0000-0000-000000000000",
+        "annular_width|112991500|100376000|e4421d03-45bf-47ce-a8e1-be01143412e3|00000000-0000-0000-0000-000000000000",
+        "annular_width|112991500|104856000|bd294629-668e-4df7-a4e5-15826e6e2551|00000000-0000-0000-0000-000000000000",
+        "silk_edge_clearance|110236000|108646000|2bf9dac8-faf6-4d0e-a75a-090c96c88769|0b7e30e0-a8c5-4093-a02e-e75d210743b7",
+        "silk_edge_clearance|110236000|96616000|2bf9dac8-faf6-4d0e-a75a-090c96c88769|c180a3f6-ae8b-414b-8976-2576c48554c0"
+      ],
       "meta": {
         "version": 2
       },
@@ -125,7 +132,7 @@
         "min_through_hole_diameter": 0.19999999999999998,
         "min_track_width": 0.0,
         "min_via_annular_width": 0.09999999999999999,
-        "min_via_diameter": 0.0,
+        "min_via_diameter": 0.39999999999999997,
         "solder_mask_clearance": 0.0,
         "solder_mask_min_width": 0.0,
         "solder_mask_to_copper_clearance": 0.0,
@@ -404,9 +411,12 @@
     }
   },
   "libraries": {
-    "pinned_footprint_libs": [],
+    "pinned_footprint_libs": [
+      "easyeda2kicad"
+    ],
     "pinned_symbol_libs": [
-      "Ostranna"
+      "Ostranna",
+      "easyeda2kicad"
     ]
   },
   "meta": {

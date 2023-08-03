@@ -42,6 +42,11 @@ bt_le_adv_param ConnectableFastAdvertisingParams() {
 struct bt_uuid_128 power_on_characteristic_uuid =
     BT_UUID_INIT_128(0x86, 0x15, 0x7b, 0xc5, 0x42, 0x92, 0x57, 0xa2, 0x2e, 0x49, 0x97, 0x59, 0xbe, 0x94, 0xb0, 0x0e);
 
+ssize_t ReadPowerOn(struct bt_conn* conn, const struct bt_gatt_attr* attr, void* buf, uint16_t len, uint16_t offset) {
+  uint8_t as_uint8 = power_enabled ? 1 : 0;
+  return bt_gatt_attr_read(conn, attr, buf, len, offset, &as_uint8, sizeof(as_uint8));
+}
+
 ssize_t WritePowerOn(struct bt_conn* conn, const struct bt_gatt_attr* attr, const void* buf, uint16_t len,
                      uint16_t offset, uint8_t flags) {
   uint8_t enabled = *reinterpret_cast<const uint8_t*>(buf);
@@ -52,8 +57,10 @@ ssize_t WritePowerOn(struct bt_conn* conn, const struct bt_gatt_attr* attr, cons
 }
 
 BT_GATT_SERVICE_DEFINE(power_meter_service, BT_GATT_PRIMARY_SERVICE(&power_meter_service_uuid),
-                       BT_GATT_CHARACTERISTIC(&power_on_characteristic_uuid.uuid, BT_GATT_CHRC_WRITE,
-                                              BT_GATT_PERM_WRITE, nullptr, WritePowerOn, nullptr),
+                       BT_GATT_CHARACTERISTIC(&power_on_characteristic_uuid.uuid,
+                                              BT_GATT_CHRC_READ | BT_GATT_CHRC_WRITE,
+                                              BT_GATT_PERM_READ | BT_GATT_PERM_WRITE, ReadPowerOn, WritePowerOn,
+                                              &power_enabled),
                        BT_GATT_CUD("Power On", BT_GATT_PERM_READ), );
 
 void InitBleAdvertising(const bt_le_adv_param& params) {

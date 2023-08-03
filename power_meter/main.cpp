@@ -15,6 +15,7 @@ constexpr gpio_dt_spec led1 = GPIO_DT_SPEC_GET(DT_NODELABEL(led1), gpios);
 constexpr gpio_dt_spec button_sw1 = GPIO_DT_SPEC_GET(DT_NODELABEL(button_sw1), gpios);
 
 bool power_enabled = false;
+gpio_callback button_callback_data;
 
 void ActuatePowerEnabled() {
   gpio_pin_set_dt(&power_en, power_enabled);
@@ -85,6 +86,11 @@ void InitBleAdvertising(const bt_le_adv_param& params) {
   LOG_INF("Advertising successfully started");
 }
 
+void OnButtonPress(const device* gpio, gpio_callback* cb, uint32_t pins) {
+  power_enabled = !power_enabled;
+  ActuatePowerEnabled();
+}
+
 int main() {
 	InitBleAdvertising(ConnectableFastAdvertisingParams());
 
@@ -92,13 +98,13 @@ int main() {
 	gpio_pin_configure_dt(&led1, GPIO_OUTPUT);
 	gpio_pin_configure_dt(&button_sw1, GPIO_INPUT);
 
+  gpio_init_callback(&button_callback_data, OnButtonPress, BIT(button_sw1.pin));
+  gpio_add_callback(button_sw1.port, &button_callback_data);
+  gpio_pin_interrupt_configure_dt(&button_sw1, GPIO_INT_EDGE_TO_ACTIVE);
+
   ActuatePowerEnabled();
 
 	while (true) {
-		if (gpio_pin_get_dt(&button_sw1)) {
-      power_enabled = !power_enabled;
-      ActuatePowerEnabled();
-		}
 		k_sleep(K_MSEC(500));
 		LOG_INF("Still alive!");
   }

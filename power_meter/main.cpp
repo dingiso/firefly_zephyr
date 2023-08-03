@@ -16,6 +16,11 @@ constexpr gpio_dt_spec button_sw1 = GPIO_DT_SPEC_GET(DT_NODELABEL(button_sw1), g
 
 bool power_enabled = false;
 
+void ActuatePowerEnabled() {
+  gpio_pin_set_dt(&power_en, power_enabled);
+  gpio_pin_set_dt(&led1, power_enabled);
+}
+
 // Power meter service, UUID  a0c272ef-1280-4a64-8c5b-2833b948fc96
 bt_uuid_128 power_meter_service_uuid = BT_UUID_INIT_128(
     0x96, 0xfc, 0x48, 0xb9, 0x33, 0x28, 0x5b, 0x8c,
@@ -47,7 +52,8 @@ ssize_t write_power_on(struct bt_conn *conn,
                        const void *buf, uint16_t len, uint16_t offset,
                        uint8_t flags) {
 	uint8_t enabled = *reinterpret_cast<const uint8_t*>(buf);
-	gpio_pin_set_dt(&power_en, enabled);
+	power_enabled = enabled != 0;
+  ActuatePowerEnabled();
 
 	return len;
 }
@@ -86,15 +92,14 @@ int main() {
 	gpio_pin_configure_dt(&led1, GPIO_OUTPUT);
 	gpio_pin_configure_dt(&button_sw1, GPIO_INPUT);
 
+  ActuatePowerEnabled();
+
 	while (true) {
-    k_sleep(K_MSEC(1000));
-		gpio_pin_set_dt(&led1, 1);
 		if (gpio_pin_get_dt(&button_sw1)) {
-			gpio_pin_set_dt(&power_en, power_enabled);
-			power_enabled = !power_enabled;
+      power_enabled = !power_enabled;
+      ActuatePowerEnabled();
 		}
-		k_sleep(K_MSEC(1000));
-		gpio_pin_set_dt(&led1, 0);
+		k_sleep(K_MSEC(500));
 		LOG_INF("Still alive!");
   }
 

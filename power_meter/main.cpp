@@ -25,7 +25,7 @@ void ActuatePowerEnabled() {
 
 // Power meter service, UUID  a0c272ef-1280-4a64-8c5b-2833b948fc96
 bt_uuid_128 power_meter_service_uuid =
-    BT_UUID_INIT_128(0x96, 0xfc, 0x48, 0xb9, 0x33, 0x28, 0x5b, 0x8c, 0x64, 0x4a, 0x80, 0x12, 0xef, 0x72, 0xc2, 0xa0);
+    BT_UUID_INIT_128(BT_UUID_128_ENCODE(0xa0c272ef, 0x1280, 0x4a64, 0x8c5b, 0x2833b948fc96));
 
 static const bt_data ad[] = {
     BT_DATA_BYTES(BT_DATA_FLAGS, (BT_LE_AD_GENERAL | BT_LE_AD_NO_BREDR)),
@@ -42,7 +42,7 @@ bt_le_adv_param ConnectableFastAdvertisingParams() {
 
 // Power on characteristic, UUID 0eb094be-5997-492e-a257-9242c57b1586
 struct bt_uuid_128 power_on_characteristic_uuid =
-    BT_UUID_INIT_128(0x86, 0x15, 0x7b, 0xc5, 0x42, 0x92, 0x57, 0xa2, 0x2e, 0x49, 0x97, 0x59, 0xbe, 0x94, 0xb0, 0x0e);
+    BT_UUID_INIT_128(BT_UUID_128_ENCODE(0x0eb094be, 0x5997, 0x492e, 0xa257, 0x9242c57b1586));
 
 ssize_t ReadPowerOn(struct bt_conn* conn, const struct bt_gatt_attr* attr, void* buf, uint16_t len, uint16_t offset) {
   uint8_t as_uint8 = power_enabled ? 1 : 0;

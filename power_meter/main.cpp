@@ -99,6 +99,49 @@ enum class Register : uint8_t {
   DieId = 0xff,
 };
 
+struct [[gnu::packed]] [[gnu::aligned(2)]] ConfigurationRegister {
+  enum class OperatingMode : uint8_t {
+    PowerDown = 0b000,
+    ShuntVoltageTriggered = 0b001,
+    BusVoltageTriggered = 0b010,
+    ShuntAndBusTriggered = 0b011,
+    ShuntVoltageContinuous = 0b101,
+    BusVoltageContinuous = 0b110,
+    ShuntAndBusContinuous = 0b111,
+  };
+
+  enum class ConversionTime : uint8_t {
+    us140 = 0b000,
+    us204 = 0b001,
+    us332 = 0b010,
+    us588 = 0b011,
+    us1100 = 0b100,
+    us2116 = 0b101,
+    us4156 = 0b110,
+    us8244 = 0b111,
+  };
+
+  enum class AveragingMode : uint8_t {
+    Samples1 = 0b000,
+    Samples4 = 0b001,
+    Samples16 = 0b010,
+    Samples64 = 0b011,
+    Samples128 = 0b100,
+    Samples256 = 0b101,
+    Samples512 = 0b110,
+    Samples1024 = 0b111,
+  };
+
+  OperatingMode mode : 3;
+  ConversionTime shunt_voltage_conversion_time : 3;
+  ConversionTime bus_voltage_conversion_time : 3;
+  AveragingMode averaging_mode : 3;
+  uint8_t : 3;
+  bool reset : 1;
+};
+
+static_assert(sizeof(ConfigurationRegister) == 2);
+
 int ReadRegister(Register reg, int16_t* value) {
   uint8_t rx_buf[2];
   int rc = i2c_write_read_dt(&bus, &reg, sizeof(reg), rx_buf, sizeof(rx_buf));
@@ -116,6 +159,16 @@ int WriteRegister(Register reg, uint16_t value) {
 
 void Init() {
   WriteRegister(Register::Calibration, kCalibrationValue);
+
+  ConfigurationRegister config = {
+    .mode = ConfigurationRegister::OperatingMode::ShuntAndBusContinuous,
+    .shunt_voltage_conversion_time = ConfigurationRegister::ConversionTime::us8244,
+    .bus_voltage_conversion_time = ConfigurationRegister::ConversionTime::us8244,
+    .averaging_mode = ConfigurationRegister::AveragingMode::Samples64,
+    .reset = false,
+  };
+
+  WriteRegister(Register::Configuration, *reinterpret_cast<int16_t*>(&config));
 }
 
 struct Stats {

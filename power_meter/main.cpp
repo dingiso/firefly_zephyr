@@ -4,8 +4,10 @@
 #include <zephyr/bluetooth/services/bas.h>
 #include <zephyr/bluetooth/uuid.h>
 #include <zephyr/drivers/gpio.h>
+#include <zephyr/drivers/i2c.h>
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
+#include <zephyr/sys/byteorder.h>
 
 LOG_MODULE_REGISTER(main);
 
@@ -63,6 +65,85 @@ BT_GATT_SERVICE_DEFINE(power_meter_service, BT_GATT_PRIMARY_SERVICE(&power_meter
                                               &power_enabled),
                        BT_GATT_CUD("Power On", BT_GATT_PERM_READ), );
 
+namespace ina226 {
+// Datasheet: https://www.ti.com/lit/ds/symlink/ina226.pdf
+
+constexpr i2c_dt_spec bus = {I2C_DT_SPEC_GET_ON_I2C(DT_NODELABEL(ina226))};
+
+// According to equation 2) in chapter 7.5, it should be enough to measure
+// currents up to 2^15 mA ~= 32 A, which is more than enough for our purposes.
+// We could have used smaller value to get a better precision,
+// but then conversion will be slightly more convoluted.
+constexpr uint16_t kCurrentLsbMa = 1;
+constexpr uint16_t kShuntResistanceMohm = 20;
+
+// See equation 1) in chapter 7.1.
+// 0.00512 becomes 5120 after taking both "millis" into account (from current and resistance).
+constexpr uint16_t kCalibrationValue = 5120 / (kCurrentLsbMa * kShuntResistanceMohm);
+
+// See chapter 7.6.4:
+// "Power Register LSB is internally programmed to equal 25 times the programmed value of the Current_LSB"
+constexpr uint16_t kPowerLsbMw = 25 * kCurrentLsbMa;
+
+// See chapter 7.6.
+enum class Register : uint8_t {
+  Configuration = 0x00,
+  ShuntVoltage = 0x01,
+  BusVoltage = 0x02,
+  Power = 0x03,
+  Current = 0x04,
+  Calibration = 0x05,
+  MaskEnable = 0x06,
+  AlertLimit = 0x07,
+  ManufacturerId = 0xfe,
+  DieId = 0xff,
+};
+
+int ReadRegister(Register reg, int16_t* value) {
+  uint8_t rx_buf[2];
+  int rc = i2c_write_read_dt(&bus, &reg, sizeof(reg), rx_buf, sizeof(rx_buf));
+  *value = sys_get_be16(rx_buf);
+
+  return rc;
+}
+
+int WriteRegister(Register reg, uint16_t value) {
+  uint8_t tx_buf[3] = {uint8_t(reg), 0, 0};
+  sys_put_be16(value, &tx_buf[1]);
+
+  return i2c_write_dt(&bus, tx_buf, sizeof(tx_buf));
+}
+
+void Init() {
+  WriteRegister(Register::Calibration, kCalibrationValue);
+}
+
+struct Stats {
+  int16_t voltage_mv;
+  int16_t current_ma;
+  int16_t power_mw;
+};
+
+Stats ReadStats() {
+  Stats result;
+
+  int16_t val;
+  ReadRegister(Register::BusVoltage, &val);
+  // See chapter 7.6.3.
+  result.voltage_mv = 1.25 * val;
+
+  ReadRegister(Register::Current, &val);
+  result.current_ma = kCurrentLsbMa * val;
+
+  ReadRegister(Register::Power, &val);
+  result.power_mw = kPowerLsbMw * val;
+
+  return result;
+}
+
+}  // namespace ina226
+
+
 void InitBleAdvertising(const bt_le_adv_param& params) {
   auto err = bt_enable(nullptr);
   if (err) {
@@ -99,9 +180,13 @@ int main() {
 
   ActuatePowerEnabled();
 
+  ina226::Init();
+
   while (true) {
     k_sleep(K_MSEC(500));
-    LOG_INF("Still alive!");
+
+    auto stats = ina226::ReadStats();
+    LOG_INF("V %d mV, I %d mA, P %d mW", stats.voltage_mv, stats.current_ma, stats.power_mw);
   }
 
   return 0;

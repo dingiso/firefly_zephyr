@@ -14,3 +14,9 @@ CONFIG_GPIO=y
 CONFIG_LOG=y
 CONFIG_CONSOLE=y
 CONFIG_RTT_CONSOLE=y
+
+# I2C is used by INA226
+CONFIG_I2C=y
+
+# enable pin controller
+CONFIG_PINCTRL=y

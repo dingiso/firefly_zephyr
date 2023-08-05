@@ -1,5 +1,6 @@
 /dts-v1/;
 #include <nordic/nrf52833_qiaa.dtsi>
+#include "board-pinctrl.dtsi"
 
 / {
 	model = "Power meter v1 board";
@@ -62,5 +63,22 @@
 			label = "storage";
 			reg = <0x0007A000 0x00006000>;
 		};
+	};
+};
+
+&i2c1 {
+	compatible = "nordic,nrf-twi";
+	status = "okay";
+	pinctrl-0 = <&i2c1_default>;
+	pinctrl-names = "default";
+	clock-frequency = <I2C_BITRATE_FAST>;
+
+	// Datasheet: https: //www.ti.com/lit/ds/symlink/ina226.pdf
+	ina226: ina226@40 {
+		compatible = "ti,ina226";
+		// According to `Table 2. Address Pins and Slave Addresses`, when A0 and A1 are connected to the ground,
+		// address is 0b0100 0000
+		reg = <0x40>;
+		label = "INA226 Voltage/Current/Power sensor";
 	};
 };

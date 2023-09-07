@@ -18,8 +18,24 @@ async def list_services_and_characteristics(mac: str):
                 print(f"  Characteristic UUID = {characteristic.uuid}, description: {characteristic.description}")
 
 
+def decode_reply(reply: bytearray) -> bytearray:
+    if len(reply) < 5:
+        raise ValueError("Invalid notification format, too short")
+    if not (reply[0] == 0x0f):
+        raise ValueError("Invalid notification format, unexpected start sequence")
+    if not (reply[-1] == 0xff and reply[-2] == 0xff):
+        raise ValueError("Invalid notification format, unexpected end sequence")
+    if reply[1] != len(reply) - 4:
+        raise ValueError("Invalid notification format, length byte mismatch")
+    content = reply[2:-3]
+    checksum = reply[-3]
+    if checksum != (0x01 + sum(content)) & 0xff:
+        raise ValueError("Invalid notification format, checksum mismatch")
+    return content
+
+
 def notification_callback(sender: BleakGATTCharacteristic, data: bytearray):
-    print(f"Received data: {data}")
+    print(f"Received data: {decode_reply(data)}")
 
 
 async def main(mac):
@@ -44,11 +60,17 @@ async def main(mac):
 def on_off_command(on: bool) -> bytearray:
     on_off = 0x01 if on else 0x00
     checksum = 0x01 + 0x03 + on_off
-    return bytearray([0x0f, 0x06, 0x03, 0x00, on_off, 0x00, 0x00, checksum, 0xff, 0xff])
+    return build_full_command(bytearray([0x03, 0x00, on_off, 0x00, 0x00]))
 
 
 def auth_with_pin_command() -> bytearray:
-    return bytearray([0x0f, 0x0c, 0x17, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x18, 0xff, 0xff])
+    return build_full_command(bytearray([0x17, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]))
+
+
+def build_full_command(command: bytearray) -> bytearray:
+    cmd_len = len(command) + 1  # +1 for checksum
+    checksum = (0x01 + sum(command)) & 0xff
+    return bytearray([0x0f, cmd_len]) + command + bytearray([checksum, 0xff, 0xff])
 
 
 asyncio.run(main("94:A9:A8:1B:54:02"))

@@ -21,7 +21,7 @@ jobs:
       - name: Install West to Pigweed's virtualenv
         run: pip3 install west
       - name: Download Zephyr RTOS sources
-        run: west init zephyrproject --mr v3.2.0 && cd zephyrproject && west update && west zephyr-export && cd -
+        run: west init zephyrproject --mr v3.3.0 && cd zephyrproject && west update && west zephyr-export && cd -
       - name: Install Zephyr python dependencies to Pigweed's virtualenv
         run: pip3 install -r ./zephyrproject/zephyr/scripts/requirements.txt
       - name: Activate Zephyr environment

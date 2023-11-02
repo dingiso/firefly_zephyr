@@ -39,7 +39,7 @@ def notification_callback(sender: BleakGATTCharacteristic, data: bytearray):
 
 
 async def main(mac):
-    async with BleakClient(mac) as client:
+    async with BleakClient(mac, timeout=300, winrt={'use_cached_services': False}) as client:
         device_info = await client.read_gatt_char(VOLTCRAFT_DEVICE_INFO_CHARACTERISTIC_UUID)
         firmware_version_major = int.from_bytes(device_info[11:12], "little")
         firmware_version_minor = int.from_bytes(device_info[12:13], "little")

@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.13.1)
 add_definitions(-DPW_FUNCTION_INLINE_CALLABLE_SIZE=12)
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-psabi")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-psabi -Wno-pointer-arith")
 endif()
 
 include($ENV{PW_ROOT}/pw_system/backend.cmake)

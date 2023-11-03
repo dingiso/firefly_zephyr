@@ -15,20 +15,21 @@ gpio_callback Nfc::irq_callback_data_;
 
 const gpio_dt_spec irq_gpio_device_spec = GPIO_DT_SPEC_GET(DT_NODELABEL(nfc_irq), gpios);
 
-const spi_cs_control Nfc::spi_cs_cfg_ = {
-    .gpio = {
-        .port = DEVICE_DT_GET(DT_SPI_DEV_CS_GPIOS_CTLR(DT_ALIAS(mfrc522))),
-        .pin = DT_SPI_DEV_CS_GPIOS_PIN(DT_ALIAS(mfrc522)),
-        .dt_flags = DT_SPI_DEV_CS_GPIOS_FLAGS(DT_ALIAS(mfrc522)),
-    },
-    .delay = 0,
-};
-
-const spi_config  Nfc::spi_cfg_ = {
-    .frequency = 0x080000UL, // 4 MHz
+const spi_config Nfc::spi_cfg_ = {
+    .frequency = 0x080000UL,  // 4 MHz
     .operation = SPI_OP_MODE_MASTER | SPI_TRANSFER_MSB | SPI_WORD_SET(8) | SPI_LINES_SINGLE,
     .slave = 0,
-    .cs = &spi_cs_cfg_};
+    .cs =
+        {
+            .gpio =
+                {
+                    .port = DEVICE_DT_GET(DT_SPI_DEV_CS_GPIOS_CTLR(DT_ALIAS(mfrc522))),
+                    .pin = DT_SPI_DEV_CS_GPIOS_PIN(DT_ALIAS(mfrc522)),
+                    .dt_flags = DT_SPI_DEV_CS_GPIOS_FLAGS(DT_ALIAS(mfrc522)),
+                },
+            .delay = 0,
+        },
+};
 
 void Nfc::WriteRegister(Register reg, uint8_t value) {
   uint8_t tx[] = {(std::underlying_type<Register>::type(reg) << 1) | kWriteMask, value};

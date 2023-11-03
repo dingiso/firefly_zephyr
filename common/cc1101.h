@@ -23,7 +23,6 @@
 class Cc1101 {
  private:
   const static device* spi_;
-  static spi_cs_control spi_cs_cfg_;
   static spi_config spi_config_;
   static k_sem gd_ready_;
   static gpio_callback gdo0_callback_data_;

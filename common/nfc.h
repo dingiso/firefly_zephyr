@@ -38,7 +38,6 @@ class Nfc {
   void CheckWriteRead();
 
   const static device* mfrc522_dev_;
-  const static spi_cs_control spi_cs_cfg_;
   const static spi_config spi_cfg_;
   static gpio_callback irq_callback_data_;
 };

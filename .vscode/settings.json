@@ -9,7 +9,7 @@
     "${workspaceFolder}/lock_test",
     "${workspaceFolder}/lock"
   ],
-  "nrf-connect.topdir": "${nrf-connect.sdk:2.3.0}",
+  "nrf-connect.topdir": "${nrf-connect.sdk:2.5.0}",
   "nrf-connect.toolchain.path": "PATH",
   "nrf-connect.west.env": {
     "$base": "process"

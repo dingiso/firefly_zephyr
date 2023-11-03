@@ -9,20 +9,19 @@ const gpio_dt_spec gpio_device_spec = GPIO_DT_SPEC_GET(DT_ALIAS(cc1101_gdo0), gp
 k_sem Cc1101::gd_ready_;
 gpio_callback Cc1101::gdo0_callback_data_;
 
-spi_cs_control Cc1101::spi_cs_cfg_ = {
-  .gpio = {
-    .port = DEVICE_DT_GET(DT_SPI_DEV_CS_GPIOS_CTLR(DT_ALIAS(cc1101))),
-    .pin = DT_SPI_DEV_CS_GPIOS_PIN(DT_ALIAS(cc1101)),
-    .dt_flags = DT_SPI_DEV_CS_GPIOS_FLAGS(DT_ALIAS(cc1101)),
-  },
-  .delay = 0,
-};
-
 spi_config Cc1101::spi_config_ = {
-    .frequency = 0x400000UL, // 4 MHz
+    .frequency = 0x400000UL,  // 4 MHz
     .operation = SPI_OP_MODE_MASTER | SPI_TRANSFER_MSB | SPI_WORD_SET(8) | SPI_LINES_SINGLE,
     .slave = 0,
-    .cs = &Cc1101::spi_cs_cfg_};
+    .cs = {
+        .gpio =
+            {
+                .port = DEVICE_DT_GET(DT_SPI_DEV_CS_GPIOS_CTLR(DT_ALIAS(cc1101))),
+                .pin = DT_SPI_DEV_CS_GPIOS_PIN(DT_ALIAS(cc1101)),
+                .dt_flags = DT_SPI_DEV_CS_GPIOS_FLAGS(DT_ALIAS(cc1101)),
+            },
+        .delay = 0,
+    }};
 
 void Cc1101::Init() {
   k_sem_init(&gd_ready_, 0, 1);

@@ -37,6 +37,11 @@ jobs:
         with:
           name: lock_test.elf
           path: lock_test.elf
+      - run: source ../pigweed/activate.sh && west build lock --pristine --board lock_v01 && mv ./build/zephyr/zephyr.hex lock.hex
+      - uses: actions/upload-artifact@v1
+        with:
+          name: lock.hex
+          path: lock.hex
       - run: source ../pigweed/activate.sh && west build firefly --pristine && mv ./build/zephyr/zephyr.elf firefly.elf
       - uses: actions/upload-artifact@v1
         with:

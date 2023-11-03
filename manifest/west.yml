@@ -1,0 +1,17 @@
+manifest:
+  remotes:
+    - name: sdk-nrf
+      url-base: https://github.com/nrfconnect
+    - name: pigweed
+      url-base: https://pigweed.googlesource.com/pigweed
+  projects:
+    - name: sdk-nrf
+      remote: sdk-nrf
+      revision: v2.5.0
+      path: nrf
+      import:
+        path-prefix: third_party
+    - name: pigweed
+      remote: pigweed
+      revision: main
+      path: third_party/pigweed

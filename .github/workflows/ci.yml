@@ -9,50 +9,50 @@ jobs:
   build:
     runs-on: ubuntu-22.04
     env:
-      ZEPHYR_BASE: /home/runner/work/firefly_zephyr/firefly_zephyr/ncs/zephyr
+      ZEPHYR_BASE: /home/runner/work/firefly_zephyr/firefly_zephyr/third_party/zephyr
       ZEPHYR_TOOLCHAIN_VARIANT: gnuarmemb
-      GNUARMEMB_TOOLCHAIN_PATH: /home/runner/work/firefly_zephyr/pigweed/environment/cipd/packages/arm
+      GNUARMEMB_TOOLCHAIN_PATH: /home/runner/work/firefly_zephyr/firefly_zephyr/third_party/pigweed/environment/cipd/packages/arm
     steps:
       - uses: actions/checkout@v1
       - name: Install dependencies via APT
         run: sudo apt-get update && sudo apt-get install --no-install-recommends gperf dfu-util device-tree-compiler wget xz-utils file libsdl2-dev
-      - name: Download and activate Pigweed
-        run: cd .. && git clone https://github.com/aeremin/pigweed.git && source pigweed/bootstrap.sh && cd -
-      - name: Install West to Pigweed's virtualenv
+      - name: Install West globally
         run: pip3 install west
-      - name: Download nRF Connect SDK (including Zephyr RTOS) sources
-        run: west init ncs -m https://github.com/nrfconnect/sdk-nrf --mr v2.5.0 && cd ncs && west update && west zephyr-export && cd -
+      - name: Download dependencies (including Zephyr RTOS, Pigweed and nRF Connect SDK)
+        run: west init -l manifest && west update && west zephyr-export
+      - name: Bootstrap and activate Pigweed
+        run: source third_party/pigweed/bootstrap.sh
       - name: Install Zephyr python dependencies to Pigweed's virtualenv
-        run: pip3 install -r ./ncs/zephyr/scripts/requirements.txt
+        run: pip3 install -r ./third_party/zephyr/scripts/requirements.txt
       - name: Install NRF python dependencies to Pigweed's virtualenv
-        run: pip3 install -r ./ncs/nrf/scripts/requirements.txt
+        run: pip3 install -r ./third_party/nrf/scripts/requirements.txt
       - name: Install McuBoot python dependencies to Pigweed's virtualenv
-        run: pip3 install -r ./ncs/bootloader/mcuboot/scripts/requirements.txt
+        run: pip3 install -r ./third_party/bootloader/mcuboot/scripts/requirements.txt
       - name: Activate Zephyr environment
-        run: cd ./ncs/zephyr && source zephyr-env.sh && cd ../..
+        run: source third_party/zephyr/zephyr-env.sh
       - name: Validate Zephyr environment
         run: west manifest --validate
-      - run: source ../pigweed/activate.sh && west build lock_test --pristine --board lock_v01 && mv ./build/zephyr/zephyr.elf lock_test.elf
+      - run: source ./third_party/pigweed/activate.sh && west build lock_test --pristine --board lock_v01 && mv ./build/zephyr/zephyr.elf lock_test.elf
       - uses: actions/upload-artifact@v1
         with:
           name: lock_test.elf
           path: lock_test.elf
-      - run: source ../pigweed/activate.sh && west build lock --pristine --board lock_v01 && mv ./build/zephyr/zephyr.hex lock.hex
+      - run: source ./third_party/pigweed/activate.sh && west build lock --pristine --board lock_v01 && mv ./build/zephyr/zephyr.hex lock.hex
       - uses: actions/upload-artifact@v1
         with:
           name: lock.hex
           path: lock.hex
-      - run: source ../pigweed/activate.sh && west build firefly --pristine && mv ./build/zephyr/zephyr.elf firefly.elf
+      - run: source ./third_party/pigweed/activate.sh && west build firefly --pristine && mv ./build/zephyr/zephyr.elf firefly.elf
       - uses: actions/upload-artifact@v1
         with:
           name: firefly.elf
           path: firefly.elf
-      - run: source ../pigweed/activate.sh && west build activator --pristine && mv ./build/zephyr/zephyr.elf activator.elf
+      - run: source ./third_party/pigweed/activate.sh && west build activator --pristine && mv ./build/zephyr/zephyr.elf activator.elf
       - uses: actions/upload-artifact@v1
         with:
           name: activator.elf
           path: activator.elf
-      - run: source ../pigweed/activate.sh && west build smoke_test --pristine --board firefly_v1 && mv ./build/zephyr/zephyr.elf smoke_test_firefly.elf
+      - run: source ./third_party/pigweed/activate.sh && west build smoke_test --pristine --board firefly_v1 && mv ./build/zephyr/zephyr.elf smoke_test_firefly.elf
       - uses: actions/upload-artifact@v1
         with:
           name: smoke_test_firefly.elf

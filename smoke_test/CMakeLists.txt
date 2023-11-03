@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.13.1)
 add_definitions(-DPW_UNIT_TEST_CONFIG_MEMORY_POOL_SIZE=512)
 
 list(APPEND ZEPHYR_EXTRA_MODULES
-  ${CMAKE_CURRENT_SOURCE_DIR}/../../pigweed
+  ${CMAKE_CURRENT_SOURCE_DIR}/../third_party/pigweed
 )
 
 # Re-direct the directory where the 'boards' directory is found from

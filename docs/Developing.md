@@ -19,41 +19,28 @@ together nicely:
 ### Steps
 
 * Install [nRF Connect for Desktop](https://www.nordicsemi.com/Products/Development-tools/nrf-connect-for-desktop).
-* Launch it and install Toolchain Manager there.
-* Install nRF Connect SDK 2.5.0 in Toolchain Manager.
-  It will install Zephyr RTOS with some additional Nordic modules (we are going to
-  use this part) and toolchains (which are we aren't going to use).
-* Install nRF Connect for VS Code (Toolchain Manager will recommend that). It can
-  also be done later from the VS Code itself - just install recommended extensions
-  defined in `.vscode/extensions.json` - VS Code will propose to do that.
-* Clone the Pigweed repo so `pigweed` folder is in the same folder as
-  `firefly_zephyr`. Command: `git clone https://github.com/google/pigweed.git`.
+* Install nRF Connect for VS Code. It can also be done later from the VS Code itself -
+  just install recommended extensions defined in `.vscode/extensions.json` - VS Code will propose to do that.
+* Install `west` globally: `pip install west` (need to be run with administrator priviliges).
+* Run `west init -l manifest && west update && west zephyr-export` (from the repository root).
+  This will create and populate `third_party` folder with all dependencies.
 * Do the next steps in the same console, as further step rely on environment
   variables set by earlier steps.
 * Bootstrap Pigweed environment (`source pigweed/bootstrap.sh` or
-  `pigweed/bootstrap.bat` depending on OS). This will install Pigweed toolchain
+  `third_party\pigweed\bootstrap.bat` depending on OS). This will install Pigweed toolchain
   (including python), initialize and populate python virtual environment, set up
   some environment variables.
-* Install `west` (to the Pigweed's python's venv): `pip install west`.
 * Install Zephyr RTOS python dependencies (again, to the Pigweed's python's venv!):
-  `pip install -r ncs/v2.5.0/zephyr/scripts/requirements.txt`. `ncs` is the root
-  folder for the Nordic SDKs, change the path accordingly.
-* **Hopefully temporary**.  Downgrade `protobuf` python package:
-  `pip install protobuf==3.20.3`. Zephyr's `requirements.txt` doesn't specify
-  versions explicitly, so the command above will install latest `protobuf`.
-  But it also requires `protoc` (proto compiler binary) of the version newer than
-  Pigweed toolchain contains. Need to watch [this line](https://github.com/google/pigweed/blob/ac01b0bc23319c3ed8b29d9b306c808caba68616/pw_env_setup/py/pw_env_setup/cipd_setup/pigweed.json#L50),
-  when it will be bumped to at least `3.20`, this step probably won't be needed
-  anymore.
-* Start VS Code (from the same console!): `code .`
+  `pip install -r third_party/zephyr/scripts/requirements.txt`.
+* Start VS Code (from the same console!): `"C:\Program Files\Microsoft VS Code\Code.exe" .` (or just `code .` if you have it in PATH).
 * Add the following to your VS Code `settings.json`
   (Global one, not the one in repo):
   ```json
   "nrf-connect.west.env": {
-    "GNUARMEMB_TOOLCHAIN_PATH": "????/pigweed/environment/cipd/packages/arm"
+    "GNUARMEMB_TOOLCHAIN_PATH": "????/third_party/pigweed/environment/cipd/packages/arm"
   }
   ```
-  (replace ???? with the path to your pigweed folder).
+  (replace ???? with the path to this repository location).
 * Try to build and flash something!
 * When running commands from console - make sure to use `nRF Connect` one. It should
   be default one because of the `settings.json`. It's important to use it and not
@@ -64,9 +51,9 @@ together nicely:
 
 * Do the next stays in the same console, as further step rely on environment
   variables set by earlier steps.
-* Activate Pigweed environment (`source pigweed/activate.sh` or
-  `pigweed/activate.bat` depending on OS).
-* Start VS Code (from the same console!): `code .`
+* Activate Pigweed environment (`source third_party/pigweed/activate.sh` or
+  `third_party\pigweed\activate.bat` depending on OS).
+* Start VS Code (from the same console!): `"C:\Program Files\Microsoft VS Code\Code.exe" .` (or just `code .` if you have it in PATH).
 
 # Flashing
 

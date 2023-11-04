@@ -1,19 +1,11 @@
 cmake_minimum_required(VERSION 3.13.1)
 
-# Re-direct the directory where the 'boards' directory is found from
-# $ZEPHYR_BASE to this directory.
-# set(BOARD_ROOT ${CMAKE_CURRENT_LIST_DIR}..)
-set(BOARD_ROOT ${CMAKE_CURRENT_LIST_DIR}/..)
-
-# This sample is only compatible with nrf52840_pca10065 because it has
-# re-directed the 'boards' directory to a directory that only contains
-# this board.
+# Only one board is supported
 set(BOARD firefly_v1)
 
-find_package(Zephyr)
+include(../common/basics.cmake)
 
 project(activator)
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 add_subdirectory(../common common EXCLUDE_FROM_ALL)
 

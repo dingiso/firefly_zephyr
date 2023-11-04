@@ -3,10 +3,6 @@ cmake_minimum_required(VERSION 3.13.1)
 # We create a pw::Function capturing 3 4-byte argument.
 add_definitions(-DPW_FUNCTION_INLINE_CALLABLE_SIZE=12)
 
-list(APPEND ZEPHYR_EXTRA_MODULES
-  ${CMAKE_CURRENT_SOURCE_DIR}/../third_party/pigweed
-)
-
 # Re-direct the directory where the 'boards' directory is found from
 # $ZEPHYR_BASE to this directory.
 # set(BOARD_ROOT ${CMAKE_CURRENT_LIST_DIR}..)

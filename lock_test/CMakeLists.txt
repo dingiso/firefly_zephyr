@@ -14,10 +14,6 @@ pw_set_backend(pw_system.rpc_server
 # Pigweed used 16k by default which is A LOT.
 add_definitions(-DPW_UNIT_TEST_CONFIG_MEMORY_POOL_SIZE=512)
 
-list(APPEND ZEPHYR_EXTRA_MODULES
-  ${CMAKE_CURRENT_SOURCE_DIR}/../third_party/pigweed
-)
-
 # Re-direct the directory where the 'boards' directory is found from
 # $ZEPHYR_BASE to this directory.
 # set(BOARD_ROOT ${CMAKE_CURRENT_LIST_DIR}..)

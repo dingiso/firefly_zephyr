@@ -10,11 +10,10 @@
                 "UNICODE",
                 "_UNICODE"
             ],
-            "windowsSdkVersion": "10.0.22000.0",
-            "compilerPath": "${default}",
+            "compilerPath": "third_party/pigweed/environment/cipd/packages/arm/bin/arm-none-eabi-gcc",
             "cStandard": "${default}",
             "cppStandard": "${default}",
-            "intelliSenseMode": "${default}",
+            "intelliSenseMode": "gcc-arm",
             "configurationProvider": "nrf-connect"
         }
     ],

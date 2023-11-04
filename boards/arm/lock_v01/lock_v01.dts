@@ -173,6 +173,12 @@
 	};
 };
 
+&uicr {
+	// NFC pins aren't connected to any kind of antenna at this board,
+	// instead they are routed to H8 connector as normal GPIOs.
+	nfct-pins-as-gpios;
+};
+
 &flash0 {
 	/*
 	 * For more information, see:

@@ -19,9 +19,6 @@ CONFIG_CONSOLE=y
 CONFIG_UART_CONSOLE=y
 CONFIG_RTT_CONSOLE=y
 
-# Enable SPI to be able to communicate to the radio chip (cc1101).
-CONFIG_SPI=y
-
 # I2C is used by eeprom and pill
 CONFIG_I2C=y
 CONFIG_EEPROM=y
@@ -35,7 +32,3 @@ CONFIG_ADC=y
 
 # enable pin controller
 CONFIG_PINCTRL=y
-
-# NFC pins aren't connected to any kind of antenna at this board,
-# instead they are routed to H8 connector as normal GPIOs.
-CONFIG_NFCT_PINS_AS_GPIOS=y

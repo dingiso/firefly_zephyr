@@ -1,9 +1,5 @@
 cmake_minimum_required(VERSION 3.13.1)
 
-include($ENV{PW_ROOT}/pw_system/backend.cmake)
-pw_set_backend(pw_system.rpc_server
-               pw_system.hdlc_rpc_server)
-
 include(../common/basics.cmake)
 
 project(lock_test)

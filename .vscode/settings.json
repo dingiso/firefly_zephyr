@@ -3,11 +3,12 @@
     "build/": true,
   },
   "nrf-connect.applications": [
-    "${workspaceFolder}/activator",
-    "${workspaceFolder}/firefly",
-    "${workspaceFolder}/smoke_test",
-    "${workspaceFolder}/lock_test",
-    "${workspaceFolder}/lock"
+    "${workspaceFolder}/firmware/activator",
+    "${workspaceFolder}/firmware/firefly",
+    "${workspaceFolder}/firmware/smoke_test",
+    "${workspaceFolder}/firmware/lock_test",
+    "${workspaceFolder}/firmware/lock",
+    "${workspaceFolder}/firmware/power_meter"
   ],
   "nrf-connect.toolchain.path": "PATH",
   "nrf-connect.west.env": {

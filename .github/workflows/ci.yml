@@ -32,27 +32,27 @@ jobs:
         run: source third_party/zephyr/zephyr-env.sh
       - name: Validate Zephyr environment
         run: west manifest --validate
-      - run: source ./third_party/pigweed/activate.sh && west build lock_test --pristine --board lock_v01 && mv ./build/zephyr/zephyr.elf lock_test.elf
+      - run: source ./third_party/pigweed/activate.sh && west build firmware/lock_test --pristine --board lock_v01 && mv ./build/zephyr/zephyr.elf lock_test.elf
       - uses: actions/upload-artifact@v1
         with:
           name: lock_test.elf
           path: lock_test.elf
-      - run: source ./third_party/pigweed/activate.sh && west build lock --pristine --board lock_v01 && mv ./build/zephyr/zephyr.hex lock.hex
+      - run: source ./third_party/pigweed/activate.sh && west build firmware/lock --pristine --board lock_v01 && mv ./build/zephyr/zephyr.hex lock.hex
       - uses: actions/upload-artifact@v1
         with:
           name: lock.hex
           path: lock.hex
-      - run: source ./third_party/pigweed/activate.sh && west build firefly --pristine && mv ./build/zephyr/zephyr.elf firefly.elf
+      - run: source ./third_party/pigweed/activate.sh && west build firmware/firefly --pristine && mv ./build/zephyr/zephyr.elf firefly.elf
       - uses: actions/upload-artifact@v1
         with:
           name: firefly.elf
           path: firefly.elf
-      - run: source ./third_party/pigweed/activate.sh && west build activator --pristine && mv ./build/zephyr/zephyr.elf activator.elf
+      - run: source ./third_party/pigweed/activate.sh && west build firmware/activator --pristine && mv ./build/zephyr/zephyr.elf activator.elf
       - uses: actions/upload-artifact@v1
         with:
           name: activator.elf
           path: activator.elf
-      - run: source ./third_party/pigweed/activate.sh && west build smoke_test --pristine --board firefly_v1 && mv ./build/zephyr/zephyr.elf smoke_test_firefly.elf
+      - run: source ./third_party/pigweed/activate.sh && west build firmware/smoke_test --pristine --board firefly_v1 && mv ./build/zephyr/zephyr.elf smoke_test_firefly.elf
       - uses: actions/upload-artifact@v1
         with:
           name: smoke_test_firefly.elf

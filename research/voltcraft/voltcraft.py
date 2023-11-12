@@ -53,6 +53,10 @@ class VoltcraftSmartSocket:
   def _decode_reply(self, reply: bytearray) -> bytearray:
     if len(reply) < 5:
         raise ValueError("Invalid notification format, too short")
+    # Reply to "Get status" command (which has 0x0400 code) is missign 0xffff end sequence
+    # for some reason. So hack it back.
+    if reply[2:4] == bytearray([0x04, 0x00]):
+      reply = reply + bytearray([0xff, 0xff])
     if not (reply[0] == 0x0f):
         raise ValueError("Invalid notification format, unexpected start sequence")
     if not (reply[-1] == 0xff and reply[-2] == 0xff):
@@ -93,3 +97,29 @@ class AuthCommand(Command):
 
     if response != bytearray([0x17, 0x00, 0x00, 0x00, 0x00]):
       raise ValueError(f"Unexpected response: {response}")
+
+class GetStatusCommand(Command):
+  def __init__(self):
+    self.powered_on = False
+    self.power_watt = 0.0
+    self.voltage = 0
+    self.current_ampere = 0.0
+    self.frequency_hz = 0
+    self.power_factor = 0.0
+
+  def command_body(self) -> bytearray:
+    return bytearray([0x04, 0x00, 0x00])
+
+  def digest_response(self, response: bytearray):
+    if len(response) != 16:
+      raise ValueError(f"Invalid response length: {response}")
+
+    if response[0:2] != bytearray([0x04, 0x00]) or response[10:] != bytearray([0x00, 0x00, 0x00, 0x00, 0x00, 0x00]):
+      raise ValueError(f"Unexpected response: {response}")
+
+    self.powered_on = response[2] == 0x01
+    self.power_watt = int.from_bytes(response[3:6], "big") / 1000
+    self.voltage = int.from_bytes(response[6:7], "big")
+    self.current_ampere = int.from_bytes(response[7:9], "big") / 1000
+    self.frequency_hz = int.from_bytes(response[9:10], "big")
+    self.power_factor = self.power_watt / (self.voltage * self.current_ampere) if self.current_ampere > 0.0 else 0.0

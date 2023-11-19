@@ -26,7 +26,7 @@ together nicely:
   This will create and populate `third_party` folder with all dependencies.
 * Do the next steps in the same console, as further step rely on environment
   variables set by earlier steps.
-* Bootstrap Pigweed environment (`source pigweed/bootstrap.sh` or
+* Bootstrap Pigweed environment (`source third_party/pigweed/bootstrap.sh` or
   `third_party\pigweed\bootstrap.bat` depending on OS). This will install Pigweed toolchain
   (including python), initialize and populate python virtual environment, set up
   some environment variables.

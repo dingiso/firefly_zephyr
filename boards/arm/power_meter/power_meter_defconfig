@@ -10,9 +10,10 @@ CONFIG_USE_SEGGER_RTT=y
 # enable GPIO
 CONFIG_GPIO=y
 
-# enable console and logging via RTT
+# enable console and logging via RTT and UART
 CONFIG_LOG=y
 CONFIG_CONSOLE=y
+CONFIG_UART_CONSOLE=y
 CONFIG_RTT_CONSOLE=y
 
 # I2C is used by INA226

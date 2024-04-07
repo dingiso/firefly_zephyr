@@ -7,6 +7,7 @@
 	compatible = "aeremin,power_meter";
 
 	chosen {
+		zephyr,console = &uart0;
 		zephyr,sram = &sram0;
 		zephyr,flash = &flash0;
 	};

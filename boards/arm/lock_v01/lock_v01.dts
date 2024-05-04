@@ -129,6 +129,10 @@
 	status = "okay";
 };
 
+&gpiote {
+    status = "okay";
+};
+
 &uart0 {
 	status = "okay";
 	compatible = "nordic,nrf-uart";

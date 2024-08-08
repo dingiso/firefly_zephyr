@@ -27,9 +27,7 @@ using pw::chrono::SystemClock;
 
 Buzzer buzzer;
 
-TEST(BasicTest, Sum) {
-  ASSERT_EQ(2 + 2, 4);
-}
+TEST(BasicTest, Sum) { ASSERT_EQ(2 + 2, 4); }
 
 TEST(ProtoTest, Equality) {
   static_assert(pw::protobuf::IsTriviallyComparable<pwpb::Customer::Message>());
@@ -155,65 +153,46 @@ TEST(Header2Test, NoShortCircuit) {
 
 TEST(ThreadTest, Detach) {
   static pw::thread::zephyr::StaticContextWithStack<512> thread_context;
-  pw::thread::Thread(
-      pw::thread::zephyr::Options(thread_context), [](void* arg) {
-        pw::this_thread::sleep_for(SystemClock::for_at_least(1s));
-        PW_LOG_INFO("ThreadTest_Detach");
-      },
-      nullptr)
-      .detach();
+  pw::thread::Thread(pw::thread::zephyr::Options(thread_context), [](void* arg) {
+    pw::this_thread::sleep_for(SystemClock::for_at_least(1s));
+    PW_LOG_INFO("ThreadTest_Detach");
+  }).detach();
 }
 
 TEST(ThreadTest, Join) {
   static pw::thread::zephyr::StaticContextWithStack<512> thread_context;
-  pw::thread::Thread(
-      pw::thread::zephyr::Options(thread_context), [](void* arg) {
-        pw::this_thread::sleep_for(SystemClock::for_at_least(1s));
-        PW_LOG_INFO("ThreadTest_Join");
-      },
-      nullptr)
-      .join();
+  pw::thread::Thread(pw::thread::zephyr::Options(thread_context), [](void* arg) {
+    pw::this_thread::sleep_for(SystemClock::for_at_least(1s));
+    PW_LOG_INFO("ThreadTest_Join");
+  }).join();
 }
 
 TEST(ThreadTest, ContextReuseAfterJoin) {
   static pw::thread::zephyr::StaticContextWithStack<512> thread_context;
-  pw::thread::Thread(
-      pw::thread::zephyr::Options(thread_context), [](void* arg) {
-        pw::this_thread::sleep_for(SystemClock::for_at_least(200ms));
-        PW_LOG_INFO("ThreadTest_Join_1");
-      },
-      nullptr)
-      .join();
-  pw::thread::Thread(
-      pw::thread::zephyr::Options(thread_context), [](void* arg) {
-        pw::this_thread::sleep_for(SystemClock::for_at_least(200ms));
-        PW_LOG_INFO("ThreadTest_Join_2");
-      },
-      nullptr)
-      .join();
+  pw::thread::Thread(pw::thread::zephyr::Options(thread_context), [](void* arg) {
+    pw::this_thread::sleep_for(SystemClock::for_at_least(200ms));
+    PW_LOG_INFO("ThreadTest_Join_1");
+  }).join();
+  pw::thread::Thread(pw::thread::zephyr::Options(thread_context), [](void* arg) {
+    pw::this_thread::sleep_for(SystemClock::for_at_least(200ms));
+    PW_LOG_INFO("ThreadTest_Join_2");
+  }).join();
 }
 
 TEST(ThreadTest, ContextReuseAfterDetach) {
   static pw::thread::zephyr::StaticContextWithStack<512> thread_context;
-  pw::thread::Thread(
-      pw::thread::zephyr::Options(thread_context), [](void* arg) {
-        pw::this_thread::sleep_for(SystemClock::for_at_least(200ms));
-        PW_LOG_INFO("ThreadTest_Detach_1");
-      },
-      nullptr)
-      .detach();
+  pw::thread::Thread(pw::thread::zephyr::Options(thread_context), [](void* arg) {
+    pw::this_thread::sleep_for(SystemClock::for_at_least(200ms));
+    PW_LOG_INFO("ThreadTest_Detach_1");
+  }).detach();
   pw::this_thread::sleep_for(SystemClock::for_at_least(300ms));
-  pw::thread::Thread(
-      pw::thread::zephyr::Options(thread_context), [](void* arg) {
-        pw::this_thread::sleep_for(SystemClock::for_at_least(200ms));
-        PW_LOG_INFO("ThreadTest_Detach_2");
-      },
-      nullptr)
-      .detach();
+  pw::thread::Thread(pw::thread::zephyr::Options(thread_context), [](void* arg) {
+    pw::this_thread::sleep_for(SystemClock::for_at_least(200ms));
+    PW_LOG_INFO("ThreadTest_Detach_2");
+  }).detach();
 }
 
-class EchoService final
-    : public common::rpc::pw_rpc::pwpb::EchoService::Service<EchoService> {
+class EchoService final : public common::rpc::pw_rpc::pwpb::EchoService::Service<EchoService> {
  public:
   pw::Status Echo(const pwpb::Customer::Message& request, pwpb::Customer::Message& response) {
     response = request;

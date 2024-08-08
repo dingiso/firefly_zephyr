@@ -88,7 +88,7 @@
 
 	// Datasheet: https: //www.ti.com/lit/ds/symlink/ina226.pdf
 	ina226: ina226@40 {
-		compatible = "ti,ina226";
+		compatible = "ti,ina226-custom";
 		// According to `Table 2. Address Pins and Slave Addresses`, when A0 and A1 are connected to the ground,
 		// address is 0b0100 0000
 		reg = <0x40>;

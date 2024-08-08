@@ -1,11 +1,11 @@
 cmake_minimum_required(VERSION 3.13.1)
 
+# We create a pw::Function capturing 3 4-byte arguments.
+add_definitions(-DPW_FUNCTION_INLINE_CALLABLE_SIZE=12)
+
 include(../common/basics.cmake)
 
 project(lock_test)
-
-# We create a pw::Function capturing 3 4-byte arguments.
-add_definitions(-DPW_FUNCTION_INLINE_CALLABLE_SIZE=12)
 
 include($ENV{PW_ROOT}/pw_build/pigweed.cmake)
 include($ENV{PW_ROOT}/pw_protobuf_compiler/proto.cmake)

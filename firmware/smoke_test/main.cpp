@@ -1,26 +1,23 @@
+#include <zephyr/kernel.h>
+#include <zephyr/random/random.h>
+
 #include <array>
 #include <atomic>
 #include <functional>
 #include <memory>
 
-#include <zephyr/kernel.h>
-#include <zephyr/random/rand32.h>
-
 #include "buzzer.h"
 #include "cc1101.h"
+#include "eeprom.h"
+#include "gtest/gtest.h"
+#include "printk_event_handler.h"
 #include "rgb_led.h"
 #include "timer.h"
-#include "eeprom.h"
-#include "printk_event_handler.h"
-
-#include "gtest/gtest.h"
 
 Buzzer buzzer;
 Cc1101 cc1101;
 
-TEST(Cc1101Test, CanInit) {
-  cc1101.Init();
-}
+TEST(Cc1101Test, CanInit) { cc1101.Init(); }
 
 TEST(Cc1101Test, CanSetPacketSize) {
   cc1101.SetPacketSize(12);
@@ -31,7 +28,7 @@ TEST(Cc1101Test, CanTransmitSomething) {
   struct Data {
     uint8_t a, b;
   };
-  Data d = { .a = 5, .b = 10 };
+  Data d = {.a = 5, .b = 10};
 
   cc1101.Transmit(d);
 }
@@ -58,7 +55,7 @@ TEST(RgbLedTest, SmoothColorTransition) {
 
 TEST(TimerTest, RunsDelayed) {
   std::atomic<uint8_t> counter = 0;
-  const auto t = RunDelayed([&](){ ++counter; }, 30);
+  const auto t = RunDelayed([&]() { ++counter; }, 30);
   k_sleep(K_MSEC(10));
   ASSERT_EQ(counter, 0);
   k_sleep(K_MSEC(10));
@@ -71,7 +68,7 @@ TEST(TimerTest, RunsDelayed) {
 
 TEST(TimerTest, RunsEvery) {
   uint8_t counter = 0;
-  const auto t = RunEvery([&](){ ++counter; }, 10);
+  const auto t = RunEvery([&]() { ++counter; }, 10);
   k_sleep(K_MSEC(10));
   ASSERT_EQ(counter, 1);
   k_sleep(K_MSEC(10));
@@ -106,5 +103,5 @@ int main() {
   } else {
     buzzer.Beep(100, 600, 1000);
   }
-  while(true) k_sleep(K_MSEC(1000));
+  while (true) k_sleep(K_MSEC(1000));
 }

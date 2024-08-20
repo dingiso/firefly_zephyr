@@ -215,9 +215,10 @@ int main() {
 
   int num_failures = RUN_ALL_TESTS();
   if (!num_failures) {
+    buzzer.Beep(100, 600, 100);
     printk("All tests passed!\n");
   } else {
-    printk("%d tests failed!\n", num_failures);
+    buzzer.Beep(100, 600, 1000);
   }
 
   pw::system::GetRpcServer().RegisterService(echo_service);

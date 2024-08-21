@@ -153,7 +153,7 @@ TEST(Header2Test, NoShortCircuit) {
 
 TEST(ThreadTest, Detach) {
   static pw::thread::zephyr::StaticContextWithStack<512> thread_context;
-  pw::thread::Thread(pw::thread::zephyr::Options(thread_context), [](void* arg) {
+  pw::thread::Thread(pw::thread::zephyr::Options(thread_context), []() {
     pw::this_thread::sleep_for(SystemClock::for_at_least(1s));
     PW_LOG_INFO("ThreadTest_Detach");
   }).detach();
@@ -161,7 +161,7 @@ TEST(ThreadTest, Detach) {
 
 TEST(ThreadTest, Join) {
   static pw::thread::zephyr::StaticContextWithStack<512> thread_context;
-  pw::thread::Thread(pw::thread::zephyr::Options(thread_context), [](void* arg) {
+  pw::thread::Thread(pw::thread::zephyr::Options(thread_context), []() {
     pw::this_thread::sleep_for(SystemClock::for_at_least(1s));
     PW_LOG_INFO("ThreadTest_Join");
   }).join();
@@ -169,11 +169,11 @@ TEST(ThreadTest, Join) {
 
 TEST(ThreadTest, ContextReuseAfterJoin) {
   static pw::thread::zephyr::StaticContextWithStack<512> thread_context;
-  pw::thread::Thread(pw::thread::zephyr::Options(thread_context), [](void* arg) {
+  pw::thread::Thread(pw::thread::zephyr::Options(thread_context), []() {
     pw::this_thread::sleep_for(SystemClock::for_at_least(200ms));
     PW_LOG_INFO("ThreadTest_Join_1");
   }).join();
-  pw::thread::Thread(pw::thread::zephyr::Options(thread_context), [](void* arg) {
+  pw::thread::Thread(pw::thread::zephyr::Options(thread_context), []() {
     pw::this_thread::sleep_for(SystemClock::for_at_least(200ms));
     PW_LOG_INFO("ThreadTest_Join_2");
   }).join();
@@ -181,12 +181,12 @@ TEST(ThreadTest, ContextReuseAfterJoin) {
 
 TEST(ThreadTest, ContextReuseAfterDetach) {
   static pw::thread::zephyr::StaticContextWithStack<512> thread_context;
-  pw::thread::Thread(pw::thread::zephyr::Options(thread_context), [](void* arg) {
+  pw::thread::Thread(pw::thread::zephyr::Options(thread_context), []() {
     pw::this_thread::sleep_for(SystemClock::for_at_least(200ms));
     PW_LOG_INFO("ThreadTest_Detach_1");
   }).detach();
   pw::this_thread::sleep_for(SystemClock::for_at_least(300ms));
-  pw::thread::Thread(pw::thread::zephyr::Options(thread_context), [](void* arg) {
+  pw::thread::Thread(pw::thread::zephyr::Options(thread_context), []() {
     pw::this_thread::sleep_for(SystemClock::for_at_least(200ms));
     PW_LOG_INFO("ThreadTest_Detach_2");
   }).detach();

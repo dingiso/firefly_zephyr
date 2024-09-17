@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 3.13.1)
 
+include($ENV{PW_ROOT}/pw_system/backend.cmake)
+pw_set_backend(pw_system.io pw_system.sys_io_target_io)
+
 # We create a pw::Function capturing 3 4-byte arguments.
 add_definitions(-DPW_FUNCTION_INLINE_CALLABLE_SIZE=12)
 

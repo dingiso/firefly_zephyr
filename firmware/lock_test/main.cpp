@@ -221,14 +221,14 @@ int main() {
     buzzer.Beep(30, 600, 1000);
   }
 
+  while (true) {
+    pw::this_thread::sleep_for(SystemClock::for_at_least(1s));
+  };
+ 
   pw::system::GetRpcServer().RegisterService(echo_service);
   pw::system::GetRpcServer().RegisterService(log_service);
 
   static pw::thread::zephyr::StaticContextWithStack<2500> rpc_thread_context;
   pw::thread::DetachedThread(pw::thread::zephyr::Options(rpc_thread_context).set_priority(2),
                              pw::system::GetRpcDispatchThread());
-
-  while (true) {
-    pw::this_thread::sleep_for(SystemClock::for_at_least(1s));
-  };
 }

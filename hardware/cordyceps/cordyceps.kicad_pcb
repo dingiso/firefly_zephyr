@@ -7650,22 +7650,6 @@
 		(uuid "9d814090-cc2c-4b37-a7f0-1d54c7f29903")
 	)
 	(segment
-		(start 123.045779 90.675778)
-		(end 123.045779 89.733479)
-		(width 0.2)
-		(layer "F.Cu")
-		(net 8)
-		(uuid "a016af2f-5637-4d41-adc0-7b627ff80444")
-	)
-	(segment
-		(start 123.045779 90.605779)
-		(end 123.045779 89.733479)
-		(width 0.2)
-		(layer "F.Cu")
-		(net 8)
-		(uuid "a252fd46-dd4a-47d2-92f3-11b11f84b74a")
-	)
-	(segment
 		(start 129.71 73.6)
 		(end 129.85 73.46)
 		(width 0.2)

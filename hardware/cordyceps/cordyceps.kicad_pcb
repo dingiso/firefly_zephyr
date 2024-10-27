@@ -6232,7 +6232,6 @@
 			(net 1 "Net-(AE1-A)")
 			(pinfunction "A")
 			(pintype "input")
-			(clearance -0.1)
 			(uuid "b83636e4-7059-4ace-8557-d9dbbe667a2e")
 		)
 		(pad "2" thru_hole rect

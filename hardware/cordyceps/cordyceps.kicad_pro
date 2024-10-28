@@ -37,9 +37,9 @@
         "other_text_thickness": 0.15,
         "other_text_upright": false,
         "pads": {
-          "drill": 0.762,
-          "height": 1.524,
-          "width": 1.524
+          "drill": 0.0,
+          "height": 0.5,
+          "width": 0.5
         },
         "silk_line_width": 0.15,
         "silk_text_italic": false,
@@ -58,7 +58,12 @@
           "width": 0.0
         }
       ],
-      "drc_exclusions": [],
+      "drc_exclusions": [
+        "footprint_type_mismatch|122045779|87295979|41e804c5-2eb0-4d1e-9df6-dafb1c4d700e|00000000-0000-0000-0000-000000000000",
+        "lib_footprint_mismatch|122045779|87295979|41e804c5-2eb0-4d1e-9df6-dafb1c4d700e|00000000-0000-0000-0000-000000000000",
+        "via_dangling|114671779|100077979|cd1d0b55-8a95-4fef-92db-a822af8b725e|00000000-0000-0000-0000-000000000000",
+        "via_dangling|114671779|74077979|ab5cd80c-9e4a-4dcf-9fb9-95d793fdd0ea|00000000-0000-0000-0000-000000000000"
+      ],
       "meta": {
         "version": 2
       },
@@ -125,7 +130,7 @@
         "min_microvia_drill": 0.3,
         "min_resolved_spokes": 2,
         "min_silk_clearance": 0.0,
-        "min_text_height": 0.8,
+        "min_text_height": 0.7,
         "min_text_thickness": 0.08,
         "min_through_hole_diameter": 0.3,
         "min_track_width": 0.0,
@@ -447,7 +452,10 @@
     "pinned_footprint_libs": [
       "easyeda2kicad"
     ],
-    "pinned_symbol_libs": []
+    "pinned_symbol_libs": [
+      "Common",
+      "easyeda2kicad"
+    ]
   },
   "meta": {
     "filename": "cordyceps.kicad_pro",

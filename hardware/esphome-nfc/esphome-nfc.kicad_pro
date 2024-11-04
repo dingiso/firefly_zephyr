@@ -58,15 +58,7 @@
           "width": 0.0
         }
       ],
-      "drc_exclusions": [
-        "hole_clearance|158780000|79940000|5306646d-5723-45c7-befc-ccf7128dc0e9|c86d1d7f-e471-485b-b89d-3896d60f0d38",
-        "hole_clearance|158980000|79930000|5306646d-5723-45c7-befc-ccf7128dc0e9|595043fc-cf37-4730-b3e5-09c1bc3116be",
-        "hole_clearance|164380000|79940000|960977a9-f998-4661-8aa4-952466ca551f|8ce85d7b-fbc6-4b7e-964f-7f4f20ee042c",
-        "hole_clearance|164580000|79940000|960977a9-f998-4661-8aa4-952466ca551f|26949626-bc43-494c-a953-27e653f7c382",
-        "lib_footprint_mismatch|169300000|105150000|d4bacf02-2919-49ab-a145-7cdbde4fa925|00000000-0000-0000-0000-000000000000",
-        "padstack|158790000|79400000|5306646d-5723-45c7-befc-ccf7128dc0e9|00000000-0000-0000-0000-000000000000",
-        "padstack|164570000|79400000|960977a9-f998-4661-8aa4-952466ca551f|00000000-0000-0000-0000-000000000000"
-      ],
+      "drc_exclusions": [],
       "meta": {
         "version": 2
       },
@@ -474,13 +466,13 @@
         "pcb_color": "rgba(0, 0, 0, 0.000)",
         "schematic_color": "rgba(0, 0, 0, 0.000)",
         "track_width": 0.145,
-        "via_diameter": 0.4,
+        "via_diameter": 0.5,
         "via_drill": 0.3,
         "wire_width": 6
       },
       {
         "bus_width": 12,
-        "clearance": 0.2,
+        "clearance": 0.15,
         "diff_pair_gap": 0.25,
         "diff_pair_via_gap": 0.25,
         "diff_pair_width": 0.2,
@@ -490,9 +482,9 @@
         "name": "Power",
         "pcb_color": "rgba(0, 0, 0, 0.000)",
         "schematic_color": "rgba(0, 0, 0, 0.000)",
-        "track_width": 0.254,
-        "via_diameter": 0.4,
-        "via_drill": 0.3,
+        "track_width": 0.4,
+        "via_diameter": 0.6,
+        "via_drill": 0.4,
         "wire_width": 6
       }
     ],
@@ -501,7 +493,16 @@
     },
     "net_colors": null,
     "netclass_assignments": null,
-    "netclass_patterns": []
+    "netclass_patterns": [
+      {
+        "netclass": "Power",
+        "pattern": "+*"
+      },
+      {
+        "netclass": "Power",
+        "pattern": "GND"
+      }
+    ]
   },
   "pcbnew": {
     "last_paths": {

@@ -66,12 +66,13 @@
         "lib_footprint_mismatch|157600000|105060000|d4bacf02-2919-49ab-a145-7cdbde4fa925|00000000-0000-0000-0000-000000000000",
         "padstack|158790000|79400000|5306646d-5723-45c7-befc-ccf7128dc0e9|00000000-0000-0000-0000-000000000000",
         "padstack|164570000|79400000|960977a9-f998-4661-8aa4-952466ca551f|00000000-0000-0000-0000-000000000000",
+        "shorting_items|187308659|82908659|3af9fc20-7384-4f89-bc56-90fb4dfe1499|d76d4198-80d1-48fb-b7ae-09309612f983",
         "silk_edge_clearance|156250000|114410000|9440ab30-ffee-4bdd-a495-7c655d42b945|b1c04f44-845a-4379-bebd-c0291fc5ae28",
         "silk_edge_clearance|156250000|95950000|9440ab30-ffee-4bdd-a495-7c655d42b945|61ab23ed-82e3-424a-9655-5b76a86d670d",
         "silk_edge_clearance|157110000|74000000|9440ab30-ffee-4bdd-a495-7c655d42b945|9fd30e01-32cc-41cc-aef9-1f08b9623d11",
         "silk_edge_clearance|166260000|74000000|9440ab30-ffee-4bdd-a495-7c655d42b945|f7d234aa-2cbf-4386-8fce-3922ef0a8944",
         "silk_edge_clearance|182970553|115000000|9440ab30-ffee-4bdd-a495-7c655d42b945|6f1c65bb-4b13-4998-869a-fe03cc998b18",
-        "silk_edge_clearance|183500000|74000000|9440ab30-ffee-4bdd-a495-7c655d42b945|b24283f7-666a-435d-9e6d-fddf0b068940"
+        "solder_mask_bridge|187308659|82908659|3af9fc20-7384-4f89-bc56-90fb4dfe1499|d76d4198-80d1-48fb-b7ae-09309612f983"
       ],
       "meta": {
         "version": 2
@@ -196,7 +197,8 @@
         0.145,
         0.2,
         0.254,
-        0.3
+        0.3,
+        0.6
       ],
       "tuning_pattern_settings": {
         "diff_pair_defaults": {

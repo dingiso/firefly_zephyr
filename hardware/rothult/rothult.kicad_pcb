@@ -458,7 +458,7 @@
 	)
 	(gr_circle
 		(center 114 120.5)
-		(end 116 120.5)
+		(end 115 120.5)
 		(stroke
 			(width 0.05)
 			(type default)
@@ -510,7 +510,7 @@
 	)
 	(gr_circle
 		(center 129 120.5)
-		(end 131 120.5)
+		(end 130 120.5)
 		(stroke
 			(width 0.05)
 			(type default)

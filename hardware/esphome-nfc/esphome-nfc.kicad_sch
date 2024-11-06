@@ -1461,160 +1461,6 @@
 				)
 			)
 		)
-		(symbol "Ostranna:10 pF"
-			(pin_numbers hide)
-			(pin_names
-				(offset 0.254)
-			)
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(property "Reference" "C"
-				(at 0.635 2.54 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left)
-				)
-			)
-			(property "Value" "10 pF"
-				(at 0.635 -2.54 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left)
-				)
-			)
-			(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
-				(at 3.048 -5.334 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Datasheet" "~"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Description" "Capacitor to use near quartz crystals"
-				(at 0 0.254 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "LCSC" "C1634"
-				(at 6.604 3.302 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "LCSC type" "Basic"
-				(at -5.842 3.556 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_keywords" "cap capacitor"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_fp_filters" "C_*"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(symbol "10 pF_0_1"
-				(polyline
-					(pts
-						(xy -2.032 -0.762) (xy 2.032 -0.762)
-					)
-					(stroke
-						(width 0.508)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -2.032 0.762) (xy 2.032 0.762)
-					)
-					(stroke
-						(width 0.508)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-			)
-			(symbol "10 pF_1_1"
-				(pin passive line
-					(at 0 3.81 270)
-					(length 2.794)
-					(name "~"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 0 -3.81 90)
-					(length 2.794)
-					(name "~"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "2"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-			)
-		)
 		(symbol "Ostranna:100 nF"
 			(pin_numbers hide)
 			(pin_names
@@ -2012,6 +1858,160 @@
 				(pin passive line
 					(at 0 -3.81 90)
 					(length 1.27)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+		)
+		(symbol "Ostranna:12 pF"
+			(pin_numbers hide)
+			(pin_names
+				(offset 0.254)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "C"
+				(at 0.635 2.54 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+				)
+			)
+			(property "Value" "12 pF"
+				(at 0.635 -2.54 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+				)
+			)
+			(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
+				(at 2.54 -5.842 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "~"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Capacitor to use near quartz crystals"
+				(at 1.778 4.318 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "LCSC" "C1547"
+				(at 7.62 0.254 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "LCSC type" "Basic"
+				(at 13.716 0.254 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "cap capacitor"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_fp_filters" "C_*"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "12 pF_0_1"
+				(polyline
+					(pts
+						(xy -2.032 -0.762) (xy 2.032 -0.762)
+					)
+					(stroke
+						(width 0.508)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -2.032 0.762) (xy 2.032 0.762)
+					)
+					(stroke
+						(width 0.508)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "12 pF_1_1"
+				(pin passive line
+					(at 0 3.81 270)
+					(length 2.794)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 0 -3.81 90)
+					(length 2.794)
 					(name "~"
 						(effects
 							(font
@@ -5443,6 +5443,12 @@
 		(uuid "51ca7594-395c-47b5-8062-86d407d79aba")
 	)
 	(junction
+		(at 231.14 25.4)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "55786c8c-534c-4b92-bc1f-cd7806e8ff17")
+	)
+	(junction
 		(at 132.08 105.41)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -5497,12 +5503,6 @@
 		(uuid "81493abb-82d3-4af9-a7e8-b8c1e361f60d")
 	)
 	(junction
-		(at 231.14 25.4)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "a24d6195-1355-43c8-81ae-08eee633211a")
-	)
-	(junction
 		(at 175.26 68.58)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -5542,7 +5542,7 @@
 		(at 218.44 25.4)
 		(diameter 0)
 		(color 0 0 0 0)
-		(uuid "e2430f75-6d35-432e-9f4f-79511fa79d0f")
+		(uuid "dd027b43-cbd6-4598-a2a1-2ad9f356cf39")
 	)
 	(junction
 		(at 271.78 93.98)
@@ -5866,7 +5866,7 @@
 	)
 	(wire
 		(pts
-			(xy 218.44 25.4) (xy 220.98 25.4)
+			(xy 213.36 25.4) (xy 218.44 25.4)
 		)
 		(stroke
 			(width 0)
@@ -5983,6 +5983,16 @@
 			(type default)
 		)
 		(uuid "4c1dbc27-410a-455c-8414-d5b4036cb0d1")
+	)
+	(wire
+		(pts
+			(xy 231.14 25.4) (xy 237.49 25.4)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "4c3e8bef-a8ac-4aac-9f15-6bc8f189dc94")
 	)
 	(wire
 		(pts
@@ -6336,6 +6346,16 @@
 	)
 	(wire
 		(pts
+			(xy 218.44 25.4) (xy 220.98 25.4)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9ca60cf4-a3a0-49cb-8da1-01d18cc4a26c")
+	)
+	(wire
+		(pts
 			(xy 260.35 69.85) (xy 264.16 69.85)
 		)
 		(stroke
@@ -6656,16 +6676,6 @@
 	)
 	(wire
 		(pts
-			(xy 237.49 25.4) (xy 231.14 25.4)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "f0d541c5-90d6-4817-8f15-52b8f8f78921")
-	)
-	(wire
-		(pts
 			(xy 191.77 86.36) (xy 193.04 86.36)
 		)
 		(stroke
@@ -6693,16 +6703,6 @@
 			(type default)
 		)
 		(uuid "fc9dd5cb-fdc0-40ed-b115-5537ce2ce273")
-	)
-	(wire
-		(pts
-			(xy 213.36 25.4) (xy 218.44 25.4)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "fcf2659f-a0e5-45a4-88d6-543bd21b1761")
 	)
 	(wire
 		(pts
@@ -9003,93 +9003,6 @@
 		)
 	)
 	(symbol
-		(lib_id "Ostranna:10 pF")
-		(at 231.14 29.21 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "4a7540c6-c9ab-4142-9ae2-85cb9c31edc2")
-		(property "Reference" "C10"
-			(at 231.648 27.178 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "10 pF"
-			(at 231.394 31.242 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
-			(at 234.188 34.544 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 231.14 29.21 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Capacitor to use near quartz crystals"
-			(at 231.14 28.956 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "LCSC" "C1634"
-			(at 237.744 25.908 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "LCSC type" "Basic"
-			(at 225.298 25.654 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "0666e2e9-976e-4aea-b290-d6be0a879fee")
-		)
-		(pin "2"
-			(uuid "fe08637a-c86e-4115-bdbe-09d66857f982")
-		)
-		(instances
-			(project ""
-				(path "/0388137f-fb41-46a6-bb35-a6e9549dd65e"
-					(reference "C10")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "Connector:TestPoint")
 		(at 80.01 87.63 0)
 		(unit 1)
@@ -9565,6 +9478,93 @@
 		)
 	)
 	(symbol
+		(lib_id "Ostranna:12 pF")
+		(at 218.44 29.21 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "5e373813-2801-4e29-ba09-ecc6ac16eb61")
+		(property "Reference" "C11"
+			(at 212.09 29.21 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "12 pF"
+			(at 212.09 31.75 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
+			(at 220.98 35.052 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 218.44 29.21 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Capacitor to use near quartz crystals"
+			(at 220.218 24.892 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "C1547"
+			(at 226.06 28.956 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC type" "Basic"
+			(at 232.156 28.956 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "cf32b277-ffe4-4225-93e1-7d4095d29a84")
+		)
+		(pin "1"
+			(uuid "f7fef471-dc70-438c-ac61-d005a74aae62")
+		)
+		(instances
+			(project ""
+				(path "/0388137f-fb41-46a6-bb35-a6e9549dd65e"
+					(reference "C11")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "easyeda2kicad:PN7160A1HN_C100Y")
 		(at 223.52 78.74 0)
 		(unit 1)
@@ -9818,6 +9818,93 @@
 			(project "esphome-nfc"
 				(path "/0388137f-fb41-46a6-bb35-a6e9549dd65e"
 					(reference "#PWR027")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Ostranna:12 pF")
+		(at 231.14 29.21 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "68dcce5b-8098-4237-9c0c-a1c759ccf8cd")
+		(property "Reference" "C10"
+			(at 234.188 27.94 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "12 pF"
+			(at 234.188 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
+			(at 233.68 35.052 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 231.14 29.21 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Capacitor to use near quartz crystals"
+			(at 232.918 24.892 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "C1547"
+			(at 238.76 28.956 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC type" "Basic"
+			(at 244.856 28.956 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "ff45caa3-2de2-4c74-a174-b1800bd354bb")
+		)
+		(pin "1"
+			(uuid "333986e3-892b-4bf2-83a1-417023bd3fc1")
+		)
+		(instances
+			(project "esphome-nfc"
+				(path "/0388137f-fb41-46a6-bb35-a6e9549dd65e"
+					(reference "C10")
 					(unit 1)
 				)
 			)
@@ -10773,93 +10860,6 @@
 			(project ""
 				(path "/0388137f-fb41-46a6-bb35-a6e9549dd65e"
 					(reference "C1")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Ostranna:10 pF")
-		(at 218.44 29.21 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "8207fe3d-8a55-4963-acae-4d2d0b8322a5")
-		(property "Reference" "C11"
-			(at 214.376 27.178 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "10 pF"
-			(at 212.344 31.496 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
-			(at 221.488 34.544 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 218.44 29.21 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Capacitor to use near quartz crystals"
-			(at 218.44 28.956 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "LCSC" "C1634"
-			(at 225.044 25.908 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "LCSC type" "Basic"
-			(at 212.598 25.654 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "b1ddda1b-ecf5-43ef-af34-5373b5a38abc")
-		)
-		(pin "2"
-			(uuid "c91fb962-332e-48a1-bf15-65c1ae7edbbb")
-		)
-		(instances
-			(project "esphome-nfc"
-				(path "/0388137f-fb41-46a6-bb35-a6e9549dd65e"
-					(reference "C11")
 					(unit 1)
 				)
 			)

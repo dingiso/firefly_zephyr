@@ -6,7 +6,7 @@
         "apply_defaults_to_fp_fields": false,
         "apply_defaults_to_fp_shapes": false,
         "apply_defaults_to_fp_text": false,
-        "board_outline_line_width": 0.05,
+        "board_outline_line_width": 0.1,
         "copper_line_width": 0.2,
         "copper_text_italic": false,
         "copper_text_size_h": 1.5,
@@ -30,7 +30,7 @@
         "fab_text_size_v": 1.0,
         "fab_text_thickness": 0.15,
         "fab_text_upright": false,
-        "other_line_width": 0.1,
+        "other_line_width": 0.15,
         "other_text_italic": false,
         "other_text_size_h": 1.0,
         "other_text_size_v": 1.0,
@@ -41,18 +41,39 @@
           "height": 1.524,
           "width": 1.524
         },
-        "silk_line_width": 0.1,
+        "silk_line_width": 0.15,
         "silk_text_italic": false,
         "silk_text_size_h": 1.0,
         "silk_text_size_v": 1.0,
-        "silk_text_thickness": 0.1,
+        "silk_text_thickness": 0.15,
         "silk_text_upright": false,
         "zones": {
           "min_clearance": 0.5
         }
       },
-      "diff_pair_dimensions": [],
-      "drc_exclusions": [],
+      "diff_pair_dimensions": [
+        {
+          "gap": 0.0,
+          "via_gap": 0.0,
+          "width": 0.0
+        }
+      ],
+      "drc_exclusions": [
+        "hole_clearance|142750000|115150000|0b0c5faa-54b6-4fe0-be93-9d5a5fd32257|19408018-7480-4f17-8d19-6c954eb67724",
+        "hole_clearance|142750000|120750000|a1418041-df6c-4f22-850e-b5fbf62c3f19|25484eae-aa49-41d3-ae02-5cb3227b205a",
+        "hole_clearance|142750000|120950000|a1418041-df6c-4f22-850e-b5fbf62c3f19|24147874-506f-4cf9-b9a6-d80a5ad1177c",
+        "hole_clearance|142760000|115350000|0b0c5faa-54b6-4fe0-be93-9d5a5fd32257|81773b1f-d717-4ef2-9325-62322c024d1f",
+        "padstack|106400000|120790000|03f01f13-ddae-48be-9e9f-237b837ce530|00000000-0000-0000-0000-000000000000",
+        "padstack|106400000|124600000|975e63d1-a01d-4a59-8dc4-1ab0f6aa8c9b|00000000-0000-0000-0000-000000000000",
+        "padstack|138900000|105400000|9fca467c-91d2-4692-b1ad-8daab31aad80|00000000-0000-0000-0000-000000000000",
+        "padstack|142710000|105400000|0f8d94a0-9ab3-411a-9e46-16d172ead736|00000000-0000-0000-0000-000000000000",
+        "padstack|143290000|115160000|0b0c5faa-54b6-4fe0-be93-9d5a5fd32257|00000000-0000-0000-0000-000000000000",
+        "padstack|143290000|120940000|a1418041-df6c-4f22-850e-b5fbf62c3f19|00000000-0000-0000-0000-000000000000",
+        "silk_edge_clearance|149000000|113480000|c5a1665f-8d7c-493f-a36a-1c88698a6e9e|8f650d15-bafa-4439-840e-c25d4b67a72c",
+        "silk_edge_clearance|149000000|122630000|c5a1665f-8d7c-493f-a36a-1c88698a6e9e|f0572bae-8f16-47dc-8bf8-6572793d6b99",
+        "starved_thermal|115100000|104560000|3956f714-e25f-46a9-865d-2ce35e025733|5a00efa2-d042-417b-b89d-ebc20d560829|F.Cu",
+        "starved_thermal|115100000|104560000|3956f714-e25f-46a9-865d-2ce35e025733|5a00efa2-d042-417b-b89d-ebc20d560829|In1.Cu"
+      ],
       "meta": {
         "version": 2
       },
@@ -112,11 +133,11 @@
         "max_error": 0.005,
         "min_clearance": 0.0,
         "min_connection": 0.0,
-        "min_copper_edge_clearance": 0.5,
+        "min_copper_edge_clearance": 0.0,
         "min_hole_clearance": 0.25,
         "min_hole_to_hole": 0.25,
-        "min_microvia_diameter": 0.2,
-        "min_microvia_drill": 0.1,
+        "min_microvia_diameter": 0.45,
+        "min_microvia_drill": 0.3,
         "min_resolved_spokes": 2,
         "min_silk_clearance": 0.0,
         "min_text_height": 0.8,
@@ -124,7 +145,7 @@
         "min_through_hole_diameter": 0.3,
         "min_track_width": 0.0,
         "min_via_annular_width": 0.1,
-        "min_via_diameter": 0.5,
+        "min_via_diameter": 0.4,
         "solder_mask_to_copper_clearance": 0.0,
         "use_height_for_length_calcs": true
       },
@@ -171,7 +192,13 @@
           "td_width_to_size_filter_ratio": 0.9
         }
       ],
-      "track_widths": [],
+      "track_widths": [
+        0.0,
+        0.145,
+        0.2,
+        0.254,
+        0.3
+      ],
       "tuning_pattern_settings": {
         "diff_pair_defaults": {
           "corner_radius_percentage": 80,
@@ -198,7 +225,12 @@
           "spacing": 0.6
         }
       },
-      "via_dimensions": [],
+      "via_dimensions": [
+        {
+          "diameter": 0.0,
+          "drill": 0.0
+        }
+      ],
       "zones_allow_external_fillets": false
     },
     "ipc2581": {
@@ -438,19 +470,36 @@
     "classes": [
       {
         "bus_width": 12,
+        "clearance": 0.15,
+        "diff_pair_gap": 0.25,
+        "diff_pair_via_gap": 0.25,
+        "diff_pair_width": 0.2,
+        "line_style": 0,
+        "microvia_diameter": 0.4,
+        "microvia_drill": 0.3,
+        "name": "Default",
+        "pcb_color": "rgba(0, 0, 0, 0.000)",
+        "schematic_color": "rgba(0, 0, 0, 0.000)",
+        "track_width": 0.145,
+        "via_diameter": 0.5,
+        "via_drill": 0.3,
+        "wire_width": 6
+      },
+      {
+        "bus_width": 12,
         "clearance": 0.2,
         "diff_pair_gap": 0.25,
         "diff_pair_via_gap": 0.25,
         "diff_pair_width": 0.2,
         "line_style": 0,
-        "microvia_diameter": 0.3,
-        "microvia_drill": 0.1,
-        "name": "Default",
+        "microvia_diameter": 0.4,
+        "microvia_drill": 0.3,
+        "name": "Power",
         "pcb_color": "rgba(0, 0, 0, 0.000)",
         "schematic_color": "rgba(0, 0, 0, 0.000)",
-        "track_width": 0.2,
+        "track_width": 0.254,
         "via_diameter": 0.6,
-        "via_drill": 0.3,
+        "via_drill": 0.4,
         "wire_width": 6
       }
     ],
@@ -459,7 +508,24 @@
     },
     "net_colors": null,
     "netclass_assignments": null,
-    "netclass_patterns": []
+    "netclass_patterns": [
+      {
+        "netclass": "Power",
+        "pattern": "+3V3"
+      },
+      {
+        "netclass": "Power",
+        "pattern": "VBUS"
+      },
+      {
+        "netclass": "Power",
+        "pattern": "DUT+"
+      },
+      {
+        "netclass": "Default",
+        "pattern": "GND"
+      }
+    ]
   },
   "pcbnew": {
     "last_paths": {

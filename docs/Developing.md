@@ -21,7 +21,7 @@ together nicely:
 * Install [nRF Connect for Desktop](https://www.nordicsemi.com/Products/Development-tools/nrf-connect-for-desktop).
 * Install nRF Connect for VS Code. It can also be done later from the VS Code itself -
   just install recommended extensions defined in `.vscode/extensions.json` - VS Code will propose to do that.
-* Install `west` globally: `pip install west` (need to be run with administrator priviliges).
+* Install `west` globally: `pip install west --break-system-packages` (need to be run with administrator priviliges).
 * Run `west init -l manifest && west update && west zephyr-export` (from the repository root).
   This will create and populate `third_party` folder with all dependencies.
 * Do the next steps in the same console, as further step rely on environment

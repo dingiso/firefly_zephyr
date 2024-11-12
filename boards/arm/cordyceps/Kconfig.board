@@ -1,0 +1,3 @@
+config BOARD_CORDYCEPS
+	bool "Cordyceps"
+	depends on SOC_NRF52833_QIAA

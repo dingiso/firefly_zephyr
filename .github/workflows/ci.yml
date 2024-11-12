@@ -63,6 +63,11 @@ jobs:
         with:
           name: power_meter.elf
           path: power_meter.elf
+      - run: source ./third_party/pigweed/activate.sh && west build firmware/rothult_cordyceps --pristine --board cordyceps && mv ./build/zephyr/zephyr.elf rothult_cordyceps.elf
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rothult_cordyceps.elf
+          path: rothult_cordyceps.elf
       - uses: ncipollo/release-action@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:

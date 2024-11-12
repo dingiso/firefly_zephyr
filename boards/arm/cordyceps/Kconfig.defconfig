@@ -1,0 +1,9 @@
+if BOARD_CORDYCEPS
+
+config BOARD
+	default "cordyceps"
+
+config BT_CTLR
+	default BT
+
+endif # BOARD_CORDYCEPS

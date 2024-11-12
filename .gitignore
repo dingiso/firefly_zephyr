@@ -1,4 +1,14 @@
+# Build artifacts
 build*/
+cmake-build-debug/
+cmake-build-release/
+
+# Dependencies populated by west
 third_party/
 .west
+
+# Python cache
 __pycache__
+
+# Some KiCad junk
+fp-info-cache

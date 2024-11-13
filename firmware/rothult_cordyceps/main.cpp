@@ -8,7 +8,6 @@
 #include <zephyr/logging/log.h>
 #include <zephyr/sys/byteorder.h>
 
-
 LOG_MODULE_REGISTER(main);
 
 constexpr gpio_dt_spec power_en = GPIO_DT_SPEC_GET(DT_NODELABEL(power_en), gpios);
@@ -18,7 +17,7 @@ constexpr gpio_dt_spec button_sw1 = GPIO_DT_SPEC_GET(DT_NODELABEL(button_sw1), g
 constexpr const device* uart_dev = DEVICE_DT_GET(DT_NODELABEL(uart1));
 
 bool power_enabled = false;
-bool lock_opened = false;
+bool lock_closed = false;
 gpio_callback button_callback_data;
 
 void ActuatePowerEnabled() {
@@ -66,36 +65,32 @@ struct bt_uuid_128 open_close_characteristic_uuid =
     BT_UUID_INIT_128(BT_UUID_128_ENCODE(0x34e615dd, 0xad8d, 0x43d3, 0xa5ab, 0xf72db0931e8f));
 
 ssize_t ReadOpenClose(struct bt_conn* conn, const struct bt_gatt_attr* attr, void* buf, uint16_t len, uint16_t offset) {
-  uint8_t as_uint8 = lock_opened ? 1 : 0;
+  uint8_t as_uint8 = lock_closed ? 1 : 0;
   return bt_gatt_attr_read(conn, attr, buf, len, offset, &as_uint8, sizeof(as_uint8));
 }
 
 ssize_t WriteOpenClose(struct bt_conn* conn, const struct bt_gatt_attr* attr, const void* buf, uint16_t len,
-                     uint16_t offset, uint8_t flags) {
-  uint8_t enabled = *reinterpret_cast<const uint8_t*>(buf);
-  bool lock_opened_next = enabled != 0;
-  if (lock_opened_next != lock_opened) {
-    if (lock_opened_next) {
-      uart_poll_out(uart_dev, 'O');
-    } else {
+                       uint16_t offset, uint8_t flags) {
+  bool lock_closed_next = *reinterpret_cast<const uint8_t*>(buf) != 0;
+  if (lock_closed_next != lock_closed) {
+    if (lock_closed_next) {
       uart_poll_out(uart_dev, 'C');
+    } else {
+      uart_poll_out(uart_dev, 'O');
     }
-    lock_opened = lock_opened_next;
+    lock_closed = lock_closed_next;
   }
   return len;
 }
 
-BT_GATT_SERVICE_DEFINE(power_meter_service, BT_GATT_PRIMARY_SERVICE(&cordyceps_service_uuid),
-                       BT_GATT_CHARACTERISTIC(&power_on_characteristic_uuid.uuid,
-                                              BT_GATT_CHRC_READ | BT_GATT_CHRC_WRITE,
-                                              BT_GATT_PERM_READ | BT_GATT_PERM_WRITE, ReadPowerOn, WritePowerOn,
-                                              &power_enabled),
-                       BT_GATT_CUD("Power On", BT_GATT_PERM_READ),
-                       BT_GATT_CHARACTERISTIC(&open_close_characteristic_uuid.uuid,
-                                              BT_GATT_CHRC_READ | BT_GATT_CHRC_WRITE,
-                                              BT_GATT_PERM_READ | BT_GATT_PERM_WRITE, ReadOpenClose, WriteOpenClose,
-                                              &lock_opened),
-                       BT_GATT_CUD("Lock is open", BT_GATT_PERM_READ), );
+BT_GATT_SERVICE_DEFINE(
+    power_meter_service, BT_GATT_PRIMARY_SERVICE(&cordyceps_service_uuid),
+    BT_GATT_CHARACTERISTIC(&power_on_characteristic_uuid.uuid, BT_GATT_CHRC_READ | BT_GATT_CHRC_WRITE,
+                           BT_GATT_PERM_READ | BT_GATT_PERM_WRITE, ReadPowerOn, WritePowerOn, nullptr),
+    BT_GATT_CUD("Power On", BT_GATT_PERM_READ),
+    BT_GATT_CHARACTERISTIC(&open_close_characteristic_uuid.uuid, BT_GATT_CHRC_READ | BT_GATT_CHRC_WRITE,
+                           BT_GATT_PERM_READ | BT_GATT_PERM_WRITE, ReadOpenClose, WriteOpenClose, nullptr),
+    BT_GATT_CUD("Lock is closed", BT_GATT_PERM_READ), );
 
 void InitBleAdvertising(const bt_le_adv_param& params) {
   auto err = bt_enable(nullptr);
@@ -130,6 +125,13 @@ int main() {
   gpio_init_callback(&button_callback_data, OnButtonPress, BIT(button_sw1.pin));
   gpio_add_callback(button_sw1.port, &button_callback_data);
   gpio_pin_interrupt_configure_dt(&button_sw1, GPIO_INT_EDGE_TO_ACTIVE);
+
+  for (int i = 0; i < 3; ++i) {
+    gpio_pin_set_dt(&led1, true);
+    k_sleep(K_MSEC(200));
+    gpio_pin_set_dt(&led1, false);
+    k_sleep(K_MSEC(500));
+  }
 
   ActuatePowerEnabled();
 

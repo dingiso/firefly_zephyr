@@ -36,7 +36,6 @@
 
 &uart0 {
 	status = "okay";
-	compatible = "nordic,nrf-uart";
 	current-speed = <115200>;
 	pinctrl-0 = <&uart0_default>;
 	pinctrl-names = "default";
@@ -44,7 +43,6 @@
 
 &uart1 {
 	status = "okay";
-	compatible = "nordic,nrf-uart";
 	current-speed = <115200>;
 	pinctrl-0 = <&uart1_default>;
 	pinctrl-names = "default";

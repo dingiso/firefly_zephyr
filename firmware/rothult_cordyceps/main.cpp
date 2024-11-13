@@ -3,10 +3,11 @@
 #include <zephyr/bluetooth/hci.h>
 #include <zephyr/bluetooth/uuid.h>
 #include <zephyr/drivers/gpio.h>
-#include <zephyr/drivers/i2c.h>
+#include <zephyr/drivers/uart.h>
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
 #include <zephyr/sys/byteorder.h>
+
 
 LOG_MODULE_REGISTER(main);
 
@@ -14,7 +15,10 @@ constexpr gpio_dt_spec power_en = GPIO_DT_SPEC_GET(DT_NODELABEL(power_en), gpios
 constexpr gpio_dt_spec led1 = GPIO_DT_SPEC_GET(DT_NODELABEL(led1), gpios);
 constexpr gpio_dt_spec button_sw1 = GPIO_DT_SPEC_GET(DT_NODELABEL(button_sw1), gpios);
 
+constexpr const device* uart_dev = DEVICE_DT_GET(DT_NODELABEL(uart1));
+
 bool power_enabled = false;
+bool lock_opened = false;
 gpio_callback button_callback_data;
 
 void ActuatePowerEnabled() {
@@ -57,12 +61,41 @@ ssize_t WritePowerOn(struct bt_conn* conn, const struct bt_gatt_attr* attr, cons
   return len;
 }
 
+// Open/close characteristic, UUID 34e615dd-ad8d-43d3-a5ab-f72db0931e8f
+struct bt_uuid_128 open_close_characteristic_uuid =
+    BT_UUID_INIT_128(BT_UUID_128_ENCODE(0x34e615dd, 0xad8d, 0x43d3, 0xa5ab, 0xf72db0931e8f));
+
+ssize_t ReadOpenClose(struct bt_conn* conn, const struct bt_gatt_attr* attr, void* buf, uint16_t len, uint16_t offset) {
+  uint8_t as_uint8 = lock_opened ? 1 : 0;
+  return bt_gatt_attr_read(conn, attr, buf, len, offset, &as_uint8, sizeof(as_uint8));
+}
+
+ssize_t WriteOpenClose(struct bt_conn* conn, const struct bt_gatt_attr* attr, const void* buf, uint16_t len,
+                     uint16_t offset, uint8_t flags) {
+  uint8_t enabled = *reinterpret_cast<const uint8_t*>(buf);
+  bool lock_opened_next = enabled != 0;
+  if (lock_opened_next != lock_opened) {
+    if (lock_opened_next) {
+      uart_poll_out(uart_dev, 'O');
+    } else {
+      uart_poll_out(uart_dev, 'C');
+    }
+    lock_opened = lock_opened_next;
+  }
+  return len;
+}
+
 BT_GATT_SERVICE_DEFINE(power_meter_service, BT_GATT_PRIMARY_SERVICE(&cordyceps_service_uuid),
                        BT_GATT_CHARACTERISTIC(&power_on_characteristic_uuid.uuid,
                                               BT_GATT_CHRC_READ | BT_GATT_CHRC_WRITE,
                                               BT_GATT_PERM_READ | BT_GATT_PERM_WRITE, ReadPowerOn, WritePowerOn,
                                               &power_enabled),
-                       BT_GATT_CUD("Power On", BT_GATT_PERM_READ), );
+                       BT_GATT_CUD("Power On", BT_GATT_PERM_READ),
+                       BT_GATT_CHARACTERISTIC(&open_close_characteristic_uuid.uuid,
+                                              BT_GATT_CHRC_READ | BT_GATT_CHRC_WRITE,
+                                              BT_GATT_PERM_READ | BT_GATT_PERM_WRITE, ReadOpenClose, WriteOpenClose,
+                                              &lock_opened),
+                       BT_GATT_CUD("Lock is open", BT_GATT_PERM_READ), );
 
 void InitBleAdvertising(const bt_le_adv_param& params) {
   auto err = bt_enable(nullptr);

@@ -137,7 +137,7 @@ int main() {
 
   while (true) {
     k_sleep(K_MSEC(500));
-    LOG_INF("Avaiting command...");
+    LOG_INF("Awaiting command...");
   }
 
   return 0;

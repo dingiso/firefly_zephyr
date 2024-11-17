@@ -6426,7 +6426,7 @@
 		)
 		(uuid "ffacdd17-f5ff-4f45-89ee-4d81ff39c1e6")
 	)
-	(label "DBG_TX"
+	(label "DBG_RX"
 		(at 191.77 125.73 270)
 		(fields_autoplaced yes)
 		(effects
@@ -6437,7 +6437,7 @@
 		)
 		(uuid "0f195b21-38fb-4397-aa09-40b2eab5736f")
 	)
-	(label "DBG_TX"
+	(label "DBG_RX"
 		(at 74.93 69.85 180)
 		(fields_autoplaced yes)
 		(effects
@@ -6470,7 +6470,7 @@
 		)
 		(uuid "3fcbb8eb-b6e3-4933-a9ff-9f5107178d30")
 	)
-	(label "DBG_RX"
+	(label "DBG_TX"
 		(at 189.23 125.73 270)
 		(fields_autoplaced yes)
 		(effects
@@ -6536,7 +6536,7 @@
 		)
 		(uuid "b2fdacaf-6927-45ea-9464-4aeec6c7b360")
 	)
-	(label "DBG_RX"
+	(label "DBG_TX"
 		(at 74.93 72.39 180)
 		(fields_autoplaced yes)
 		(effects
